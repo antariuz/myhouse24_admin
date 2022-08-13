@@ -5,11 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
@@ -21,19 +20,21 @@ public class Invoice extends MappedEntity {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDate createDate;
-    @OneToOne
+    @ManyToOne
     private Building building;
-    @OneToOne
+    @ManyToOne
     private User user;
-    @OneToOne
+    @ManyToOne
     private Flat flat;
-    @OneToOne
+    @ManyToOne
     private Account account;
     private Status status;
-    @OneToOne
+    @ManyToOne
     private Tariff tariff;
     private LocalDate periodStart;
     private LocalDate periodEnd;
+    @OneToMany
+    private List<InvoiceService> invoiceService = new ArrayList<>();
 
     public enum Status {
         PAID,

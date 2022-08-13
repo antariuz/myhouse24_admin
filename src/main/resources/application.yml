@@ -19,10 +19,10 @@ spring:
 server:
   port: 8080
   servlet:
-    application-display-name: MyHouse24_Admin
+    application-display-name: myhouse24_admin
 logging:
   file:
-    name: logs/myHouse24_admin.log
+    name: logs/myhouse24_admin.log
   level:
     org:
       hibernate: info
