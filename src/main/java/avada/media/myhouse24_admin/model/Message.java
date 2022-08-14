@@ -12,21 +12,15 @@ import java.util.List;
 @Table
 @Data
 @NoArgsConstructor
-public class Flat extends MappedEntity {
+public class Message extends MappedEntity {
 
-    private String number;
-    private String totalSquare;
+    private String title;
+    private String text;
+    @ManyToMany
+    private List<User> users = new ArrayList<>();
     @ManyToOne
-    private Floor floor;
-    @ManyToOne
-    private Section section;
-    @ManyToOne
-    private Building building;
+    private Staff staff;
     @ManyToOne
     private User user;
-    @ManyToOne
-    private Tariff tariff;
-    @OneToMany
-    private List<Account> account = new ArrayList<>();
 
 }
