@@ -1,8 +1,11 @@
 package avada.media.myhouse24_admin.model.common;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @MappedSuperclass
+@Data
 public class MappedEntity {
 
     @Id

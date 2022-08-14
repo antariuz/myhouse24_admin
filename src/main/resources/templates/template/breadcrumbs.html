@@ -1,16 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <div class="content-header border-bottom" style="padding: 5px">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-6">
-        <h5 style="margin: 0px">Статистика</h5>
-      </div>
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right text-sm">
-          <li class="breadcrumb-item"><a href="/">
-            <i class="fa-solid fa-house"></i> Главная</a></li>
-          <!--<li class="breadcrumb-item active">Статистика</li>-->
-        </ol>
-      </div>
-    </div>
+    <th:block layout:fragment="breadcrumbs"></th:block>
   </div>
 </div>

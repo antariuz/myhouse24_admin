@@ -7,15 +7,18 @@
 
 <body class="sidebar-mini control-sidebar-slide-open layout-navbar-fixed layout-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- preloader -->
-<!--    <th:block th:replace="template/preloader"></th:block>-->
-    <!-- topbar -->
+    <!-- sidebar -->
     <th:block th:replace="template/topbar"></th:block>
     <!-- sidebar -->
     <th:block th:replace="template/sidebar"></th:block>
 
     <div class="content-wrapper">
-        <th:block th:replace="template/breadcrumbs"></th:block>
+        <div class="content-header border-bottom" style="padding: 5px">
+            <div class="container-fluid">
+                <!-- fragment of breadcrumbs -->
+                <th:block layout:fragment="breadcrumbs"></th:block>
+            </div>
+        </div>
         <div class="content">
             <div class="container-fluid">
                 <!-- main content -->
