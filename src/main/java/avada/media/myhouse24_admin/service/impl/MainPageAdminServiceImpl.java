@@ -36,12 +36,12 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
     public void mainPageInit() {
             MainPageModel mainPageModel = new MainPageModel();
             List<NextToUs> nextToUsList = new ArrayList<>();
-            mainPageModel.setTitle("Заголовок");
-            mainPageModel.setDescription("Описание");
+            mainPageModel.setTitle("О жилом комплексе \"Криптон\"");
+            mainPageModel.setDescription("Жилой комплекс «Криптон» расположен  на берегу Черного моря в живописном районе Одессы. Оригинальная архитектура комплекса делает его уникальным объектом не только для Одессы, но и для всей Украины – дом прекрасно вписывается в архитектуру берега и открывает свои жильцам и гостям прекрасный вид на бескрайнее море. Ярким преимуществом жилого комплекса является его месторасположения – удобная транспортная развязка, социальная инфраструктура, парк и прекрасный морской воздух создают все условия для комфортного проживания!");
             mainPageModel.setApplicationLink(true);
-            mainPageModel.setSlide1("init-dom.jpg");
-            mainPageModel.setSlide2("init-dom.jpg");
-            mainPageModel.setSlide3("init-dom.jpg");
+            mainPageModel.setSlide1("init-dom1.jpg");
+            mainPageModel.setSlide2("init-dom2.jpg");
+            mainPageModel.setSlide3("init-dom3.jpg");
 
             for (int i=0; i<6; i++){
                 NextToUs nextToUs = new NextToUs();
