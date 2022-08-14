@@ -1,9 +1,9 @@
 package avada.media.myhouse24_admin.service.impl;
 
-import avada.media.myhouse24_admin.model.websiteModels.MainPageModel;
-import avada.media.myhouse24_admin.model.websiteModels.NextToUs;
-import avada.media.myhouse24_admin.repo.websiteRepo.MainPageModelRepository;
-import avada.media.myhouse24_admin.repo.websiteRepo.NextToUsRepository;
+import avada.media.myhouse24_admin.model.website.MainPageModel;
+import avada.media.myhouse24_admin.model.website.NextToUs;
+import avada.media.myhouse24_admin.repo.website.MainPageModelRepo;
+import avada.media.myhouse24_admin.repo.website.NextToUsRepo;
 import avada.media.myhouse24_admin.service.MainPageAdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
 
 
 
-    private final MainPageModelRepository mainPageModelRepository;
-    private final NextToUsRepository nextToUsRepository;
+    private final MainPageModelRepo mainPageModelRepo;
+    private final NextToUsRepo nextToUsRepo;
 
 
     @Override
@@ -49,7 +49,7 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUs.setTitle("Заголовок блока");
                 nextToUs.setText("Магазины, парки, кафе");
                 nextToUs.setImageLink("init-park.jpg");
-                nextToUsRepository.save(nextToUs);
+                nextToUsRepo.save(nextToUs);
                 nextToUsList.add(nextToUs);
             }
 
@@ -57,13 +57,13 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
             mainPageModel.setSeoTitle("СЕО заголовок");
             mainPageModel.setSeoDescription("Описание СЕО");
             mainPageModel.setKeyWords("СЕО, ключевые слова");
-            mainPageModelRepository.save(mainPageModel);
+            mainPageModelRepo.save(mainPageModel);
         }
 
 
     @Override
     public void updateManePageAdmin(MultipartFile slide1, MultipartFile slide2, MultipartFile slide3, String title, String description, boolean applicationLink, MultipartFile nextToUsImageLink1, String nextToUsTitle1, String nextToUsText1, MultipartFile nextToUsImageLink2, String nextToUsTitle2, String nextToUsText2, MultipartFile nextToUsImageLink3, String nextToUsTitle3, String nextToUsText3, MultipartFile nextToUsImageLink4, String nextToUsTitle4, String nextToUsText4, MultipartFile nextToUsImageLink5, String nextToUsTitle5, String nextToUsText5, MultipartFile nextToUsImageLink6, String nextToUsTitle6, String nextToUsText6, String seoTitle, String seoDescription, String seoKeywords) throws IOException {
-        if (mainPageModelRepository.findAll().isEmpty()) {
+        if (mainPageModelRepo.findAll().isEmpty()) {
             MainPageModel mainPageModel = new MainPageModel();
             List<NextToUs> nextToUsList = new ArrayList<>();
             mainPageModel.setNextToUsList(nextToUsList);
@@ -178,11 +178,11 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
             mainPageModel.setSeoTitle(seoTitle);
             mainPageModel.setSeoDescription(seoDescription);
             mainPageModel.setKeyWords(seoKeywords);
-            nextToUsRepository.saveAll(mainPageModel.getNextToUsList());
-            mainPageModelRepository.save(mainPageModel);
+            nextToUsRepo.saveAll(mainPageModel.getNextToUsList());
+            mainPageModelRepo.save(mainPageModel);
 
         } else {
-            List<MainPageModel> mainPageModelList = mainPageModelRepository.findAll();
+            List<MainPageModel> mainPageModelList = mainPageModelRepo.findAll();
             MainPageModel mainPageModel = mainPageModelList.get(0);
 
             if ((slide1 != null && !slide1.getOriginalFilename().isEmpty()) ||
@@ -231,7 +231,7 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
             mainPageModel.setDescription(description);
             mainPageModel.setApplicationLink(applicationLink);
 
-            NextToUs nextToUs1 = nextToUsRepository.findById(1L).get();
+            NextToUs nextToUs1 = nextToUsRepo.findById(1L).get();
             nextToUs1.setTitle(nextToUsTitle1);
             nextToUs1.setText(nextToUsText1);
             if (nextToUsImageLink1 != null && !nextToUsImageLink1.getOriginalFilename().isEmpty()) {
@@ -240,9 +240,9 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUsImageLink1.transferTo(new File(nextToUsImageUploadPath + "/" + resultFilename1));
                 nextToUs1.setImageLink(resultFilename1);
             }
-            nextToUsRepository.save(nextToUs1);
+            nextToUsRepo.save(nextToUs1);
 
-            NextToUs nextToUs2 = nextToUsRepository.findById(2L).get();
+            NextToUs nextToUs2 = nextToUsRepo.findById(2L).get();
             nextToUs2.setTitle(nextToUsTitle2);
             nextToUs2.setText(nextToUsText2);
             if (nextToUsImageLink2 != null && !nextToUsImageLink2.getOriginalFilename().isEmpty()) {
@@ -251,9 +251,9 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUsImageLink2.transferTo(new File(nextToUsImageUploadPath + "/" + resultFilename2));
                 nextToUs2.setImageLink(resultFilename2);
             }
-            nextToUsRepository.save(nextToUs2);
+            nextToUsRepo.save(nextToUs2);
 
-            NextToUs nextToUs3 = nextToUsRepository.findById(3L).get();
+            NextToUs nextToUs3 = nextToUsRepo.findById(3L).get();
             nextToUs3.setTitle(nextToUsTitle3);
             nextToUs3.setText(nextToUsText3);
             if (nextToUsImageLink3 != null && !nextToUsImageLink3.getOriginalFilename().isEmpty()) {
@@ -262,9 +262,9 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUsImageLink3.transferTo(new File(nextToUsImageUploadPath + "/" + resultFilename3));
                 nextToUs3.setImageLink(resultFilename3);
             }
-            nextToUsRepository.save(nextToUs3);
+            nextToUsRepo.save(nextToUs3);
 
-            NextToUs nextToUs4 = nextToUsRepository.findById(4L).get();
+            NextToUs nextToUs4 = nextToUsRepo.findById(4L).get();
             nextToUs4.setTitle(nextToUsTitle4);
             nextToUs4.setText(nextToUsText4);
             if (nextToUsImageLink4 != null && !nextToUsImageLink4.getOriginalFilename().isEmpty()) {
@@ -273,9 +273,9 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUsImageLink4.transferTo(new File(nextToUsImageUploadPath + "/" + resultFilename4));
                 nextToUs4.setImageLink(resultFilename4);
             }
-            nextToUsRepository.save(nextToUs4);
+            nextToUsRepo.save(nextToUs4);
 
-            NextToUs nextToUs5 = nextToUsRepository.findById(5L).get();
+            NextToUs nextToUs5 = nextToUsRepo.findById(5L).get();
             nextToUs5.setTitle(nextToUsTitle5);
             nextToUs5.setText(nextToUsText5);
             if (nextToUsImageLink5 != null && !nextToUsImageLink5.getOriginalFilename().isEmpty()) {
@@ -284,9 +284,9 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUsImageLink5.transferTo(new File(nextToUsImageUploadPath + "/" + resultFilename5));
                 nextToUs5.setImageLink(resultFilename5);
             }
-            nextToUsRepository.save(nextToUs5);
+            nextToUsRepo.save(nextToUs5);
 
-            NextToUs nextToUs6 = nextToUsRepository.findById(6L).get();
+            NextToUs nextToUs6 = nextToUsRepo.findById(6L).get();
             nextToUs6.setTitle(nextToUsTitle6);
             nextToUs6.setText(nextToUsText6);
             if (nextToUsImageLink6 != null && !nextToUsImageLink6.getOriginalFilename().isEmpty()) {
@@ -295,13 +295,13 @@ public class MainPageAdminServiceImpl implements MainPageAdminService {
                 nextToUsImageLink6.transferTo(new File(nextToUsImageUploadPath + "/" + resultFilename6));
                 nextToUs6.setImageLink(resultFilename6);
             }
-            nextToUsRepository.save(nextToUs6);
+            nextToUsRepo.save(nextToUs6);
 
             mainPageModel.setSeoTitle(seoTitle);
             mainPageModel.setSeoDescription(seoDescription);
             mainPageModel.setKeyWords(seoKeywords);
 
-            mainPageModelRepository.save(mainPageModel);
+            mainPageModelRepo.save(mainPageModel);
         }
     }
 }

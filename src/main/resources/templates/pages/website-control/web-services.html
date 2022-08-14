@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Редактирование страницы</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Редактирование страницы</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">Редактирование страницы "Услуги"</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="border-bottom">Услуги</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            In work...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+</html>
