@@ -26,16 +26,3 @@ server:
   port: 8060
   servlet:
     application-display-name: myhouse24_admin
-
-logging:
-  file:
-    name: logs/myhouse24_admin.log
-  level:
-    org:
-      hibernate: info
-      springframework: info
-    root: info
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-
