@@ -1,3 +1,28 @@
+<!-- summernote init -->
+    $(document).ready(function() {
+    $('.summernote').summernote({
+        lang:'ru-RU',
+        minHeight: 156,
+        maxHeight: 200,
+        inheritPlaceholder: true,
+        styleTags: [
+            'p',
+            {title: 'Заголовок 1', tag: 'h1', className: 'Заголовок 1', value: 'h1'},
+            {title: 'Заголовок 2', tag: 'h2', className: 'Заголовок 2', value: 'h2'},
+            {title: 'Заголовок 3', tag: 'h3', className: 'Заголовок 3', value: 'h3'},
+            {title: 'Заголовок 4', tag: 'h4', className: 'Заголовок 4', value: 'h4'},
+            {title: 'Заголовок 5', tag: 'h5', className: 'Заголовок 5', value: 'h5'},
+            {title: 'Заголовок 6', tag: 'h6', className: 'Заголовок 6', value: 'h6'},
+        ],
+        toolbar: [
+            ['size', ['style']],
+            ['style', ['bold', 'italic', 'underline']],
+            ['list', ['ul', 'ol', 'paragraph']],
+        ]
+    });
+});
+
+
 <!-- Sidebar tab active -->
     $(function () {
     var url = window.location;

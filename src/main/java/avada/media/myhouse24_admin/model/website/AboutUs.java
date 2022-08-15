@@ -17,17 +17,18 @@ public class AboutUs {
     @Column(name = "id", nullable = false)
     private Long id;
 
-   private String title;
-   private String description;
-   private String directorsPhoto;
-   @OneToMany
-   private List<PhotoAboutUs> photosAboutUsList;
-   private String addInfoTitle;
-   private String addInfoDescription;
-   private String addInfoPhoto;
-   @OneToMany
-   private List<MyDocument> documents;
-   private String seoTitle;
-   private String seoDescription;
-   private String keyWords;
+    private String title;
+    private String description;
+    private String directorsPhoto;
+    @OneToMany
+    private List<PhotoAboutUs> photosAboutUsList;
+    private String addInfoTitle;
+    private String addInfoDescription;
+    @OneToMany
+    private List<AdditionalPhotoAboutUs> additionalPhotoAboutUsList;
+    @OneToMany
+    private List<MyDocument> documents;
+    private String seoTitle;
+    private String seoDescription;
+    private String keyWords;
 }
