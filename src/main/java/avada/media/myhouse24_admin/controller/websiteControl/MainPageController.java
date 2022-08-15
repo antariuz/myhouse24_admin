@@ -1,6 +1,5 @@
 package avada.media.myhouse24_admin.controller.websiteControl;
 
-//import avada.media.myhouse24_admin.model.websiteModels.Slide;
 import avada.media.myhouse24_admin.model.website.MainPageModel;
 import avada.media.myhouse24_admin.repo.website.ContactsRepo;
 import avada.media.myhouse24_admin.repo.website.MainPageModelRepo;
@@ -28,7 +27,7 @@ public class MainPageController {
     private  final MainPageAdminServiceImpl mainPageAdminService;
 
 
-    @GetMapping("main-page-admin")
+    @GetMapping("main-page-admin") //"website-control/main-page-admin"
     public ModelAndView showWebSiteMainPageAdmin() {
         ModelAndView modelAndView = new ModelAndView("pages/website-control/main-page-admin");
         ModelAndView modelAndViewRedirect = new ModelAndView("redirect:/main-page-admin");
@@ -85,7 +84,7 @@ public class MainPageController {
                             @RequestParam String seoDescription,
                             @RequestParam String seoKeywords) throws IOException {
 
-       mainPageAdminService.updateManePageAdmin(slide1, slide2, slide3, title, description, applicationLink,
+       mainPageAdminService.updateMainPageAdmin(slide1, slide2, slide3, title, description, applicationLink,
                nextToUsImageLink1, nextToUsTitle1, nextToUsText1, nextToUsImageLink2, nextToUsTitle2, nextToUsText2,
                nextToUsImageLink3, nextToUsTitle3, nextToUsText3, nextToUsImageLink4, nextToUsTitle4, nextToUsText4,
                nextToUsImageLink5, nextToUsTitle5, nextToUsText5, nextToUsImageLink6, nextToUsTitle6, nextToUsText6,

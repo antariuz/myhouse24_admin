@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
     <!-- Bootstrap-switch -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- summernote WYSIWYG editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css">
 
     <link href="/css/myCss.css" rel="stylesheet" type="text/css">
 </head>
@@ -91,9 +92,10 @@
                       <input type="text" id="title" class="form-control" name="title" th:value="${maimPageObjects.title}">
                   </div><br>
     <!-- description-->
-            <div class="form-group field-websitehomeform-homedescription">
-                <label class="control-label" for="description">Краткий текст</label>
-                <textarea id="description" class="form-control" name="description" placeholder="Текст сообщения" th:text="${maimPageObjects.description}"></textarea>
+
+            <div class="form-group">
+                <label class="control-label" for="summernote">Краткий текст</label>
+                <textarea id="summernote" class="summernote" name="description" placeholder="Текст сообщения" th:text="${maimPageObjects.description}"></textarea>
             </div>
         </div>
         <div class="form-group" style="margin-left: 2.5%">
@@ -124,7 +126,7 @@
     </div>
 <!--  next to us text -->
         <label class="control-label" for="next-to-us-text-1">Описание</label>
-        <textarea id="next-to-us-text-1" class="form-control" name="nextToUsText1" th:text="${nextToUsAttr1.text}"></textarea>
+        <textarea id="next-to-us-text-1" class="form-control summernote" name="nextToUsText1" th:text="${nextToUsAttr1.text}"></textarea>
     </div>
 
 
@@ -143,7 +145,7 @@
         </div>
         <!--  next to us text -->
         <label class="control-label" for="next-to-us-text-2">Описание</label>
-        <textarea id="next-to-us-text-2" class="form-control"  th:text="${nextToUsAttr2.text}" name="nextToUsText2"></textarea>
+        <textarea id="next-to-us-text-2" class="form-control summernote"  th:text="${nextToUsAttr2.text}" name="nextToUsText2"></textarea>
     </div>
 
 
@@ -162,7 +164,7 @@
     </div>
     <!--  next to us text -->
     <label class="control-label" for="next-to-us-text-3">Описание</label>
-    <textarea id="next-to-us-text-3" th:text="${nextToUsAttr3.text}" class="form-control" name="nextToUsText3"></textarea>
+    <textarea id="next-to-us-text-3" th:text="${nextToUsAttr3.text}" class="form-control summernote" name="nextToUsText3"></textarea>
 </div>
 
 <br><br><br><br>
@@ -182,7 +184,7 @@
     </div>
     <!--  next to us text -->
     <label class="control-label" for="next-to-us-text-4">Описание</label>
-    <textarea id="next-to-us-text-4" th:text="${nextToUsAttr4.text}" class="form-control" name="nextToUsText4"></textarea>
+    <textarea id="next-to-us-text-4" th:text="${nextToUsAttr4.text}" class="form-control summernote" name="nextToUsText4"></textarea>
 </div>
 
 
@@ -201,7 +203,7 @@
     </div>
     <!--  next to us text -->
     <label class="control-label" for="next-to-us-text-1">Описание</label>
-    <textarea id="next-to-us-text-5" th:text="${nextToUsAttr5.text}" class="form-control" name="nextToUsText5"></textarea>
+    <textarea id="next-to-us-text-5" th:text="${nextToUsAttr5.text}" class="form-control summernote" name="nextToUsText5"></textarea>
 </div>
 
 
@@ -220,7 +222,7 @@
     </div>
     <!--  next to us text -->
     <label class="control-label" for="next-to-us-text-6">Описание</label>
-    <textarea id="next-to-us-text-6" th:text="${nextToUsAttr6.text}" class="form-control" name="nextToUsText6"></textarea>
+    <textarea id="next-to-us-text-6" th:text="${nextToUsAttr6.text}" class="form-control summernote" name="nextToUsText6"></textarea>
   </div>
 </div>
 
@@ -256,209 +258,6 @@
     <br>
 </form>
 
-
-    <!--Для создания новой, без возвращаемых значений-->
-    <!--
-    <form method="post" enctype="multipart/form-data">
-
-        <div class="next2us">
-            <h4 th:inline="text">Слайд 1</h4>
-            <img id="previewImage1" alt="Image"  src="/img/dom1920.jpg"  class="main-page-admin-img">
-            <label class="control-label" for="slide1">Рекомендуемый размер: (1920x800)</label>
-            <input type="file" name="slide1" id="slide1" accept="image/png, image/jpeg, image/gif, image/jpg">
-        </div>
-
-        <div class="next2us">
-            <h4 th:inline="text">Слайд 2</h4>
-            <img id="previewImage2"  src="/img/dom1920.jpg" alt="Image" class="main-page-admin-img">
-            <label class="control-label" for="slide2">Рекомендуемый размер: (1920x800)</label>
-            <input type="file" name="slide2" id="slide2" accept="image/png, image/jpeg, image/gif, image/jpg">
-        </div>
-
-        <div  class="next2us">
-            <h4 th:inline="text">Слайд 3</h4>
-            <img id="previewImage3"  src="/img/dom1920.jpg" alt="Image" class="main-page-admin-img">
-            <label class="control-label" for="slide3">Рекомендуемый размер: (1920x800)</label>
-            <input type="file" name="slide3" id="slide3" accept="image/png, image/jpeg, image/gif, image/jpg">
-        </div>
-
-
-        <br><br><br><br>
-        <div class="row">
-            <div>
-                <div class="form-group" style="margin-left: 2.5%; width: 95%">
-                    <h3 class="page-header">Краткая информация</h3>
-                    <div>
-
-                        <label class="control-label" for="title">Заголовок</label>
-                        <input type="text" id="title" class="form-control" name="title"">
-                    </div><br>
-
-                    <div class="form-group field-websitehomeform-homedescription">
-                        <label class="control-label" for="description">Краткий текст</label>
-                        <textarea id="description" class="form-control" name="description" placeholder="Текст сообщения"></textarea>
-                    </div>
-                </div>
-                <div class="form-group" style="margin-left: 2.5%">
-                    <input type="hidden" name="applicationLink"  value="false">
-                    <label><input type="checkbox" id="applicationLink" name="applicationLink" value="true"  checked> Показать ссылки на приложения</label>
-                    <br><br><br>
-
-                    <div>
-                        <h3 class="page-header">Рядом с нами</h3>
-                    </div>
-                </div>
-
-
-
-                <hr style="width: 95%; margin-left: 2.5%">
-                <div class="next2us" >
-                    <h4>Блок 1</h4>
-
-                    <img id="next-to-us-image-1" alt="Image" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-imageLink-1">Рекомендуемый размер: (1000x600)</label>
-                        <input type="file" id="next-to-us-imageLink-1" name="nextToUsImageLink1" accept="image/*">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-title-1">Заголовок блока</label>
-
-                        <input type="text" id="next-to-us-title-1" class="form-control" name="nextToUsTitle1" value="">
-                    </div>
-
-                    <label class="control-label" for="next-to-us-text-1">Описание</label>
-                    <textarea id="next-to-us-text-1" class="form-control" name="nextToUsText1" ></textarea>
-                </div>
-
-
-                <div class="next2us">
-                    <h4>Блок 2</h4>
-
-                    <img id="next-to-us-image-2" alt="Image"  src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-imageLink-2">Рекомендуемый размер: (1000x600)</label>
-                        <input type="file" id="next-to-us-imageLink-2" name="nextToUsImageLink2" accept="image/*">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-title-2">Заголовок блока</label>
-
-                        <input type="text" id="next-to-us-title-2"  class="form-control" name="nextToUsTitle2" value="">
-                    </div>
-
-                    <label class="control-label" for="next-to-us-text-2">Описание</label>
-                    <textarea id="next-to-us-text-2" class="form-control"  name="nextToUsText2"></textarea>
-                </div>
-
-
-                <div class="next2us">
-                    <h4>Блок 3</h4>
-
-                    <img id="next-to-us-image-3" alt="Image"src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg"  class="main-page-admin-img">
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-imageLink-3">Рекомендуемый размер: (1000x600)</label>
-                        <input type="file" id="next-to-us-imageLink-3" name="nextToUsImageLink3" accept="image/*">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-title-3">Заголовок блока</label>
-
-                        <input type="text"  id="next-to-us-title-3" class="form-control" name="nextToUsTitle3" value="">
-                    </div>
-
-                    <label class="control-label" for="next-to-us-text-3">Описание</label>
-                    <textarea id="next-to-us-text-3"  class="form-control" name="nextToUsText3"></textarea>
-                </div>
-
-                <br><br><br><br>
-
-                <div class="next2us" >
-                    <h4>Блок 4</h4>
-
-                    <img id="next-to-us-image-4" alt="Image"  src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-imageLink-4">Рекомендуемый размер: (1000x600)</label>
-                        <input type="file" id="next-to-us-imageLink-4" name="nextToUsImageLink4" accept="image/*">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-title-4">Заголовок блока</label>
-
-                        <input type="text"  id="next-to-us-title-4" class="form-control" name="nextToUsTitle4" value="">
-                    </div>
-
-                    <label class="control-label" for="next-to-us-text-4">Описание</label>
-                    <textarea id="next-to-us-text-4"  class="form-control" name="nextToUsText4"></textarea>
-                </div>
-
-
-                <div class="next2us">
-                    <h4>Блок 5</h4>
-
-                    <img id="next-to-us-image-5" alt="Image" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-imageLink-5">Рекомендуемый размер: (1000x600)</label>
-                        <input type="file" id="next-to-us-imageLink-5" name="nextToUsImageLink5" accept="image/*">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-title-5">Заголовок блока</label>
-
-                        <input type="text"  id="next-to-us-title-5" class="form-control" name="nextToUsTitle5" value="">
-                    </div>
-
-                    <label class="control-label" for="next-to-us-text-1">Описание</label>
-                    <textarea id="next-to-us-text-5"  class="form-control" name="nextToUsText5"></textarea>
-                </div>
-
-
-                <div class="next2us">
-                    <h4>Блок 6</h4>
-
-                    <img id="next-to-us-image-6" alt="Image"  src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg"  class="main-page-admin-img">
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-imageLink-6">Рекомендуемый размер: (1000x600)</label>
-                        <input type="file" id="next-to-us-imageLink-6" name="nextToUsImageLink6" accept="image/*">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="next-to-us-title-6">Заголовок блока</label>
-
-                        <input type="text"   id="next-to-us-title-6" class="form-control" name="nextToUsTitle6" value="">
-                    </div>
-
-                    <label class="control-label" for="next-to-us-text-6">Описание</label>
-                    <textarea id="next-to-us-text-6"  class="form-control" name="nextToUsText6"></textarea>
-                </div>
-            </div>
-
-            <div class="col-md-12" style="margin-left: 2.5%; width: 95%">
-                <br>
-                <br>
-                <h3 class="page-header">Настройки SEO</h3>
-
-                <div class="form-group" style="width: 95%">
-                    <hr ><br>
-                    <label class="control-label" for="seo-title">Title</label>
-                    <input type="text" id="seo-title" class="form-control" name="seoTitle" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
-
-                </div>
-                <div class="form-group" style="width: 95%" >
-                    <label class="control-label" for="seo-description">Description</label>
-                    <textarea id="seo-description" class="form-control" name="seoDescription" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!</textarea>
-                </div>
-                <div class="form-group" style="width: 95%">
-                    <label class="control-label" for="seo-keywords">Keywords</label>
-                    <textarea id="seo-keywords" class="form-control" name="seoKeywords" rows="6">программа для ОСМД, управление домом, управление многоквартирным домом, система учета квартир, программа для жильцов дома,  сайт управляющей компании, мой дом 21, crm для жильцо!</textarea>
-                </div>
-            </div>
-            <br>
-
-            <div class="col-xs-12" style="margin-left: 40%">
-                <div class="form-group">
-                    <a href="/main-page-admin" class="btn btn-dark">Отменить</a>
-                    <button type="submit" class="btn btn-success">Сохранить</button>
-                </div>
-            </div>
-        </div>
-        <br>
-    </form>
-    -->
 </div>
 <hr>
 <footer th:insert="blocks/footer.html :: footer" style="margin-left: 40%"></footer>

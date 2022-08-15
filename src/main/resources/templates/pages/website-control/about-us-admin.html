@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>О нас</title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
+    <!-- Bootstrap-switch -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <link href="/css/myCss.css"  rel="stylesheet" type="text/css">
+</head>
+<body>
+<header th:insert="blocks/header.html :: header"></header>
+<sidebar th:insert="blocks/sidebar.html :: sidebar" style="position: fixed; top: 0;"></sidebar>
+
+<div class="content-header border-bottom">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right text-sm">
+                    <li class="breadcrumb-item"><a th:href="@{/main-page-admin}">
+                        <i class="fa-solid fa-house"></i> Главная</a></li>
+                    <!--<li class="breadcrumb-item active">Статистика</li>-->
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div  style="width: 85%; margin-left: 14%; border-style: groove; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+
+    <br>
+    <div class="box-header with-border">
+        <div style="display: inline-block; margin-left: 2.5%"><h4 class="box-title">Редактирование страницы "О нас"</h4></div>
+    </div>
+
+    <hr>
+    <h4 class="page-header" style="margin-left: 2.5%">Информация</h4>
+    <hr>
+
+
+
+<form enctype="multipart/form-data">
+    <input type="file" name="doc" accept="*/*">
+    <input type="submit" value="save">
+</form>
+
+
+
+
+
+
+</div>
+<hr>
+<footer th:insert="blocks/footer.html :: footer" style="margin-left: 40%"></footer>
+<div th:insert="blocks/footer-scripts.html :: footer-scripts" ></div>
+</body>
+</html>
