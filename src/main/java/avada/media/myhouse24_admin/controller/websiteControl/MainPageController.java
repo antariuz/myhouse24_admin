@@ -1,7 +1,6 @@
 package avada.media.myhouse24_admin.controller.websiteControl;
 
-import avada.media.myhouse24_admin.model.website.MainPageModel;
-import avada.media.myhouse24_admin.repo.website.ContactsRepo;
+import avada.media.myhouse24_admin.model.website.pages.MainPageModel;
 import avada.media.myhouse24_admin.repo.website.MainPageModelRepo;
 import avada.media.myhouse24_admin.repo.website.NextToUsRepo;
 import avada.media.myhouse24_admin.service.impl.MainPageAdminServiceImpl;
@@ -23,7 +22,6 @@ public class MainPageController {
 
     private final MainPageModelRepo mainPageModelRepo;
     private final NextToUsRepo nextToUsRepo;
-    private final ContactsRepo contactsRepo;
     private  final MainPageAdminServiceImpl mainPageAdminService;
 
 

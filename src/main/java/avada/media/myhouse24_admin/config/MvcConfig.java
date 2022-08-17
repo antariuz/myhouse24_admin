@@ -12,13 +12,32 @@ public class MvcConfig implements WebMvcConfigurer {
     //@Value("${upload}")
     private String slideUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/mainPageSlides";
     private String nextToUsImageUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/mainPageNextToUsImages";
+    private String directorPhotoUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/photoDirector";
+    private String photoAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/photoAboutUs";
+    private String additionalPhotoAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/addPhotoAboutUs";
+    private String documentAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/docsAboutUs";
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("classpath:/js/");
+        registry.addResourceHandler("/blocks/**")
+                .addResourceLocations("classpath:/blocks/");
         registry.addResourceHandler("/main-page-slide/**")
                 .addResourceLocations("file://" + slideUploadPath + "/");
         registry.addResourceHandler("/main-page-next-to-us/**")
                 .addResourceLocations("file://" + nextToUsImageUploadPath + "/");
+        registry.addResourceHandler("/director-photo/**")
+                .addResourceLocations("file://" + directorPhotoUploadPath + "/");
+        registry.addResourceHandler("/photo-about-us/**")
+                .addResourceLocations("file://" + photoAboutUsUploadPath + "/");
+        registry.addResourceHandler("/additional-photo-about-us/**")
+                .addResourceLocations("file://" + additionalPhotoAboutUsUploadPath + "/");
+        registry.addResourceHandler("/document-about-us/**")
+                .addResourceLocations("file://" + documentAboutUsUploadPath + "/");
 
     }
 

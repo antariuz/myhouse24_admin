@@ -1,6 +1,6 @@
 package avada.media.myhouse24_admin.repo.website;
 
-import avada.media.myhouse24_admin.model.website.PhotoAboutUs;
+import avada.media.myhouse24_admin.model.website.pages.PhotoAboutUs;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
