@@ -1,0 +1,8 @@
+.custom-file-input ~ .custom-file-label::after {
+    content: "Выберите файл";
+}
+
+.img-fluid{
+    max-height: 300px;
+    max-width: 100%;
+}

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org" lang="en">
+      xmlns:th="http://www.thymeleaf.org" lang="ru">
 
 <!-- head -->
 <th:block th:replace="~{template/head}"></th:block>
@@ -31,5 +31,7 @@
 </div>
 <!-- js -->
 <th:block th:replace="template/js"></th:block>
+<!-- extra-js-->
+<th:block layout:fragment="js"></th:block>
 </body>
 </html>

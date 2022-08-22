@@ -1,19 +1,24 @@
 package avada.media.myhouse24_admin.model.website.pages;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
+import avada.media.myhouse24_admin.model.website.extra.Seo;
+import avada.media.myhouse24_admin.model.website.extra.WebService;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
 @Data
 public class WebServices extends MappedEntity {
 
-    //  Seo
-    private String seoTitle;
-    private String seoDescription;
-    private String seoKeywords;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "web_services_id")
+    private List<WebService> webServiceList = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Seo seo;
 
 }

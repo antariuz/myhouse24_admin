@@ -38,8 +38,8 @@
                                            th:field="${webFeedback.title}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="summernote">Краткий текст</label>
-                                    <textarea id="summernote" placeholder="Текст сообщения"
+                                    <label for="textarea">Краткий текст</label>
+                                    <textarea class="summernote" id="textarea" placeholder="Текст сообщения"
                                               th:field="${webFeedback.description}"></textarea>
                                 </div>
                                 <div class="form-group">
@@ -99,17 +99,17 @@
                                 <div class="form-group">
                                     <label for="seoTitle">Title</label>
                                     <input type="text" class="form-control" id="seoTitle"
-                                           th:field="${webFeedback.seoTitle}">
+                                           th:field="${webFeedback.seo.title}">
                                 </div>
                                 <div class="form-group">
                                     <label for="seoDescription">Description</label>
-                                    <input type="text" class="form-control" id="seoDescription"
-                                           th:field="${webFeedback.seoDescription}">
+                                    <textarea class="form-control" rows="5" id="seoDescription"
+                                              th:field="${webFeedback.seo.description}"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="seoKeywords">Keywords</label>
-                                    <input type="text" class="form-control" id="seoKeywords"
-                                           th:field="${webFeedback.seoKeywords}">
+                                    <textarea class="form-control" rows="5" id="seoKeywords"
+                                              th:field="${webFeedback.seo.keywords}"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -127,6 +127,32 @@
         </div>
     </div>
 
+</th:block>
+
+<th:block layout:fragment="js">
+    <!-- summernote init -->
+    <script type="application/javascript">
+        $('.summernote').summernote({
+            lang: 'ru-RU',
+            minHeight: 156,
+            maxHeight: 200,
+            inheritPlaceholder: true,
+            styleTags: [
+                'p',
+                {title: 'Заголовок 1', tag: 'h1', className: 'Заголовок 1', value: 'h1'},
+                {title: 'Заголовок 2', tag: 'h2', className: 'Заголовок 2', value: 'h2'},
+                {title: 'Заголовок 3', tag: 'h3', className: 'Заголовок 3', value: 'h3'},
+                {title: 'Заголовок 4', tag: 'h4', className: 'Заголовок 4', value: 'h4'},
+                {title: 'Заголовок 5', tag: 'h5', className: 'Заголовок 5', value: 'h5'},
+                {title: 'Заголовок 6', tag: 'h6', className: 'Заголовок 6', value: 'h6'},
+            ],
+            toolbar: [
+                ['size', ['style']],
+                ['style', ['bold', 'italic', 'underline']],
+                ['list', ['ul', 'ol', 'paragraph']],
+            ]
+        });
+    </script>
 </th:block>
 
 </html>

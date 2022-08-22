@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.w3.org/1999/html"
       layout:decorate="~{template/index.html}" lang="ru">
 
 <th:block layout:fragment="breadcrumbs">
@@ -21,25 +21,339 @@
 
     <div class="row mt-2">
         <div class="col-12">
-            <div class="card card-outline card-secondary">
-                <div class="card-header">
-                    <h3 class="card-title">Редактирование страницы "Услуги"</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <p class="border-bottom">Услуги</p>
+            <form method="POST" enctype="multipart/form-data" id="webServicesForm">
+                <div class="card card-outline card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">Редактирование страницы "Услуги"</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="border-bottom">Услуги</p>
+                            </div>
+                        </div>
+                        <div class="row" id="form-webservice-rows"></div> <!--          each             -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Настройки SEO</h4>
+                                <input type="hidden" name="seoId" id="seoId">
+                                <div class="form-group">
+                                    <label for="seoTitle">Title</label>
+                                    <input type="text" class="form-control" id="seoTitle" name="seoTitle">
+                                </div>
+                                <div class="form-group">
+                                    <label for="seoDescription">Description</label>
+                                    <textarea class="form-control" rows="5" id="seoDescription"
+                                              name="seoDescription"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seoKeywords">Keywords</label>
+                                    <textarea class="form-control" rows="5" id="seoKeywords"
+                                              name="seoKeywords"></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-4">
-                            In work...
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/website-control/web-services">Отменить</a>
+                                <a class="btn btn-info" id="addWebServiceFormButton">Добавить услугу</a>
+                                <button class="btn btn-success">Сохранить</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
 </th:block>
+
+<th:block layout:fragment="js">
+
+    <script type="application/javascript">
+
+        function init() {
+            bsCustomFileInput.init();
+            summernoteInit();
+        }
+
+        function summernoteInit() {
+            $('.summernote').summernote({
+                lang: 'ru-RU',
+                minHeight: 156,
+                maxHeight: 200,
+                inheritPlaceholder: true,
+                styleTags: [
+                    'p',
+                    {title: 'Заголовок 1', tag: 'h1', className: 'Заголовок 1', value: 'h1'},
+                    {title: 'Заголовок 2', tag: 'h2', className: 'Заголовок 2', value: 'h2'},
+                    {title: 'Заголовок 3', tag: 'h3', className: 'Заголовок 3', value: 'h3'},
+                    {title: 'Заголовок 4', tag: 'h4', className: 'Заголовок 4', value: 'h4'},
+                    {title: 'Заголовок 5', tag: 'h5', className: 'Заголовок 5', value: 'h5'},
+                    {title: 'Заголовок 6', tag: 'h6', className: 'Заголовок 6', value: 'h6'},
+                ],
+                toolbar: [
+                    ['size', ['style']],
+                    ['style', ['bold', 'italic', 'underline']],
+                    ['list', ['ul', 'ol', 'paragraph']],
+                ]
+            });
+        }
+
+        $('#addWebServiceFormButton').click(function () {
+            myLength++;
+            $('#form-webservice-rows').append(
+                '<div class="col-4 form-webservice">' +
+                '   <h4>Услуга ' + myLength + '<a type="button" class="float-right text-red remove-btn"><i class="fa-solid fa-trash-can"></i></a></h4>' +
+                '   <img src="/img/services-empty.jpg" alt="" class="img-fluid">' +
+                '   <input type="hidden" name="id">' +
+                '   <div class="form-group">' +
+                '       <label for="imageUpload">Рекомендуемый размер: (650x300)</label>' +
+                '       <div class="input-group">' +
+                '           <div class="custom-file">' +
+                '               <input type="file" class="custom-file-input" id="imageUpload-' + myLength + '">' +
+                '               <label class="custom-file-label" for="imageUpload-' + myLength + '">Файл не выбран</label>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>' +
+                '   <div class="form-group">' +
+                '       <label for="websiteservice-' + myLength + '-title">Название услуги</label>' +
+                '       <input name="title" type="text" id="websiteservice-' + myLength + '-title" class="form-control webservice-title">' +
+                '   </div>' +
+                '       <div class="form-group">' +
+                '           <label for="summernote">Описание услуги</label>' +
+                '           <textarea name="description" class="summernote webservice-description" placeholder="Текст описания"></textarea>' +
+                '       </div>' +
+                '   </div>' +
+                '</div>'
+            );
+            init();
+        });
+
+        function swalAction(title) {
+            Swal.fire({
+                icon: 'success',
+                title: title,
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
+
+        function beforeDelete(callback) {
+            Swal.fire({
+                title: 'Вы хотите удалить?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Да',
+                cancelButtonText: "Нет"
+            }).then((confirmed) => {
+                callback(confirmed && confirmed.value === true);
+            });
+        }
+
+        $(document).on('click', '.remove-btn', function () {
+            let id = $(this).parents('.form-webservice').find('.webservice-id').val();
+            let data = {};
+            data.id = $(this).parents('.form-webservice').find('.webservice-id').val();
+            console.log(JSON.stringify(data));
+            console.log(id);
+            if (id === undefined) {
+                myLength--;
+                $(this).parents('.form-webservice').remove();
+                swalAction('Успешно удалено');
+            } else {
+                beforeDelete(function (confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: 'web-services/' + id + '/delete',
+                            success: function () {
+                                getAllWebServices();
+                                swalAction('Успешно удалено');
+                            },
+                            error: function (error) {
+                                console.log('Issue with deleting webService, which id is : ' + id + '\nError: ' + error);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        $(document).on('change', '.custom-file-input', function () {
+            $(this).parents('.form-webservice').find('.img-fluid')[0].src = URL.createObjectURL(event.target.files[0]);
+        });
+
+    </script>
+
+    <!-- ajax   -->
+    <script type="application/javascript">
+        let myLength = 0;
+
+        $(document).ready(function () {
+            getAllWebServices();
+            seoDataInit();
+        });
+
+        $("#webServicesForm").on("submit", function (e) {
+            e.preventDefault();
+
+            let seo = {};
+            seo.id = $('#seoId').val();
+            seo.title = $('#seoTitle').val();
+            seo.description = $('#seoDescription').val();
+            seo.keywords = $('#seoKeywords').val();
+
+            $.ajax({
+                url: 'web-services/seoUpdate',
+                method: 'POST',
+                data: JSON.stringify(seo),
+                contentType: "application/json",
+                dataType: 'json',
+                success: function () {
+                    seoDataInit();
+                }
+            });
+
+            console.log('outside form-webservice.each')
+            $('.form-webservice').each(function (index, element) {
+                console.log('inside form-webservice.each')
+                console.log(index);
+                console.log(element);
+
+                let formData = new FormData();
+
+                let webService = {};
+                webService.id = $(element).find('.webservice-id').val();
+                webService.title = $(element).find('.webservice-title').val();
+                webService.description = $(element).find('.webservice-description').val();
+                const webServiceJSONBlob = new Blob([JSON.stringify(webService)], {
+                    type: 'application/json'
+                });
+
+                let image = $(element).find("input[type='file']")[0].files[0];
+
+                formData.append('webService', webServiceJSONBlob);
+                formData.append('image', image);
+
+                $.ajax({
+                    url: 'web-services/save',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function () {
+                        getAllWebServices();
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                })
+
+            });
+            swalAction('Успешно сохранено');
+        });
+
+        //  Deprecated
+        function addWebServices() {
+            let webServiceList = [];
+            $('.form-webservice').each(function (index, element) {
+                let webService = {};
+                webService.id = $(element).find('.webservice-id').val();
+                webService.image = $(element).find('.img-fluid').val();
+                webService.title = $(element).find('.webservice-title').val();
+                webService.description = $(element).find('.webservice-description').val();
+                webServiceList.push(webService);
+            })
+            $.ajax({
+                url: 'web-services/add',
+                method: 'POST',
+                data: JSON.stringify(webServiceList),
+                contentType: "application/json",
+                success: function () {
+                    getAllWebServices();
+                    swalAction('Успешно сохранено');
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            })
+        }
+
+        function seoDataInit() {
+            $.ajax({
+                url: 'web-services/getSeo',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#seoId').val(data.id);
+                    $('#seoTitle').val(data.title);
+                    $('#seoDescription').val(data.description);
+                    $('#seoKeywords').val(data.keywords);
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        }
+
+
+        function getAllWebServices() {
+            $.ajax({
+                url: 'web-services/get-all',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    let place = $('div .row #form-webservice-rows');
+                    place.empty();
+                    $(data).each(function (index, element) {
+                        myLength = $(data).length;
+                        index++;
+                        let image = '/uploaded/webServices/' + element.image;
+                        if (element.image === null) {
+                            image = '/img/services-empty.jpg';
+                        }
+                        place.append(
+                            '<div class="col-4 form-webservice">' +
+                            '   <h4>Услуга ' + index + '<a type="button" class="float-right text-red remove-btn"><i class="fa-solid fa-trash-can"></i></a></h4>' +
+                            '   <img src="' + image + '" alt="" id="' + index + '" class="img-fluid">' +
+                            '   <input type="hidden" class="webservice-id" name="id" value="' + element.id + '">' +
+                            '   <div class="form-group">' +
+                            '       <label for="imageUpload">Рекомендуемый размер: (650x300)</label>' +
+                            '       <div class="input-group">' +
+                            '           <div class="custom-file">' +
+                            '               <input type="file" name="image" class="custom-file-input" id="imageUpload-' + index + '">' +
+                            '               <label class="custom-file-label" for="imageUpload-' + index + '">Файл не выбран</label>' +
+                            '           </div>' +
+                            '       </div>' +
+                            '   </div>' +
+                            '   <div class="form-group">' +
+                            '       <label for="websiteservice-' + index + '-title">Название услуги</label>' +
+                            '       <input name="title" type="text" id="websiteservice-' + index + '-title" class="form-control webservice-title" value="' + element.title + '">' +
+                            '   </div>' +
+                            '       <div class="form-group">' +
+                            '           <label for="summernote">Описание услуги</label>' +
+                            '           <textarea name="description" class="summernote webservice-description" placeholder="Текст описания">' + element.description + '</textarea>' +
+                            '       </div>' +
+                            '   </div>' +
+                            '</div>'
+                        );
+                        init();
+                    })
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        }
+    </script>
+
+</th:block>
+
 </html>

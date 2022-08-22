@@ -1,10 +1,11 @@
 package avada.media.myhouse24_admin.model.website.pages;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
+import avada.media.myhouse24_admin.model.website.extra.Seo;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 public class WebFeedback extends MappedEntity {
 
     private String title;
+    @Column(length = 10485760)
     private String description;
     private String link;
 
@@ -23,11 +25,10 @@ public class WebFeedback extends MappedEntity {
     private String email;
 
     //  Карта
+    @Column(length = 10485760)
     private String mapCode;
 
-    //  Seo
-    private String seoTitle;
-    private String seoDescription;
-    private String seoKeywords;
+    @OneToOne
+    private Seo seo;
 
 }
