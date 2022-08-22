@@ -15,7 +15,8 @@ import javax.persistence.Table;
 public class Service extends MappedEntity {
 
     private String name;
-    private boolean showInCounters;
+    private boolean showInCounters = false;
+    private boolean used = false;
     @OneToOne
     private Unit unit;
 

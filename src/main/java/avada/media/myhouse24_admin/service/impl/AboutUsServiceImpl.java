@@ -28,10 +28,10 @@ public class AboutUsServiceImpl implements AboutUsServise {
     private final AdditionalPhotoAboutUsRepo additionalPhotoAboutUsRepo;
     private final MyDocumentRepo myDocumentRepo;
 
-    private String directorPhotoUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/photoDirector";
-    private String photoAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/photoAboutUs";
-    private String additionalPhotoAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/addPhotoAboutUs";
-    private String documentAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/docsAboutUs";
+    private String directorPhotoUploadPath = "/home/sazbserg/uploads/photoDirector";
+    private String photoAboutUsUploadPath = "/home/sazbserg/uploads/photoAboutUs";
+    private String additionalPhotoAboutUsUploadPath = "/home/sazbserg/uploads/addPhotoAboutUs";
+    private String documentAboutUsUploadPath = "/home/sazbserg/uploads/docsAboutUs";
 
 
     @Override
@@ -57,10 +57,10 @@ public class AboutUsServiceImpl implements AboutUsServise {
         additionalPhotoAboutUs.setLink("init-photo.jpg");
         additionalPhotoAboutUsRepo.save(additionalPhotoAboutUs);
 
-     //   MyDocument myDocument = new MyDocument();
-      //  myDocument.setName("Публичный договор.");
-      //  myDocument.setLink("init-doc.pdf");
-      //  myDocumentRepo.save(myDocument);
+        MyDocument myDocument = new MyDocument();
+       // myDocument.setName("Публичный договор.");
+       // myDocument.setLink("init-doc.pdf");
+        myDocumentRepo.save(myDocument);
     }
 
     @Override

@@ -109,7 +109,7 @@
 
          <form method="post" th:action="@{about-us-admin/additional-photo-about-us}" enctype="multipart/form-data" id="fileUploadForm2">
              <div class="form-group text-center additional-photo-gallery" style="display: inline-block" th:each="addPhoto : ${additionalPhotoAboutUsListAttr}">
-                 <img id="additional-photos-about-us-img" alt="" th:src="@{'/additional-photo-about-us/'+${addPhoto.link}}" class="margin-bottom-15"  width="250px" height="150px">
+                 <img id="additional-photos-about-us-img" alt=""  th:src="@{'/additional-photo-about-us/'+${addPhoto.link}}" class="margin-bottom-15"  width="250px" height="150px">
                  <div class="form-group margin-bottom-15">
                      <a th:href="@{'/about-us-admin/additional-photo/remove/'+ ${addPhoto.id}}" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
                  </div>
@@ -152,7 +152,7 @@
                       </svg>
                       <label class="control-label" for="title-doc" style="display: inline-block; margin-left: 1%">PDF, JPG (макс. размер 20 Mb)<br>
                       <input form="main-form-id" type="file" class="imageUpload" id="title-doc" name="link" accept="/*"></label>
-                      <a href="/about-us-admin/delete-document/id" class="pull-right text-red" style="display: inline-block; margin-left: 53.25%; "><i class="fa fa-trash"></i></a>
+                      <a href="#" class="pull-right text-red" style="display: inline-block; margin-left: 53.25%; "><i class="fa fa-trash"></i></a>
                   </div>
                   <div class="form-group">
                       <label for="doc-id">Название документа</label><br>

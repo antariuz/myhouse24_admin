@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("website-control/main-page-admin")
 public class MainPageController {
 
     private final MainPageModelRepo mainPageModelRepo;
@@ -25,10 +25,10 @@ public class MainPageController {
     private  final MainPageAdminServiceImpl mainPageAdminService;
 
 
-    @GetMapping("main-page-admin") //"website-control/main-page-admin"
+    @GetMapping({"/", ""})
     public ModelAndView showWebSiteMainPageAdmin() {
         ModelAndView modelAndView = new ModelAndView("pages/website-control/main-page-admin");
-        ModelAndView modelAndViewRedirect = new ModelAndView("redirect:/main-page-admin");
+        ModelAndView modelAndViewRedirect = new ModelAndView("redirect:/website-control/main-page-admin");
         if (mainPageModelRepo.findAll().isEmpty()){
             mainPageAdminService.mainPageInit(); // инициализация главной страницы с дефолтными данными
             return modelAndViewRedirect;
@@ -53,7 +53,7 @@ public class MainPageController {
 
 
 
-    @PostMapping("main-page-admin")
+    @PostMapping({"/", ""})
     public String postSlide(@RequestParam("slide1") MultipartFile slide1,
                             @RequestParam("slide2") MultipartFile slide2,
                             @RequestParam("slide3") MultipartFile slide3,
@@ -87,6 +87,6 @@ public class MainPageController {
                nextToUsImageLink3, nextToUsTitle3, nextToUsText3, nextToUsImageLink4, nextToUsTitle4, nextToUsText4,
                nextToUsImageLink5, nextToUsTitle5, nextToUsText5, nextToUsImageLink6, nextToUsTitle6, nextToUsText6,
                seoTitle, seoDescription, seoKeywords);
-        return "redirect:/main-page-admin";
+        return "redirect:/website-control/main-page-admin";
     }
 }

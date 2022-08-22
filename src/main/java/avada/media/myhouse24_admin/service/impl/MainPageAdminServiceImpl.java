@@ -23,8 +23,8 @@ import java.util.UUID;
 public class MainPageAdminServiceImpl implements MainPageAdminService {
 
 
-    private String slideUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/mainPageSlides";
-    private String nextToUsImageUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/mainPageNextToUsImages";
+    private String slideUploadPath = "/home/sazbserg/uploads/mainPageSlides";
+    private String nextToUsImageUploadPath = "/home/sazbserg/uploads/mainPageNextToUsImages";
 
 
 

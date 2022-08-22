@@ -1,0 +1,87 @@
+    <section class="content">
+
+        <div class="box">
+            <div class="box-body">
+                <div class="col-xs-12 col-lg-7">
+                   <!-- <div class="tabs">
+-->
+                <form method="post" th:action="@{system-tuning/admin-service}">
+
+                                <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
+                                <label for="tab-btn-1">Услуги</label>
+                                <input type="radio" name="tab-btn" id="tab-btn-2" value="">
+                                <label for="tab-btn-2">Единицы измерения</label>
+
+                                <div id="content-1">
+                                    <div id="form-service-rows">
+
+                                        <div id="form-service-0" class="row form-service">
+                                            <div class="col-xs-12 col-sm-7">
+                                                <div class="form-group">
+                                                <label for="service-0-name">Услуга</label>
+                                                <input type="text" id="service-0-name" class="form-control" name="Service[0][name]">
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-5">
+                                                <div class="form-group">
+                                                    <label for="service-0-service_unit_id">Ед. изм.</label>
+                                                    <div class="input-group">
+                                                        <select id="service-0-service_unit_id" class="form-control" name="Service[0][service_unit_id]">
+                                                            <option value="">Выберите...</option>
+                                                            <option value="2">м31234</option>
+                                                            <option value="3">кв.м.к</option>
+                                                        </select>
+                                                        <span class="input-group-btn">
+                    <button type="button" class="btn btn-default form-row-remove-btn disabled" no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно."><i class="fa fa-trash"></i></button>                </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <input type="hidden" name="Service[0][is_counter]" value="0"><label><input type="checkbox" id="service-0-is_counter" name="Service[0][is_counter]" value="1" checked=""> Показывать в счетчиках</label>
+                                                <div style="margin-bottom: 16px;"></div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-default btn-hover-change pull-left form-row-add-service-btn">Добавить</button>
+                                    </div>
+                                </div>
+                                </form>
+                                <form id="test-form" method="post" th:action="@{/test-units}" onsubmit="myFunction(this)" name="nameForm">
+                             <!--   <div id="content-2">
+                                    <div class="tab-pane clearfix " id="tab_serviceunit">
+                                        <div id="form-serviceunit-rows"  th:each="el : ${unitAttr}">
+
+                                            <div id="form-serviceunit-0" class="row form-serviceunit" >
+                                                <div class="col-xs-12">
+                                                    <input type="hidden" id="serviceunit-0-id" name="ServiceUnit[0][id]" value="2">
+                                                    <div class="form-group">
+                                                    <label for="serviceunit-0-name">Ед. изм.</label>
+                                                    <div class="input-group">
+                                                        <input type="text" id="serviceunit-0-name" class="form-control" name="ServiceUnit[0][name]" th:value="${el.name}">
+                                                        <span class="input-group-btn">
+                    <button type="button" class="btn btn-default form-row-remove-btn disabled"><i class="fa fa-trash"></i></button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+-->                         <button id="raz" type="button" class="btn btn-default  pull-left">Добавить</button>
+
+
+
+                </div>
+                    <div class="row" style="margin-top: 100px">
+                        <div class="col-xs-12 text-center">
+                            <div class="form-group">
+                                <a href="/system-tuning/admin-service" class="btn btn-default">Отменить</a>
+                                <button type="submit" class="btn btn-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>

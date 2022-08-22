@@ -10,12 +10,12 @@ public class MvcConfig implements WebMvcConfigurer {
 
 
     //@Value("${upload}")
-    private String slideUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/mainPageSlides";
-    private String nextToUsImageUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/mainPageNextToUsImages";
-    private String directorPhotoUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/photoDirector";
-    private String photoAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/photoAboutUs";
-    private String additionalPhotoAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/addPhotoAboutUs";
-    private String documentAboutUsUploadPath = "/home/sazbserg/IdeaProjects/MyHouse24/Admin/uploads/docsAboutUs";
+    private String slideUploadPath = "/home/sazbserg/uploads/mainPageSlides";
+    private String nextToUsImageUploadPath = "/home/sazbserg/uploads/mainPageNextToUsImages";
+    private String directorPhotoUploadPath = "/home/sazbserg/uploads/photoDirector";
+    private String photoAboutUsUploadPath = "/home/sazbserg/uploads/photoAboutUs";
+    private String additionalPhotoAboutUsUploadPath = "/home/sazbserg/uploads/addPhotoAboutUs";
+    private String documentAboutUsUploadPath = "/home/sazbserg/uploads/docsAboutUs";
 
 
     @Override
