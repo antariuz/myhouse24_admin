@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>О нас</title>
+    <title>Редактирование страницы "О нас"</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -13,12 +13,15 @@
     <!-- Bootstrap-switch -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
-    <link href="/css/myCss.css"  rel="stylesheet" type="text/css">
+    <!-- summernote WYSIWYG editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link href="/css/myCss.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <header th:insert="blocks/header.html :: header"></header>
 <sidebar th:insert="blocks/sidebar.html :: sidebar" style="position: fixed; top: 0;"></sidebar>
+
 
 <div class="content-header border-bottom">
     <div class="container-fluid">
@@ -36,32 +39,163 @@
     </div>
 </div>
 
-
-<div  style="width: 85%; margin-left: 14%; border-style: groove; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-
-    <br>
+<div  style="width: 85%; margin-left: 14%; border-style: groove; box-shadow: 0 0 10px rgba(0,0,0,0.5);" th:object="${aboutUsAttr}"><br>
     <div class="box-header with-border">
-        <div style="display: inline-block; margin-left: 2.5%"><h4 class="box-title">Редактирование страницы "О нас"</h4></div>
+        <div style="display: inline-block; margin-left: 2.5%"><h5 class="box-title">Редактирование страницы "О нас"</h5></div>
+    </div><hr>
+
+    <h4 class="page-header" style="margin-left: 2.5%">Информация</h4><hr><br>
+
+<form method="post" enctype="multipart/form-data" id="main-form-id" >
+    <div class="row" style="margin-left: 2.5%">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="title" class="control-label">Заголовок</label>
+                <input class="form-control" th:value="${aboutUsAttr.title}" type="text" id="title" name="title">
+            </div><br>
+
+             <div class="form-group">
+                <label class="control-label" for="summernote1">Краткий текст</label>
+                <textarea id="summernote1" class="summernote" th:text="${aboutUsAttr.description}"  name="description"></textarea>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h5>Фото директора</h5>
+            <img id="directors-photo-image" alt="" th:src="${aboutUsAttr.directorsPhoto == 'init-director.jpg'} ? '/img/'+ ${aboutUsAttr.directorsPhoto} :  '/director-photo/'+ ${aboutUsAttr.directorsPhoto}" width="250px", height="300px">
+          <div class="form-group">
+                 <label class="control-label" for="directors-photo">Рекомендуемый размер: (250x310)</label>
+                 <input type="file" id="directors-photo" name="directorsPhoto" accept="image/*">
+         </div>
+        </div>
     </div>
-
-    <hr>
-    <h4 class="page-header" style="margin-left: 2.5%">Информация</h4>
-    <hr>
-
-
-
-<form enctype="multipart/form-data">
-    <input type="file" name="doc" accept="*/*">
-    <input type="submit" value="save">
 </form>
 
+    <br><h4 class="page-header" style="margin-left: 2.5%">Фотогалерея</h4><hr><br>
 
+    <div class="row" style="margin-left: 2.5%">
+        <form method="post" th:action="@{about-us-admin/photo-about-us}" enctype="multipart/form-data" id="fileUploadForm1">
+            <div class="form-group photo-gallery text-center" style="display: inline-block" th:each="photo : ${photoAboutUsAttr}">
+                <img id="photos-about-us-img" alt="" th:src="@{'/photo-about-us/'+${photo.link}}" class="margin-bottom-15" width="250px" height="150px">
+                <div class="form-group margin-bottom-15" name="ancer" id="anc">
+                    <a th:href="@{'/about-us-admin/photo/remove/'+ ${photo.id}}" id="remove-photo" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                      <label class="control-label" for="photo-about-us">Рекомендуемый размер: (1200x1200)</label><br>
+                      <input type="file" multiple id="photo-about-us" class="form-control" name="photosAboutUs" accept="image/*">
+                </div>
+           </div>
+        </form>
+    </div>
 
+    <br><h4 class="page-header" style="margin-left: 2.5%">Дополнительная информация</h4><hr><br>
 
+    <div class="col-xs-12" style="margin-left: 2.5%; width: 95%">
+    <fieldset>
+        <div class="form-group">
+            <label for="add-info-title" class="control-label">Заголовок</label>
+            <input class="form-control" form="main-form-id" type="text" id="add-info-title" th:value="${aboutUsAttr.addInfoTitle}" name="addInfoTitle">
+        </div><br>
+        <div class="form-group">
+            <label class="control-label" for="summernote2">Краткий текст</label>
+            <textarea class="summernote" form="main-form-id" id="summernote2" th:text="${aboutUsAttr.addInfoDescription}" name="addInfoDescription"></textarea>
+        </div>
+    </fieldset>
+    </div>
 
+    <br><h4 class="page-header" style="margin-left: 2.5%">Дополнительная фотогалерея</h4><hr><br>
+    <div class="row" style="margin-left: 2.5%">
 
-</div>
-<hr>
+         <form method="post" th:action="@{about-us-admin/additional-photo-about-us}" enctype="multipart/form-data" id="fileUploadForm2">
+             <div class="form-group text-center additional-photo-gallery" style="display: inline-block" th:each="addPhoto : ${additionalPhotoAboutUsListAttr}">
+                 <img id="additional-photos-about-us-img" alt="" th:src="@{'/additional-photo-about-us/'+${addPhoto.link}}" class="margin-bottom-15"  width="250px" height="150px">
+                 <div class="form-group margin-bottom-15">
+                     <a th:href="@{'/about-us-admin/additional-photo/remove/'+ ${addPhoto.id}}" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                 </div>
+             </div>
+             <div class="col-xs-12">
+                 <div class="form-group">
+                     <label class="control-label" for="additional-photo">Рекомендуемый размер: (1200x1200)</label><br>
+                     <input type="file" multiple id="additional-photo" class="form-control" name="additionalPhotoAboutUs" accept="image/*">
+                 </div>
+             </div>
+         </form>
+    </div>
+
+    <br><h4 class="page-header" style="margin-left: 2.5%">Документы</h4><hr>
+
+    <div class="row site-about-documents">
+
+      <div class="col-xs-12 col-md-6"  style="margin-left: 2.5%">
+          <div>
+               <div class="form-websitedocument" th:each="docs : ${myDocumentsAttr}">
+                   <div>
+                       <svg style="display: inline-block; margin-bottom: 2.5%" xmlns="http://www.w3.org/2000/svg" width="32" height="42" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
+                           <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"></path>
+                       </svg>
+                       <label class="control-label" for="title-doc" style="display: inline-block; margin-left: 1%">PDF, JPG (макс. размер 20 Mb)<br>
+                           <input type="file" class="imageUpload" accept="/*"></label>
+                       <a th:href="@{'about-us-admin/document-about-us/remove/'+ ${docs.id}}" class="pull-right text-red" style="display: inline-block; margin-left: 53.25%; "><i class="fa fa-trash"></i></a>
+                   </div>
+                   <div>
+                       <label for="doc-id">Название документа</label><br>
+                       <input form="main-form-id" type="text" class="form-control" th:value="${docs.name}">
+                   </div><br>
+               </div>
+          </div>
+            <div id="websitedocument" hidden="true">
+              <div id="form-websitedocument-0" class="form-websitedocument">
+                  <div>
+                      <svg style="display: inline-block; margin-bottom: 2.5%" xmlns="http://www.w3.org/2000/svg" width="32" height="42" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
+                          <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"></path>
+                      </svg>
+                      <label class="control-label" for="title-doc" style="display: inline-block; margin-left: 1%">PDF, JPG (макс. размер 20 Mb)<br>
+                      <input form="main-form-id" type="file" class="imageUpload" id="title-doc" name="link" accept="/*"></label>
+                      <a href="/about-us-admin/delete-document/id" class="pull-right text-red" style="display: inline-block; margin-left: 53.25%; "><i class="fa fa-trash"></i></a>
+                  </div>
+                  <div class="form-group">
+                      <label for="doc-id">Название документа</label><br>
+                      <input form="main-form-id" type="text" name="name" class="form-control" id="doc-id">
+                  </div>
+              </div>
+          </div>
+          <br>
+          <div class="btn-group">
+              <button type="button" class="btn btn-success margin-bottom-15 form-row-add-websitedocument-btn" id="doc-button">
+                  Добавить документ
+              </button>
+          </div>
+
+       </div>
+    </div>
+
+     <br><br><h4 class="page-header" style="margin-left: 2.5%">Настройки СЕО</h4><hr>
+
+  <fieldset style="margin-left: 2.5%; width: 95%">
+      <div class="form-group">
+          <label for="seo-title" class="control-label">Title</label>
+          <input  form="main-form-id" class="form-control" type="text" id="seo-title" th:value="${aboutUsAttr.seoTitle}" name="seoTitle">
+      </div><br>
+
+      <div class="form-group">
+          <label class="control-label" for="summernote3">Description</label>
+          <textarea  form="main-form-id" class="summernote" id="summernote3" th:text="${aboutUsAttr.seoDescription}" name="seoDescription"></textarea>
+      </div><br>
+
+      <div class="form-group">
+          <label class="control-label" for="summernote4">Keywords</label>
+          <textarea  form="main-form-id" class="summernote" id="summernote4" th:text="${aboutUsAttr.seoKeyWords}" name="seoKeyWords"></textarea>
+      </div><br>
+  </fieldset>
+
+  <div class="form-group" style="margin-left: 40%">
+      <a href="/about-us-admin" class="btn btn-dark">Отменить</a>
+      <button form="main-form-id" type="submit" class="btn btn-success">Сохранить</button>
+  </div><br>
+
+</div><hr>
+
 <footer th:insert="blocks/footer.html :: footer" style="margin-left: 40%"></footer>
 <div th:insert="blocks/footer-scripts.html :: footer-scripts" ></div>
 </body>

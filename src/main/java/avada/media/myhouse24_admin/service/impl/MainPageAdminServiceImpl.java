@@ -1,7 +1,7 @@
 package avada.media.myhouse24_admin.service.impl;
 
-import avada.media.myhouse24_admin.model.website.MainPageModel;
-import avada.media.myhouse24_admin.model.website.NextToUs;
+import avada.media.myhouse24_admin.model.website.pages.MainPageModel;
+import avada.media.myhouse24_admin.model.website.pages.NextToUs;
 import avada.media.myhouse24_admin.repo.website.MainPageModelRepo;
 import avada.media.myhouse24_admin.repo.website.NextToUsRepo;
 import avada.media.myhouse24_admin.service.MainPageAdminService;

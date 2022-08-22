@@ -1,6 +1,3 @@
-<!--<begin th:insert="blocks/begin.html :: begin"></begin>
--->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
@@ -15,9 +12,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
     <!-- Bootstrap-switch -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- summernote WYSIWYG editor -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link href="/css/myCss.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -31,7 +29,7 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right text-sm">
-                    <li class="breadcrumb-item"><a href="/static">
+                    <li class="breadcrumb-item"><a th:href="@{/main-page-admin}">
                         <i class="fa-solid fa-house"></i> Главная</a></li>
                     <!--<li class="breadcrumb-item active">Статистика</li>-->
                 </ol>
@@ -40,100 +38,89 @@
     </div>
 </div>
 
-
-<div  style="width: 85%; margin-left: 14%; border-style: groove; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-
-<br>
+<div  style="width: 85%; margin-left: 14%; border-style: groove; box-shadow: 0 0 10px rgba(0,0,0,0.5);"><br>
     <div class="box-header with-border">
-        <div style="display: inline-block; margin-left: 2.5%"><h4 class="box-title">Редактирование страницы "Главная"</h4></div>
+        <div style="display: inline-block; margin-left: 2.5%"><h5 class="box-title">Редактирование страницы "Главная"</h5></div>
         <div style="display: inline-block; margin-left: 57.5%; background-color: gainsboro">
             <a href="#" class="btn btn-default btn-sm updateSeoFiles">
                 <span class="hidden-xs">Обновить robots и sitemap</span>
             </a>
         </div>
-    </div>
+    </div><hr>
 
-    <hr>
-    <h4 class="page-header" style="margin-left: 2.5%">Слайдер</h4>
-    <hr>
+    <h4 class="page-header" style="margin-left: 2.5%">Слайдер</h4><hr>
 
-<form th:each="maimPageObjects : ${mainPageAttr}" method="post" enctype="multipart/form-data">
+    <form th:each="maimPageObjects : ${mainPageAttr}" method="post" enctype="multipart/form-data">
     <!--Слайд 1-->
     <div class="next2us">
         <h4 th:inline="text">Слайд 1</h4>
-        <img id="previewImage1" alt="Image" th:src="@{'/main-page-slide/'+ ${maimPageObjects.slide1}}" src="/img/dom1920.jpg" class="main-page-admin-img"> <!--th:src="@{'/main-page-slide/'+ ${el.link}}"-->
+        <img id="previewImage1" alt="Image" th:src="${maimPageObjects.slide1 == 'init-dom1.jpg'} ? '/img/'+ ${maimPageObjects.slide1} :  '/main-page-slide/'+ ${maimPageObjects.slide1}"  class="main-page-admin-img">
         <label class="control-label" for="slide1">Рекомендуемый размер: (1920x800)</label>
         <input type="file" name="slide1" id="slide1" accept="image/png, image/jpeg, image/gif, image/jpg">
     </div>
     <!--Слайд 2-->
     <div class="next2us">
         <h4 th:inline="text">Слайд 2</h4>
-        <img id="previewImage2" th:src="@{'/main-page-slide/'+ ${maimPageObjects.slide2}}" src="/img/dom1920.jpg" alt="Image" class="main-page-admin-img"> <!--th:src="@{'/main-page-slide/'+ ${el.link}}"-->
+        <img id="previewImage2"  th:src="${maimPageObjects.slide2 == 'init-dom2.jpg'} ? '/img/'+ ${maimPageObjects.slide2} :  '/main-page-slide/'+ ${maimPageObjects.slide2}"  alt="Image" class="main-page-admin-img">
         <label class="control-label" for="slide2">Рекомендуемый размер: (1920x800)</label>
         <input type="file" name="slide2" id="slide2" accept="image/png, image/jpeg, image/gif, image/jpg">
     </div>
     <!--Слайд 3-->
     <div  class="next2us">
         <h4 th:inline="text">Слайд 3</h4>
-        <img id="previewImage3" th:src="@{'/main-page-slide/'+ ${maimPageObjects.slide3}}" src="/img/dom1920.jpg" alt="Image" class="main-page-admin-img"> <!--th:src="@{'/main-page-slide/'+ ${el.link}}"-->
+        <img id="previewImage3" th:src="${maimPageObjects.slide3 == 'init-dom3.jpg'} ? '/img/'+ ${maimPageObjects.slide3} :  '/main-page-slide/'+ ${maimPageObjects.slide3}" alt="Image" class="main-page-admin-img">
         <label class="control-label" for="slide3">Рекомендуемый размер: (1920x800)</label>
         <input type="file" name="slide3" id="slide3" accept="image/png, image/jpeg, image/gif, image/jpg">
     </div>
 
-
     <br><br><br><br>
     <div class="row">
         <div>
-            <div class="form-group" style="margin-left: 2.5%; width: 95%">
-              <h3 class="page-header">Краткая информация</h3>
-                  <div>
-     <!-- title-->
-                      <label class="control-label" for="title">Заголовок</label>
-                      <input type="text" id="title" class="form-control" name="title" th:value="${maimPageObjects.title}">
-                  </div><br>
-    <!-- description-->
-
-            <div class="form-group">
-                <label class="control-label" for="summernote">Краткий текст</label>
-                <textarea id="summernote" class="summernote" name="description" placeholder="Текст сообщения" th:text="${maimPageObjects.description}"></textarea>
-            </div>
+              <div class="form-group" style="margin-left: 2.5%; width: 95%">
+                <h3 class="page-header">Краткая информация</h3>
+         <!-- title-->
+                    <div>
+                        <label class="control-label" for="title">Заголовок</label>
+                        <input type="text" id="title" class="form-control" name="title" th:value="${maimPageObjects.title}">
+                    </div><br>
+      <!-- description-->
+                 <div class="form-group">
+                     <label class="control-label" for="summernote">Краткий текст</label>
+                     <textarea id="summernote" class="summernote" name="description" placeholder="Текст сообщения" th:text="${maimPageObjects.description}"></textarea>
+                 </div>
+              </div>
+              <div class="form-group" style="margin-left: 2.5%">
+                  <input type="hidden" name="applicationLink"  th:value="${maimPageObjects.applicationLink} == false" value="false">
+                  <label><input type="checkbox" id="applicationLink" name="applicationLink" value="true" th:checked="${maimPageObjects.applicationLink}" checked> Показать ссылки на приложения</label>
+              <br><br><br>
+              <div>
+                 <h3 class="page-header">Рядом с нами</h3>
+              </div>
         </div>
-        <div class="form-group" style="margin-left: 2.5%">
-            <input type="hidden" name="applicationLink"  th:value="${maimPageObjects.applicationLink} == false" value="false">
-            <label><input type="checkbox" id="applicationLink" name="applicationLink" value="true" th:checked="${maimPageObjects.applicationLink}" checked> Показать ссылки на приложения</label>
-        <br><br><br>
-
-    <div>
-        <h3 class="page-header">Рядом с нами</h3>
-    </div>
-        </div>
-
-<!-- nextToUs blocks -->
-
-            <hr style="width: 95%; margin-left: 2.5%">
-   <div class="next2us" th:object="${nextToUsAttr1}">
+   <!-- nextToUs blocks -->
+        <hr style="width: 95%; margin-left: 2.5%">
+    <div class="next2us" th:object="${nextToUsAttr1}">
        <h4>Блок 1</h4>
  <!-- next to us imageLink -->
-        <img id="next-to-us-image-1" alt="Image" th:src="@{'/main-page-next-to-us/'+ ${nextToUsAttr1.imageLink}}" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
+        <img id="next-to-us-image-1" alt="Image" th:src="${nextToUsAttr1.imageLink == 'init-park.jpg'} ? '/img/'+ ${nextToUsAttr1.imageLink} :  '/main-page-next-to-us/'+ ${nextToUsAttr1.imageLink}"  class="main-page-admin-img">
         <div class="form-group">
             <label class="control-label" for="next-to-us-imageLink-1">Рекомендуемый размер: (1000x600)</label>
             <input type="file" id="next-to-us-imageLink-1" name="nextToUsImageLink1" accept="image/*">
-    </div>
-    <div class="form-group">
-        <label class="control-label" for="next-to-us-title-1">Заголовок блока</label>
-<!--  next to us title -->
-        <input type="text" id="next-to-us-title-1" class="form-control" name="nextToUsTitle1" th:value="${nextToUsAttr1.title}" value="">
-    </div>
+        </div>
+        <div class="form-group">
+   <!--  next to us title -->
+              <label class="control-label" for="next-to-us-title-1">Заголовок блока</label>
+              <input type="text" id="next-to-us-title-1" class="form-control" name="nextToUsTitle1" th:value="${nextToUsAttr1.title}" value="">
+        </div>
 <!--  next to us text -->
         <label class="control-label" for="next-to-us-text-1">Описание</label>
         <textarea id="next-to-us-text-1" class="form-control summernote" name="nextToUsText1" th:text="${nextToUsAttr1.text}"></textarea>
     </div>
 
-
     <div class="next2us" th:object="${nextToUsAttr2}">
         <h4>Блок 2</h4>
         <!-- next to us imageLink -->
-        <img id="next-to-us-image-2" alt="Image" th:src="@{'/main-page-next-to-us/'+ ${nextToUsAttr2.imageLink}}" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
+        <img id="next-to-us-image-2" alt="Image"  th:src="${nextToUsAttr2.imageLink == 'init-park.jpg'} ? '/img/'+ ${nextToUsAttr2.imageLink} :  '/main-page-next-to-us/'+ ${nextToUsAttr2.imageLink}" class="main-page-admin-img">
         <div class="form-group">
             <label class="control-label" for="next-to-us-imageLink-2">Рекомендуемый размер: (1000x600)</label>
             <input type="file" id="next-to-us-imageLink-2" name="nextToUsImageLink2" accept="image/*">
@@ -152,7 +139,7 @@
 <div class="next2us" th:object="${nextToUsAttr3}">
     <h4>Блок 3</h4>
     <!-- next to us imageLink -->
-    <img id="next-to-us-image-3" alt="Image" th:src="@{'/main-page-next-to-us/'+ ${nextToUsAttr3.imageLink}}" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg"  class="main-page-admin-img">
+    <img id="next-to-us-image-3" alt="Image"  th:src="${nextToUsAttr3.imageLink == 'init-park.jpg'} ? '/img/'+ ${nextToUsAttr3.imageLink} :  '/main-page-next-to-us/'+ ${nextToUsAttr3.imageLink}"  class="main-page-admin-img">
     <div class="form-group">
         <label class="control-label" for="next-to-us-imageLink-3">Рекомендуемый размер: (1000x600)</label>
         <input type="file" id="next-to-us-imageLink-3" name="nextToUsImageLink3" accept="image/*">
@@ -172,7 +159,7 @@
 <div class="next2us" th:object="${nextToUsAttr4}">
     <h4>Блок 4</h4>
     <!-- next to us imageLink -->
-    <img id="next-to-us-image-4" alt="Image" th:src="@{'/main-page-next-to-us/'+ ${nextToUsAttr4.imageLink}}" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
+    <img id="next-to-us-image-4" alt="Image"  th:src="${nextToUsAttr4.imageLink == 'init-park.jpg'} ? '/img/'+ ${nextToUsAttr4.imageLink} :  '/main-page-next-to-us/'+ ${nextToUsAttr4.imageLink}" class="main-page-admin-img">
     <div class="form-group">
         <label class="control-label" for="next-to-us-imageLink-4">Рекомендуемый размер: (1000x600)</label>
         <input type="file" id="next-to-us-imageLink-4" name="nextToUsImageLink4" accept="image/*">
@@ -187,11 +174,10 @@
     <textarea id="next-to-us-text-4" th:text="${nextToUsAttr4.text}" class="form-control summernote" name="nextToUsText4"></textarea>
 </div>
 
-
 <div class="next2us" th:object="${nextToUsAttr5}">
     <h4>Блок 5</h4>
     <!-- next to us imageLink -->
-    <img id="next-to-us-image-5" alt="Image" th:src="@{'/main-page-next-to-us/'+ ${nextToUsAttr5.imageLink}}" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg" class="main-page-admin-img">
+    <img id="next-to-us-image-5" alt="Image"  th:src="${nextToUsAttr5.imageLink == 'init-park.jpg'} ? '/img/'+ ${nextToUsAttr5.imageLink} :  '/main-page-next-to-us/'+ ${nextToUsAttr5.imageLink}" class="main-page-admin-img">
     <div class="form-group">
         <label class="control-label" for="next-to-us-imageLink-5">Рекомендуемый размер: (1000x600)</label>
         <input type="file" id="next-to-us-imageLink-5" name="nextToUsImageLink5" accept="image/*">
@@ -206,11 +192,10 @@
     <textarea id="next-to-us-text-5" th:text="${nextToUsAttr5.text}" class="form-control summernote" name="nextToUsText5"></textarea>
 </div>
 
-
  <div class="next2us" th:object="${nextToUsAttr6}">
     <h4>Блок 6</h4>
     <!-- next to us imageLink -->
-    <img id="next-to-us-image-6" alt="Image" th:src="@{'/main-page-next-to-us/'+ ${nextToUsAttr6.imageLink}}" src="https://factum.kz/wp-content/uploads/2018/09/d41586-018-06664-y_16116664-1000x600.jpg"  class="main-page-admin-img">
+    <img id="next-to-us-image-6" alt="Image"  th:src="${nextToUsAttr6.imageLink == 'init-park.jpg'} ? '/img/'+ ${nextToUsAttr6.imageLink} :  '/main-page-next-to-us/'+ ${nextToUsAttr6.imageLink}"  class="main-page-admin-img">
     <div class="form-group">
         <label class="control-label" for="next-to-us-imageLink-6">Рекомендуемый размер: (1000x600)</label>
         <input type="file" id="next-to-us-imageLink-6" name="nextToUsImageLink6" accept="image/*">
@@ -226,16 +211,12 @@
   </div>
 </div>
 
-    <div class="col-md-12" style="margin-left: 2.5%; width: 95%">
-        <br>
-        <br>
+    <div class="col-md-12" style="margin-left: 2.5%; width: 95%"><br><br>
         <h3 class="page-header">Настройки SEO</h3>
 
-        <div class="form-group" style="width: 95%">
-            <hr ><br>
+        <div class="form-group" style="width: 95%"><hr><br>
             <label class="control-label" for="seo-title">Title</label>
             <input type="text" id="seo-title" th:value="${maimPageObjects.seoTitle}" class="form-control" name="seoTitle" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
-
         </div>
         <div class="form-group" style="width: 95%" >
              <label class="control-label" for="seo-description">Description</label>
@@ -244,9 +225,8 @@
             <div class="form-group" style="width: 95%">
                  <label class="control-label" for="seo-keywords">Keywords</label>
                  <textarea id="seo-keywords" class="form-control" th:text="${maimPageObjects.keyWords}" name="seoKeywords" rows="6">программа для ОСМД, управление домом, управление многоквартирным домом, система учета квартир, программа для жильцов дома,  сайт управляющей компании, мой дом 21, crm для жильцо!</textarea>
-           </div>
-    </div>
-    <br>
+           </div><br>
+    </div><br>
 
     <div class="col-xs-12" style="margin-left: 40%">
         <div class="form-group">
@@ -258,12 +238,10 @@
     <br>
 </form>
 
-</div>
-<hr>
+</div><hr>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <footer th:insert="blocks/footer.html :: footer" style="margin-left: 40%"></footer>
 <div th:insert="blocks/footer-scripts.html :: footer-scripts" ></div>
 </body>
 </html>
-<!--
-<end th:insert="blocks/end.html :: end"></end>
--->
