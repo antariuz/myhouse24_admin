@@ -1,6 +1,8 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
+import avada.media.myhouse24_admin.model.system.Service;
+import avada.media.myhouse24_admin.model.system.Unit;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

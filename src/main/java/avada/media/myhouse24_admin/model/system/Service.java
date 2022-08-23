@@ -1,4 +1,4 @@
-package avada.media.myhouse24_admin.model;
+package avada.media.myhouse24_admin.model.system;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
 import lombok.Data;

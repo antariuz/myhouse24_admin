@@ -8,6 +8,7 @@ import avada.media.myhouse24_admin.repo.website.SeoRepo;
 import avada.media.myhouse24_admin.repo.website.WebServiceRepo;
 import avada.media.myhouse24_admin.repo.website.WebServicesRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -45,7 +46,7 @@ public class WebServicesPage {
 
     @GetMapping("get-all")
     public @ResponseBody List<WebService> getAllWebServices() {
-        return webServicesRepo.findWithServiceListWebServicesById(1L).getWebServiceList();
+        return webServiceRepo.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     @GetMapping("getSeo")
@@ -85,7 +86,7 @@ public class WebServicesPage {
     }
 
     @DeleteMapping("{id}/delete")
-    public ResponseEntity<Void> deleteWebservice(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteWebservice(@PathVariable String id) {
         webServiceRepo.deleteById(Long.parseLong(id));
         return ResponseEntity.ok().build();
     }

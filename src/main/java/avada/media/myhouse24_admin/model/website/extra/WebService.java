@@ -21,7 +21,7 @@ public class WebService extends MappedEntity {
     @Transient
     public String getImagePath() {
         if (image == null || getId() == null) return null;
-        return "/uploaded/" + image;
+        return "/uploaded/webServices/" + image;
     }
 
 }
