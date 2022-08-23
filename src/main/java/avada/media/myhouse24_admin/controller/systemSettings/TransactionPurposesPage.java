@@ -1,6 +1,6 @@
 package avada.media.myhouse24_admin.controller.systemSettings;
 
-import avada.media.myhouse24_admin.model.system.TransactionPurpose;
+import avada.media.myhouse24_admin.model.systemSettings.TransactionPurpose;
 import avada.media.myhouse24_admin.repo.systemSettings.TransactionPurposeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -29,7 +29,7 @@ public class TransactionPurposesPage {
     }
 
     @PostMapping("add")
-    private ResponseEntity<Void> addTransactionPurpose(@RequestBody TransactionPurpose transactionPurpose) {
+    private ResponseEntity<Void> addTransactionPurpose(TransactionPurpose transactionPurpose) {
         transactionPurpose.setUsed(false);
         transactionPurposeRepo.save(transactionPurpose);
         return ResponseEntity.ok().build();
@@ -37,7 +37,7 @@ public class TransactionPurposesPage {
 
     @PostMapping("update")
     private ResponseEntity<Void> updateTransactionPurpose(TransactionPurpose transactionPurpose) {
-        if (transactionPurpose.getId() != null) transactionPurposeRepo.save(transactionPurpose);
+        transactionPurposeRepo.save(transactionPurpose);
         return ResponseEntity.ok().build();
     }
 

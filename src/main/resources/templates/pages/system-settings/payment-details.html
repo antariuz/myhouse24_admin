@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Платежные реквизиты</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Настройки системы</li>
+                <li class="breadcrumb-item active">Платежные реквизиты</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row pt-3">
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <form id="form">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="hidden" class="form-control" id="id" name="id">
+                                <div class="form-group">
+                                    <label for="title">Название компании</label>
+                                    <input type="text" class="form-control" name="title" id="title"
+                                           placeholder="Введите название"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description">Информация</label>
+                                    <textarea rows="25" class="form-control" id="description" name="description"
+                                              placeholder="Введите информацию"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/system-settings/payment-details">Отменить</a>
+                                <button class="btn btn-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+
+    <script type="application/javascript">
+
+        $(document).ready(function () {
+            getPaymentDetails();
+        });
+
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true
+                },
+                description: {
+                    required: true
+                }
+            },
+            messages: {
+                title: {
+                    required: "Введите название компании",
+                },
+                description: {
+                    required: "Введите реквизиты компании",
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                $('.form-control').each(function (index, element) {
+                    $(element).removeClass('is-valid');
+                });
+                updatePaymentDetails();
+            }
+        });
+
+        function updatePaymentDetails() {
+            let paymentDetails = {};
+            paymentDetails.id = $('#id').val();
+            paymentDetails.title = $('#title').val();
+            paymentDetails.description = $('#description').val();
+            $.ajax({
+                method: 'POST',
+                url: 'payment-details/update',
+                data: paymentDetails,
+                success: function () {
+                    successAction("Успешно сохранено");
+                    getPaymentDetails();
+                },
+                error: function (jqXHR, exception) {
+                    errorAction();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        function getPaymentDetails() {
+            $.ajax({
+                method: 'GET',
+                url: 'payment-details/get',
+                dataType: 'json',
+                success: function (data) {
+                    $('#id').val(data.id);
+                    $('#title').val(data.title);
+                    $('#description').val(data.description);
+                },
+                error: function (jqXHR, exception) {
+                    errorAction();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+    </script>
+
+</th:block>
+
+</html>

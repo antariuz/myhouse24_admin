@@ -1,12 +1,12 @@
 package avada.media.myhouse24_admin.controller.websiteControl;
 
 import avada.media.myhouse24_admin.model.common.FileUploadUtil;
-import avada.media.myhouse24_admin.model.website.extra.Seo;
-import avada.media.myhouse24_admin.model.website.extra.WebService;
-import avada.media.myhouse24_admin.model.website.pages.WebServices;
-import avada.media.myhouse24_admin.repo.website.SeoRepo;
-import avada.media.myhouse24_admin.repo.website.WebServiceRepo;
-import avada.media.myhouse24_admin.repo.website.WebServicesRepo;
+import avada.media.myhouse24_admin.model.websiteControl.extra.Seo;
+import avada.media.myhouse24_admin.model.websiteControl.extra.WebService;
+import avada.media.myhouse24_admin.model.websiteControl.pages.WebServices;
+import avada.media.myhouse24_admin.repo.websiteControl.SeoRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.WebServiceRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.WebServicesRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +32,8 @@ public class WebServicesPage {
 
     @RequestMapping({"/", ""})
     public ModelAndView showWebServicesPage() {
-        WebServices webServices;
-        if (webServicesRepo.findById(1L).isPresent()) webServices = webServicesRepo.findById(1L).get();
-        else {
-            webServices = new WebServices();
+        if (webServicesRepo.findById(1L).isEmpty()) {
+            WebServices webServices = new WebServices();
             Seo seo = new Seo();
             webServices.setSeo(seo);
             seoRepo.save(seo);
@@ -47,11 +45,6 @@ public class WebServicesPage {
     @GetMapping("get-all")
     public @ResponseBody List<WebService> getAllWebServices() {
         return webServiceRepo.findAll(Sort.by(Sort.Direction.ASC, "id"));
-    }
-
-    @GetMapping("getSeo")
-    public @ResponseBody Seo getWebServices() {
-        return webServicesRepo.findWithSeoWebServicesById(1L).getSeo();
     }
 
     @PostMapping("save")
@@ -79,15 +72,20 @@ public class WebServicesPage {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("seoUpdate")
-    public ResponseEntity<Void> seoUpdate(@RequestBody Seo seo) {
-        seoRepo.save(seo);
+    @DeleteMapping("{id}/delete")
+    public ResponseEntity<Void> deleteWebservice(@PathVariable Long id) {
+        webServiceRepo.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("{id}/delete")
-    public ResponseEntity<Void> deleteWebservice(@PathVariable String id) {
-        webServiceRepo.deleteById(Long.parseLong(id));
+    @GetMapping("getSeo")
+    public @ResponseBody Seo getSeo() {
+        return webServicesRepo.findWithSeoWebServicesById(1L).getSeo();
+    }
+
+    @PostMapping("updateSeo")
+    public ResponseEntity<Void> updateSeo(Seo seo) {
+        seoRepo.save(seo);
         return ResponseEntity.ok().build();
     }
 

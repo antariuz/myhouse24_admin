@@ -1,9 +1,9 @@
 package avada.media.myhouse24_admin.service.impl;
 
-import avada.media.myhouse24_admin.model.website.pages.MainPageModel;
-import avada.media.myhouse24_admin.model.website.pages.NextToUs;
-import avada.media.myhouse24_admin.repo.website.MainPageModelRepo;
-import avada.media.myhouse24_admin.repo.website.NextToUsRepo;
+import avada.media.myhouse24_admin.model.websiteControl.pages.MainPageModel;
+import avada.media.myhouse24_admin.model.websiteControl.pages.NextToUs;
+import avada.media.myhouse24_admin.repo.websiteControl.MainPageModelRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.NextToUsRepo;
 import avada.media.myhouse24_admin.service.MainPageAdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

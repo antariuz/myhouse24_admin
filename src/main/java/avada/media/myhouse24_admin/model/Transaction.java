@@ -1,7 +1,7 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
-import avada.media.myhouse24_admin.model.system.TransactionPurpose;
+import avada.media.myhouse24_admin.model.systemSettings.TransactionPurpose;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

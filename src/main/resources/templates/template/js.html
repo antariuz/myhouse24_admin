@@ -16,10 +16,11 @@
 <!-- jsGrid RU Localization-->
 <script type="text/javascript" src="http://js-grid.com/js/i18n/jsgrid-ru.js"></script>
 <!-- jQuery Validation -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
-<!-- Sidebar tab active -->
 <script type="application/javascript">
+    <!-- Sidebar tab active -->
     $(function () {
         var url = window.location;
         $('ul.nav-sidebar a').filter(function () {
@@ -40,6 +41,14 @@
         });
     }
 
+    function errorAction() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Упс...',
+            text: 'Что-то пошло не так. Проверьте консоль'
+        });
+    }
+
     function askBeforeDeletion(callback) {
         Swal.fire({
             title: 'Вы хотите удалить?',
@@ -54,11 +63,37 @@
         });
     }
 
+    $.ajaxSetup({
+        beforeSend: function (jqXHR, settings) {
+            jqXHR.url = settings.url;
+            jqXHR.method = settings.method;
+        }
+    });
+
+    function ajaxError(jqXHR, exception) {
+        let msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status === 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status === 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        console.log('Error:\nMessage: ' + msg + '\nMethod: ' + jqXHR.method + '\nURL: ' + jqXHR.url);
+    }
+
     jQuery.validator.setDefaults({
         onkeyup: function (e) {
             this.element(e);
         },
-
         highlight: function (element) {
             jQuery(element).closest('.form-control').addClass('is-invalid');
         },
@@ -66,7 +101,6 @@
             jQuery(element).closest('.form-control').removeClass('is-invalid');
             jQuery(element).closest('.form-control').addClass('is-valid');
         },
-
         errorElement: 'div',
         errorClass: 'invalid-feedback',
         errorPlacement: function (error, element) {
@@ -78,5 +112,28 @@
             }
         },
     });
+
+    function summernoteInit() {
+        $('.summernote').summernote({
+            lang: 'ru-RU',
+            minHeight: 200,
+            maxHeight: 200,
+            inheritPlaceholder: true,
+            styleTags: [
+                'p',
+                {title: 'Заголовок 1', tag: 'h1', className: 'Заголовок 1', value: 'h1'},
+                {title: 'Заголовок 2', tag: 'h2', className: 'Заголовок 2', value: 'h2'},
+                {title: 'Заголовок 3', tag: 'h3', className: 'Заголовок 3', value: 'h3'},
+                {title: 'Заголовок 4', tag: 'h4', className: 'Заголовок 4', value: 'h4'},
+                {title: 'Заголовок 5', tag: 'h5', className: 'Заголовок 5', value: 'h5'},
+                {title: 'Заголовок 6', tag: 'h6', className: 'Заголовок 6', value: 'h6'},
+            ],
+            toolbar: [
+                ['size', ['style']],
+                ['style', ['bold', 'italic', 'underline']],
+                ['list', ['ul', 'ol', 'paragraph']],
+            ]
+        });
+    }
 
 </script>

@@ -1,13 +1,13 @@
 package avada.media.myhouse24_admin.service.impl;
 
-import avada.media.myhouse24_admin.model.website.pages.AboutUs;
-import avada.media.myhouse24_admin.model.website.pages.AdditionalPhotoAboutUs;
-import avada.media.myhouse24_admin.model.website.pages.MyDocument;
-import avada.media.myhouse24_admin.model.website.pages.PhotoAboutUs;
-import avada.media.myhouse24_admin.repo.website.AboutUsRepo;
-import avada.media.myhouse24_admin.repo.website.AdditionalPhotoAboutUsRepo;
-import avada.media.myhouse24_admin.repo.website.MyDocumentRepo;
-import avada.media.myhouse24_admin.repo.website.PhotoAboutUsRepo;
+import avada.media.myhouse24_admin.model.websiteControl.pages.AboutUs;
+import avada.media.myhouse24_admin.model.websiteControl.pages.AdditionalPhotoAboutUs;
+import avada.media.myhouse24_admin.model.websiteControl.pages.MyDocument;
+import avada.media.myhouse24_admin.model.websiteControl.pages.PhotoAboutUs;
+import avada.media.myhouse24_admin.repo.websiteControl.AboutUsRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.AdditionalPhotoAboutUsRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.MyDocumentRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.PhotoAboutUsRepo;
 import avada.media.myhouse24_admin.service.AboutUsServise;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

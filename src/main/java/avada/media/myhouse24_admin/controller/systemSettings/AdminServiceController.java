@@ -1,6 +1,6 @@
 package avada.media.myhouse24_admin.controller.systemSettings;
 
-import avada.media.myhouse24_admin.model.system.Unit;
+import avada.media.myhouse24_admin.model.systemSettings.Unit;
 import avada.media.myhouse24_admin.repo.systemSettings.ServiceRepo;
 import avada.media.myhouse24_admin.repo.systemSettings.UnitRepo;
 import com.google.gson.Gson;

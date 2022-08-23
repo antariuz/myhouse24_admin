@@ -1,9 +1,9 @@
 package avada.media.myhouse24_admin.controller.websiteControl;
 
-import avada.media.myhouse24_admin.repo.website.AboutUsRepo;
-import avada.media.myhouse24_admin.repo.website.AdditionalPhotoAboutUsRepo;
-import avada.media.myhouse24_admin.repo.website.MyDocumentRepo;
-import avada.media.myhouse24_admin.repo.website.PhotoAboutUsRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.AboutUsRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.AdditionalPhotoAboutUsRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.MyDocumentRepo;
+import avada.media.myhouse24_admin.repo.websiteControl.PhotoAboutUsRepo;
 import avada.media.myhouse24_admin.service.impl.AboutUsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

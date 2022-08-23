@@ -11,7 +11,8 @@
             <ol class="breadcrumb float-sm-right text-sm">
                 <li class="breadcrumb-item"><a href="/">
                     <i class="fa-solid fa-house"></i> Главная</a></li>
-                <li class="breadcrumb-item active">Редактирование страницы</li>
+                <li class="breadcrumb-item active">Управление сайтом</li>
+                <li class="breadcrumb-item active">Контакты</li>
             </ol>
         </div>
     </div>
@@ -19,12 +20,12 @@
 
 <th:block layout:fragment="content">
 
-    <div class="row mt-2">
+    <div class="row pt-3">
         <div class="col-12">
             <form th:method="POST" th:action="*{'/website-control/web-feedback/update'}" th:object="${webFeedback}">
                 <div class="card card-outline card-secondary">
                     <div class="card-header">
-                        <h3 class="card-title">Редактирование страницы "Контакты"</h3>
+                        <h3 style="margin: 0" class="card-title">Редактирование страницы "Контакты"</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -129,28 +130,12 @@
 
 </th:block>
 
-<th:block layout:fragment="js">
+<th:block layout:fragment="extra-js">
+
     <!-- summernote init -->
     <script type="application/javascript">
-        $('.summernote').summernote({
-            lang: 'ru-RU',
-            minHeight: 156,
-            maxHeight: 200,
-            inheritPlaceholder: true,
-            styleTags: [
-                'p',
-                {title: 'Заголовок 1', tag: 'h1', className: 'Заголовок 1', value: 'h1'},
-                {title: 'Заголовок 2', tag: 'h2', className: 'Заголовок 2', value: 'h2'},
-                {title: 'Заголовок 3', tag: 'h3', className: 'Заголовок 3', value: 'h3'},
-                {title: 'Заголовок 4', tag: 'h4', className: 'Заголовок 4', value: 'h4'},
-                {title: 'Заголовок 5', tag: 'h5', className: 'Заголовок 5', value: 'h5'},
-                {title: 'Заголовок 6', tag: 'h6', className: 'Заголовок 6', value: 'h6'},
-            ],
-            toolbar: [
-                ['size', ['style']],
-                ['style', ['bold', 'italic', 'underline']],
-                ['list', ['ul', 'ol', 'paragraph']],
-            ]
+        $(document).ready(function () {
+            summernoteInit();
         });
     </script>
 </th:block>

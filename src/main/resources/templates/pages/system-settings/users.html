@@ -5,14 +5,14 @@
 <th:block layout:fragment="breadcrumbs">
     <div class="row">
         <div class="col-sm-6">
-            <h5 style="margin: 0">Статьи приходов/расходов</h5>
+            <h5 style="margin: 0">Пользователи</h5>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-sm">
                 <li class="breadcrumb-item"><a href="/">
                     <i class="fa-solid fa-house"></i> Главная</a></li>
                 <li class="breadcrumb-item active">Настройки системы</li>
-                <li class="breadcrumb-item active">Статьи приходов/расходов</li>
+                <li class="breadcrumb-item active">Пользователи</li>
             </ol>
         </div>
     </div>
@@ -22,8 +22,8 @@
 
     <div class="row pt-3">
         <div class="col-12 text-right">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addTransactionPurposeModal">
-                Добавить статью
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addUserModal">
+                Создать пользователя
             </button>
         </div>
     </div>
@@ -106,7 +106,7 @@
             }
         });
 
-        $(document).on('click', '#cancelBtn', function (){
+        $(document).on('click', '#cancelBtn', function () {
             $('#addTransactionPurposeModal').modal('hide');
             $('#name').val('');
             $('.form-control').each(function (index, element) {
@@ -163,7 +163,7 @@
                     loadData: function (data) {
                         return $.ajax({
                             method: "GET",
-                            url: "transaction-purposes/get-all",
+                            url: "users/get-all",
                             data: data,
                             error: function (jqXHR, exception) {
                                 errorAction();
@@ -202,32 +202,25 @@
 
                 fields: [
                     {
-                        name: "name", title: "Название", type: "text", width: 200
+                        name: "number", title: "#", type: "number", width: 10
                     },
                     {
-                        name: "type", title: "Приход/Расход", type: "select", width: 50, align: 'center',
-                        items: [
-                            {Name: "Приход", Id: "IN"},
-                            {Name: "Расход", Id: "OUT"},
-                        ],
-                        valueField: "Id",
-                        textField: "Name",
-                        valueType: "string",
-                        itemTemplate: function (value, item) {
-                            if (value === "IN") return "<span style='color:green'>Приход</span>";
-                            else return "<span style='color:red'>Расход</span>";
-                        }
+                        name: "name", title: "Пользователь", type: "text"
                     },
                     {
-                        type: "control",
-                        itemTemplate: function (value, item) {
-                            var $result = $([]);
-                            $result = $result.add(this._createEditButton(item));
-                            if (!item.used) {
-                                $result = $result.add(this._createDeleteButton(item));
-                            }
-                            return $result;
-                        }
+                        name: "role", title: "Роль", type: "select"
+                    },
+                    {
+                        name: "phoneNumber", title: "Телефон", type: "text"
+                    },
+                    {
+                        name: "email", title: "Email (логин)", type: "text"
+                    },
+                    {
+                        name: "status", title: "Статус", type: "select", width: 30
+                    },
+                    {
+                        type: "control"
                     }
                 ]
             });
