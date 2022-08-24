@@ -137,7 +137,6 @@
         }
 
         function jsGridInit() {
-            let addBtn = '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addTransactionPurpose">Добавить статью</button>';
             jsGrid.locale("ru");
             $("#jsGrid").jsGrid({
                 width: "100%",
@@ -213,7 +212,7 @@
                         valueField: "Id",
                         textField: "Name",
                         valueType: "string",
-                        itemTemplate: function (value, item) {
+                        itemTemplate: function (value) {
                             if (value === "IN") return "<span style='color:green'>Приход</span>";
                             else return "<span style='color:red'>Расход</span>";
                         }

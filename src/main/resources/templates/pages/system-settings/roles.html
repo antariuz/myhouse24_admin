@@ -19,10 +19,313 @@
 </th:block>
 
 <th:block layout:fragment="content">
-
+    <div class="row pt-3">
+        <div class="col-12">
+            <div id="jsGrid"></div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <a class="btn btn-secondary" href="/system-settings/roles">Отменить</a>
+                        <button class="btn btn-success">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </th:block>
 
 <th:block layout:fragment="extra-js">
+
+    <script type="application/javascript">
+
+    </script>
+
+    <script type="application/javascript">
+
+        $(document).ready(function () {
+            jsGridInit();
+        });
+
+        let data = [{
+            "role": "DIRECTOR",
+            "statistics": false,
+            "transactions": false,
+            "invoices": false,
+            "accounts": false,
+            "flats": false,
+            "users": false,
+            "buildings": false,
+            "messages": false,
+            "master-requests": false,
+            "counters": false,
+            "website-control": false,
+            "services": false,
+            "tariffs": false,
+            "roles": false,
+            "staff": false,
+            "payment-details": false
+        }, {
+            "role": "MANAGER",
+            "statistics": false,
+            "transactions": false,
+            "invoices": false,
+            "accounts": false,
+            "flats": false,
+            "users": false,
+            "buildings": false,
+            "messages": false,
+            "master-requests": false,
+            "counters": false,
+            "website-control": false,
+            "services": false,
+            "tariffs": false,
+            "roles": false,
+            "staff": false,
+            "payment-details": false
+        }, {
+            "role": "ACCOUNTANT",
+            "statistics": false,
+            "transactions": false,
+            "invoices": false,
+            "accounts": false,
+            "flats": false,
+            "users": false,
+            "buildings": false,
+            "messages": false,
+            "master-requests": false,
+            "counters": false,
+            "website-control": false,
+            "services": false,
+            "tariffs": false,
+            "roles": false,
+            "staff": false,
+            "payment-details": false
+        }, {
+            "role": "ELECTRICIAN",
+            "statistics": false,
+            "transactions": false,
+            "invoices": false,
+            "accounts": false,
+            "flats": false,
+            "users": false,
+            "buildings": false,
+            "messages": false,
+            "master-requests": false,
+            "counters": false,
+            "website-control": false,
+            "services": false,
+            "tariffs": false,
+            "roles": false,
+            "staff": false,
+            "payment-details": false
+        }, {
+            "role": "PLUMBER",
+            "statistics": false,
+            "transactions": false,
+            "invoices": false,
+            "accounts": false,
+            "flats": false,
+            "users": false,
+            "buildings": false,
+            "messages": false,
+            "master-requests": false,
+            "counters": false,
+            "website-control": false,
+            "services": false,
+            "tariffs": false,
+            "roles": false,
+            "staff": false,
+            "payment-details": false
+        }];
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: '100%',
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                paging: false,
+                data: data,
+                fields: [
+                    {
+                        name: "role", title: "Роль", type: "select", align: 'center', //width: 'auto',
+                        items: [
+                            {Name: "Директор", Id: "DIRECTOR"},
+                            {Name: "Управляющий", Id: "MANAGER"},
+                            {Name: "Бухгалтер", Id: "ACCOUNTANT"},
+                            {Name: "Электрик", Id: "ELECTRICIAN"},
+                            {Name: "Сантехник", Id: "PLUMBER"},
+                        ],
+                        valueField: "Id",
+                        textField: "Name",
+                        valueType: "string",
+                    },
+                    {
+                        name: "statistics", title: "Статистика", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "transactions", title: "Касса", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "invoices", title: "Квитанции на оплату", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "accounts", title: "Лицевые счета", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "flats", title: "Квартиры", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "users", title: "Владельцы квартир", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "buildings", title: "Дома", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "messages", title: "Сообщения", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "master-requests", title: "Заявки вызова мастера", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "counters", title: "Счетчики", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "website-control", title: "Управление сайтом", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "services", title: "Услуги", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "tariffs", title: "Тарифы", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "roles", title: "Роли", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "staff", title: "Пользователи", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    },
+                    {
+                        name: "payment-details", title: "Платежные реквизиты", type: "checkbox", //width: 'auto',
+                        itemTemplate: function (value, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                .attr("checked", value || item.Checked)
+                                .on("change", function () {
+                                    item.Checked = $(this).is(":checked");
+                                });
+                        }
+                    }
+                ]
+            });
+        }
+    </script>
 
 </th:block>
 

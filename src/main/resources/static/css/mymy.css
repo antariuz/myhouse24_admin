@@ -2,7 +2,29 @@
     content: "Выберите файл";
 }
 
-.img-fluid{
+.img-fluid {
     max-height: 300px;
     max-width: 100%;
+}
+
+.jsgrid-grid-header {
+    overflow-y: hidden;
+}
+
+.jsgrid-grid-body {
+    overflow-y: auto;
+}
+
+.jsgrid-table {
+    font-size: small;
+}
+
+.jsgrid-header-row {
+    font-size: smaller;
+}
+.jsgrid-header-row>.jsgrid-header-cell {
+    background: #dfdfdf;
+}
+.jsgrid-header-cell {
+    width: -moz-fit-content;
 }
