@@ -1,11 +1,27 @@
-    <section class="content">
+  <!--  <select id="units-select" class="form-control">
+                                                    <option th:value="${oneService.unit.name}">Выберите...</option>
+                                                    <th:block th:each="oneUnit : ${unitAttr}">
+                                                        <option th:text="${oneUnit.name}" ></option>
+                                                    </th:block>
+                                                </select>
+                                             -->
+
+                                          <!--      <select id="service-0-service_unit_id" class="form-control" name="Service[0][service_unit_id]">
+                                                    <option value="">Выберите...</option>
+                                                    <option value="2">м31234</option>
+                                                    <option value="3">кв.м.к</option>
+                                                </select>  -->
+
+
+
+    <section class="content"><option th:each="unit: ${unitAttr}" th:value="${unit.id}" th:text="${unit.name}"/>
 
         <div class="box">
             <div class="box-body">
                 <div class="col-xs-12 col-lg-7">
                    <!-- <div class="tabs">
 -->
-                <form method="post" th:action="@{system-settings/admin-service}">
+                <form method="post" th:action="@{system-tuning/admin-service}">
 
                                 <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
                                 <label for="tab-btn-1">Услуги</label>
@@ -76,7 +92,7 @@
                     <div class="row" style="margin-top: 100px">
                         <div class="col-xs-12 text-center">
                             <div class="form-group">
-                                <a href="/system-settings/admin-service" class="btn btn-default">Отменить</a>
+                                <a href="/system-tuning/admin-service" class="btn btn-default">Отменить</a>
                                 <button type="submit" class="btn btn-success">Сохранить</button>
                             </div>
                         </div>

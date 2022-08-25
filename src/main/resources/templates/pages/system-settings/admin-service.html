@@ -19,80 +19,76 @@
 
 <th:block layout:fragment="content">
 
-    <section class="content">
+    <section class="content" >
         <div class="box">
-            <div class="box-body">
-                <div class="col-xs-12 col-lg-7">
+            <div class="box-body" >
+                <div>
 
-            <div class="tabs">
+            <div class="tabs" >
                     <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
                     <label for="tab-btn-1">Услуги</label>
                     <input type="radio" name="tab-btn" id="tab-btn-2" value="">
                     <label for="tab-btn-2">Единицы измерения</label>
+
                     <div id="content-1">
-                        <form method="post" th:action="@{system-settings/admin-service}">
-                            <div id="form-service-rows">
-                                <div id="form-service-0" class="row form-service">
+                        <form name="form1" method="post" th:action="@{system-settings/admin-service}">
+                                <div class="row form-service" th:each="oneService : ${serviceAttr}">
                                     <div class="col-xs-12 col-sm-7">
                                         <div class="form-group">
-                                            <label for="service-0-name">Услуга</label>
-                                            <input type="text" id="service-0-name" class="form-control">
+                                            <label for="service-name">Услуга</label>
+                                            <input onchange="updateServiceInput(this)"  th:id="${oneService.id}" type="text" id="service-name" th:value="${oneService.name}" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-5">
                                         <div class="form-group">
                                             <label for="units-select">Ед. изм.</label>
                                             <div class="input-group">
-
-                                                <select id="units-select" class="form-control">
-                                                    <option value="">Выберите...</option>
-                                                    <th:block th:each="oneUnit : ${unitAttr}">
-                                                        <option th:text="${oneUnit.name}" ></option>
-                                                    </th:block>
+                                                <select id="units-select" th:id="${oneService.id}" onchange="updateServiceSelect(this)">
+                                                    <option th:each="unit: ${unitAttr}"
+                                                            th:id="${unit.id}"
+                                                            th:text="${unit.name}"
+                                                            th:selected="${oneService.unit.getName() == unit.name} "/>
                                                 </select>
-
-
-                                          <!--      <select id="service-0-service_unit_id" class="form-control" name="Service[0][service_unit_id]">
-                                                    <option value="">Выберите...</option>
-                                                    <option value="2">м31234</option>
-                                                    <option value="3">кв.м.к</option>
-                                                </select>  -->
                                                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default form-row-remove-btn disabled"><i class="fa fa-trash"></i></button>
-                                                        </span>
+                                                    <button th:disabled="${oneService.used} ? true : false" th:id="${oneService.id}" onclick="removeServiceInput(this)" type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
-                                        <input type="hidden" name="Service[0][is_counter]" value="0"><label><input type="checkbox" id="service-0-is_counter" name="Service[0][is_counter]" value="1" checked=""> Показывать в счетчиках</label>
-                                        <div style="margin-bottom: 16px;"></div>
+                                        <input type="hidden" name="showInCounters" th:value="${oneService.showInCounters} == false" value="false">
+                                        <label>
+                                            <input onchange="updateServiceCheckBox(this)" th:id="${oneService.id}" type="checkbox" id="service-0-is_counter" th:checked="${oneService.showInCounters}" name="showInCounters" value="1" checked=""> Показывать в счетчиках</label>
+                                            <div style="margin-bottom: 16px;"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-default btn-hover-change pull-left form-row-add-service-btn">Добавить</button>
-                            </div>
+                        </form>
 
+                        <form name="form2" method="post" th:action="@{/add-services}">
+                            <button id="base-service" type="button" class="btn btn-default  pull-left">Добавить</button>
                             <div class="row" style="margin-top: 100px; margin-left: 40%">
                                 <div class="col-xs-12 text-center">
                                     <div class="form-group">
-                                        <a href="/system-settings/admin-service" class="btn btn-default">Отменить</a>
-                                        <button type="submit" class="btn btn-success">Сохранить</button>
+                                        <a href="/system-tuning/admin-service" class="btn btn-default">Отменить</a>
+                                        <button type="button" onclick="submitNewServices()" class="btn btn-success">Сохранить</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+
                     <div id="content-2">
                             <form name="form3" id="id-form-3" method="post" th:action="@{/update-units}" >
                                 <div class="tab-pane clearfix " id="tab_serviceunit">
                                     <div class="current_unit_item" th:each="el : ${unitAttr}">
                                         <div id="form-serviceunit-0" class="row form-serviceunit" >
                                             <div class="col-xs-12">
-                                                <div class="form-group">
+                                                <div class="form-group" style="margin-left: 20px">
                                                     <label for="serviceunit-0-name">Ед. изм.</label>
                                                     <div class="input-group">
-                                                        <input onchange="updateUnitInput(this)"  th:id="${el.id}" type="text" id="serviceunit-0-name"  class="form-control" name="ServiceUnit" th:value="${el.name}">
+                                                        <input onchange="updateUnitInput(this)" th:id="${el.id}" type="text" id="serviceunit-0-name"  class="form-control" name="ServiceUnit" th:value="${el.name}">
                                                         <span class="input-group-btn">
-                                                            <button th:disabled="${el.used} ? true : false" th:id="${el.id}" onclick="removeUnitInput(this)" type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>
+                                                            <button name="removeBtn" th:disabled="${el.used} ? true : false" th:id="${el.id}" onclick="removeUnitInput(this)" type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>
                                                             </span>
                                                     </div>
                                                 </div>
@@ -101,6 +97,7 @@
                                     </div>
                                 </div>
                             </form>
+
                             <form name="form4" id="test-form" method="post" th:action="@{/add-units}" >
                                 <button id="raz" type="button" class="btn btn-default  pull-left">Добавить</button>
 
@@ -108,7 +105,7 @@
                                     <div class="col-xs-12 text-center">
                                         <div class="form-group">
                                             <a href="/system-settings/admin-service" class="btn btn-default">Отменить</a>
-                                            <button type="button" onclick="submitNewUnits()" class="btn btn-success">Сохранить</button>
+                                            <span><button id="thisButton" type="button" onclick="submitNewUnits()" class="btn btn-success">Сохранить</button></span>
                                         </div>
                                     </div>
                                 </div>
@@ -121,117 +118,9 @@
     </section>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script>
-        // скрипты красоты
-        // честно спижжено у Тимура
-            function swalAction(title) {
-                Swal.fire({
-                    icon: 'success',
-                    title: title,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }
-        // сам написал (нет)
-            function saving(){
-                Swal.fire({
-                    title: 'Ну что, сохранять эту дичь?',
-                    showDenyButton: false,  showCancelButton: false,
-                    confirmButtonText: `Да, 100%!`,
-                  //  denyButtonText: `Нет`,
-                }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
-                        Swal.fire('Улелело в БД!', '', 'success');
-                        setTimeout(() => {  window.location.reload(); }, 1500);
-                    }
-                });
-            }
-        </script>
-        <script>
-        // скрипты формы form3, обновление и удаление уже существующих в БД units
-        function updateUnitInput(input) {
-            // передача значения конкретного поля и его id,
-            // обновление поля
-            let id = input.id;
-            let nameValue = input.value;
-            let sendData = new Array();
-            sendData.push(id, nameValue);
-            let json = JSON.stringify(sendData);
-
-            $.ajax({
-                type: 'POST',
-                contentType: "application/json",
-                url: "/update-units",
-                data: json,
-                dataType: "json"
-            });
-        };
-
-        function removeUnitInput(element){
-            // передача id конкретного поля
-            let id = element.id;
-                $.ajax({
-                    type: 'GET',
-                    contentType: "application/json",
-                    url: "/unit/remove/" + id,
-                    data: id,
-                    dataType: "json"
-                });
-            // скрыть видимость элемента после удаления из БД
-            element.parentElement.parentElement.parentElement.parentElement.parentElement.hidden = true;
-            swalAction('Удалено без особых усилий');
-        };
-    </script>
-
-        <script>
-            // скрипты формы form4, добавление и удаление новых units в БД
-
-            // - Добавление новой единицы - unit пока ещё без добавления в БД
-            document.getElementById('raz').onclick = function() {
-                let theDiv = document.createElement('div');
-                theDiv.innerHTML = '<div id="form-serviceunit-rows">' +
-                    '<div class="row form-serviceunit">' +
-                    '<div class="col-xs-12">' +
-                    '<div class="form-group">' +
-                    '<label for="test-unit-id">Ед. изм.</label>' +
-                    '<div class="input-group">' +
-                    '<input id="test-unit-id" type="text" class="form-control" name="addUnitName"> ' +
-                    '<span class="input-group-btn">' +
-                    '<button type="button" onclick="removeNewUnit(this)" className="btn btn-default" ><i className="fa fa-trash"></i></button>' +
-                    '</span></div></div></div></div></div>';  // его содержимое
-
-                this.parentNode.insertBefore(theDiv, this.previousSibling);
-                getComputedStyle(theDiv).opacity;
-                theDiv.style.opacity = '1';
-            }
-
-            // - удаление новой единицы - unit пока ещё не добавленой в БД
-            function removeNewUnit(elem) {
-                elem.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
-                swalAction('Удалено без особых усилий');
-            }
-
-            // сохранение одной или многих новых units в БД
-            function submitNewUnits() {
-                let myForm = document.getElementsByName('addUnitName');
-                let sendData = new Array();
-                    for (let i = 0; i < myForm.length; i++) {
-                        sendData.push(myForm[i].value);
-                    }
-
-            let json = JSON.stringify(sendData);
-            saving();
-
-                $.ajax({
-                    type: 'POST',
-                    contentType: "application/json",
-                    url: "/add-units",
-                    data: json,
-                    dataType: "json"
-                });
-        }
-        </script>
+        <script src="/js/systemTuningUnits.js"></script>
+        <script src="/js/systemTuningServices.js"></script>
+        <script  th:inline="javascript">let units = [[${unitAttr}]];</script>
 
 </th:block>
 </html>
