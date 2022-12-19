@@ -98,11 +98,11 @@
             submitHandler: function (form, event) {
                 event.preventDefault();
                 $('#addTransactionPurposeModal').modal('hide');
-                $('#name').val('');
+                addTransactionPurpose();
                 $('.form-control').each(function (index, element) {
                     $(element).removeClass('is-valid');
                 });
-                addTransactionPurpose();
+                $('#name').val('');
             }
         });
 
@@ -126,11 +126,11 @@
                 url: 'transaction-purposes/add',
                 data: transactionPurpose,
                 success: function () {
-                    successAction("Успешно сохранено");
+                    successWarning("Успешно сохранено");
                     $("#jsGrid").jsGrid("render");
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });
@@ -145,8 +145,8 @@
                 onItemDeleting: function (args) {
                     if (!args.item.deleteConfirmed) { // custom property for confirmation
                         args.cancel = true; // cancel deleting
-                        askBeforeDeletion(function (isConfirmed) {
-                            if (isConfirmed) {
+                        askWarning(function (confirmed) {
+                            if (confirmed) {
                                 args.item.deleteConfirmed = true;
                                 $("#jsGrid").jsGrid('deleteItem', args.item); //call deleting once more in callback
                             }
@@ -164,8 +164,11 @@
                             method: "GET",
                             url: "transaction-purposes/get-all",
                             data: data,
+                            success: function (array) {
+                                console.log(array);
+                            },
                             error: function (jqXHR, exception) {
-                                errorAction();
+                                errorWarning();
                                 ajaxError(jqXHR, exception);
                             }
                         });
@@ -176,10 +179,10 @@
                             url: "transaction-purposes/update",
                             data: item,
                             success: function () {
-                                successAction("Успешно обновлено");
+                                successWarning("Успешно обновлено");
                             },
                             error: function (jqXHR, exception) {
-                                errorAction();
+                                errorWarning();
                                 ajaxError(jqXHR, exception);
                             }
                         });
@@ -189,10 +192,10 @@
                             method: "DELETE",
                             url: "transaction-purposes/" + item.id + "/delete",
                             success: function () {
-                                successAction("Успешно удалено");
+                                successWarning("Успешно удалено");
                             },
                             error: function (jqXHR, exception) {
-                                errorAction();
+                                errorWarning();
                                 ajaxError(jqXHR, exception);
                             }
                         });
@@ -206,22 +209,21 @@
                     {
                         name: "type", title: "Приход/Расход", type: "select", width: 50, align: 'center',
                         items: [
-                            {Name: "Приход", Id: "IN"},
-                            {Name: "Расход", Id: "OUT"},
+                            {name: "Приход", id: "IN"},
+                            {name: "Расход", id: "OUT"},
                         ],
-                        valueField: "Id",
-                        textField: "Name",
+                        valueField: "id",
+                        textField: "name",
                         valueType: "string",
                         itemTemplate: function (value) {
-                            if (value === "IN") return "<span style='color:green'>Приход</span>";
-                            else return "<span style='color:red'>Расход</span>";
+                            if (value === "IN") return "<small style='font-size: 1.1em' class=\"badge badge-success\">Приход</small>";
+                            else return "<small style='font-size: 1.1em' class=\"badge badge-danger\">Расход</small>";
                         }
                     },
                     {
                         type: "control",
                         itemTemplate: function (value, item) {
                             var $result = $([]);
-                            $result = $result.add(this._createEditButton(item));
                             if (!item.used) {
                                 $result = $result.add(this._createDeleteButton(item));
                             }

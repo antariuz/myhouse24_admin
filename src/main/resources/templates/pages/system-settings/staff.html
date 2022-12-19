@@ -9,7 +9,7 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-sm">
-                <li class="breadcrumb-item"><a href="/">
+                <li class="breadcrumb-item"><a href="/static">
                     <i class="fa-solid fa-house"></i> Главная</a></li>
                 <li class="breadcrumb-item active">Настройки системы</li>
                 <li class="breadcrumb-item active">Пользователи</li>
@@ -22,44 +22,212 @@
 
     <div class="row pt-3">
         <div class="col-12 text-right">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addUserModal">
+            <button class="btn btn-success" data-toggle="modal" data-target="#addStaffModal">
                 Создать пользователя
             </button>
         </div>
     </div>
-
     <div class="row pt-3">
-        <div class="col-12">
-            <div id="jsGrid"></div>
-        </div>
+        <div class="col-12" id="jsGrid"></div>
     </div>
+
 
     <!--  Add modal  -->
     <div class="modal fade" id="addStaffModal" data-backdrop="static" tabindex="-1" role="dialog"
-         aria-labelledby="addTransactionPurposeLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+         aria-labelledby="addStaffModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addStaffModalLabel">Новая статья</h5>
+                    <h5 class="modal-title" id="addStaffModalLabel">Новый пользователь</h5>
                 </div>
-                <form id="modalForm">
+                <form id="addModalForm">
                     <div class="modal-body">
                         <input type="hidden" class="form-control" id="id" name="id">
-                        <div class="form-group">
-                            <label for="name">Название</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="firstname">Имя</label>
+                                    <input type="text" class="form-control" id="firstname" name="firstname">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="email">Email (логин)</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="type">Приход/расход</label>
-                            <select class="form-control" id="type" name="type">
-                                <option value="IN">Приход</option>
-                                <option value="OUT">Расход</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="lastname">Фамилия</label>
+                                    <input type="text" class="form-control" id="lastname" name="lastname">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="password">Пароль</label>
+                                    <div class="input-group mb-3">
+                                        <input type="password" data-size="16" data-character-set="a-z,A-Z,0-9,#"
+                                               class="form-control pass-value" id="password" name="password"
+                                               aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <a type="button" class="btn btn-secondary btn-flat getNewPassAdd">
+                                                Сгенерировать
+                                            </a>
+                                            <a type="button" class="btn btn-primary btn-flat" id="showPassAdd">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="phoneNumber">Телефон</label>
+                                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                                           placeholder="+380 ** *** ** **">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="passwordConfirm">Повторить пароль</label>
+                                    <input type="password" class="form-control pass-value" id="passwordConfirm"
+                                           name="passwordConfirm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="role">Роль</label>
+                                    <select class="form-control" id="role" name="role">
+                                        <option value="ROLE_DIRECTOR">Директор</option>
+                                        <option value="ROLE_MANAGER">Управляющий</option>
+                                        <option value="ROLE_ACCOUNTANT">Бухгалтер</option>
+                                        <option value="ROLE_ELECTRICIAN">Электрик</option>
+                                        <option value="ROLE_PLUMBER">Сантехник</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="status">Статус</label>
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="NEW">Новый</option>
+                                        <option value="ACTIVE">Активен</option>
+                                        <option value="INACTIVE">Отключен</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer text-center">
+                    <div class="modal-footer text-right">
                         <button type="button" id="cancelBtn" class="btn btn-secondary">Отменить</button>
                         <button type="submit" class="btn btn-success" id="saveBtn">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--  Update modal  -->
+    <div class="modal fade" id="updateStaffModal" data-backdrop="static" tabindex="-1" role="dialog"
+         aria-labelledby="updateStaffModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateStaffModalLabel">Обновить пользователя</h5>
+                </div>
+                <form id="updateModalForm">
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="uid" name="id">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="ufirstname">Имя</label>
+                                    <input type="text" class="form-control" id="ufirstname" name="firstname">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="uemail">Email (логин)</label>
+                                    <input type="email" class="form-control" id="uemail" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="ulastname">Фамилия</label>
+                                    <input type="text" class="form-control" id="ulastname" name="lastname">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="upassword">Пароль</label>
+                                    <div class="input-group mb-3">
+                                        <input type="password" data-size="16" data-character-set="a-z,A-Z,0-9,#"
+                                               class="form-control pass-value" id="upassword" name="password"
+                                               aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <a type="button" class="btn btn-secondary btn-flat getNewPassUpdate">
+                                                Сгенерировать
+                                            </a>
+                                            <a type="button" class="btn btn-primary btn-flat" id="showPassUpdate">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="uphoneNumber">Телефон</label>
+                                    <input type="text" class="form-control" id="uphoneNumber" name="phoneNumber"
+                                           placeholder="+380 ** *** ** **">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="upasswordConfirm">Повторить пароль</label>
+                                    <input type="password" class="form-control pass-value" id="upasswordConfirm"
+                                           name="passwordConfirm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="urole">Роль</label>
+                                    <select class="form-control" id="urole" name="role">
+                                        <option value="ROLE_DIRECTOR">Директор</option>
+                                        <option value="ROLE_MANAGER">Управляющий</option>
+                                        <option value="ROLE_ACCOUNTANT">Бухгалтер</option>
+                                        <option value="ROLE_ELECTRICIAN">Электрик</option>
+                                        <option value="ROLE_PLUMBER">Сантехник</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="ustatus">Статус</label>
+                                    <select class="form-control" id="ustatus" name="status">
+                                        <option value="NEW">Новый</option>
+                                        <option value="ACTIVE">Активен</option>
+                                        <option value="INACTIVE">Отключен</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer text-right">
+                        <button type="button" id="ucancelBtn" class="btn btn-secondary">Отменить</button>
+                        <button type="submit" class="btn btn-success" id="usaveBtn">Сохранить</button>
                     </div>
                 </form>
             </div>
@@ -72,143 +240,440 @@
 
     <script type="application/javascript">
 
+        let currentStaffID = 0;
+
         $(document).ready(function () {
+            getCurrentStaffID();
             jsGridInit();
         });
 
-        $("#modalForm").validate({
-            rules: {
-                name: {
-                    required: true,
-                    minlength: 3
-                },
-                type: {
-                    required: true
-                },
-            },
-            messages: {
-                name: {
-                    required: "Введите название статьи",
-                    minlength: "Название статьи должно быть как минимум из 3 символов"
-                },
-                type: {
-                    required: "Выберите тип статьи"
-                },
-            },
-            submitHandler: function (form, event) {
-                event.preventDefault();
-                $('#addTransactionPurposeModal').modal('hide');
-                $('#name').val('');
-                $('.form-control').each(function (index, element) {
-                    $(element).removeClass('is-valid');
-                });
-                addTransactionPurpose();
-            }
+        $(document).ready(function () {
+            $('#phoneNumber').inputmask('+380 99 999 99 99', {
+                placeholder: "*",
+                clearIncomplete: true,
+                removeMaskOnSubmit: true,
+                clearMaskOnLostFocus: true,
+            });
+            $('#uphoneNumber').inputmask('+380 99 999 99 99', {
+                placeholder: "*",
+                clearIncomplete: true,
+                removeMaskOnSubmit: true,
+                clearMaskOnLostFocus: true,
+            });
         });
 
-        $(document).on('click', '#cancelBtn', function () {
-            $('#addTransactionPurposeModal').modal('hide');
-            $('#name').val('');
+        function closeAndClearAddStaffModal() {
+            $('#addStaffModal').modal('hide');
+
+        }
+
+        $("#addStaffModal").on('hide.bs.modal', function () {
+            $('#firstname').val('');
+            $('#email').val('');
+            $('#lastname').val('');
+            $('#password').val('');
+            $('#phoneNumber').val('');
+            $('#passwordConfirm').val('');
+            $('#role').val('ROLE_DIRECTOR');
+            $('#status').val('NEW');
             $('.form-control').each(function (index, element) {
                 $(element).removeClass('is-invalid');
                 $(element).removeClass('is-valid');
             });
         });
 
+        $("#updateStaffModal").on('hide.bs.modal', function () {
+            $('#ufirstname').val('');
+            $('#uemail').val('');
+            $('#ulastname').val('');
+            $('#upassword').val('');
+            $('#uphoneNumber').val('');
+            $('#upasswordConfirm').val('');
+            $('#urole').val('ROLE_DIRECTOR');
+            $('#ustatus').val('NEW');
+            $('.form-control').each(function (index, element) {
+                $(element).removeClass('is-invalid');
+                $(element).removeClass('is-valid');
+            });
+        });
 
-        function addTransactionPurpose() {
-            let transactionPurpose = {};
-            transactionPurpose.id = $('#id').val();
-            transactionPurpose.name = $('#name').val();
-            transactionPurpose.type = $('#type').val();
+        function closeAndClearUpdateStaffModal() {
+            $('#updateStaffModal').modal('hide');
+        }
+
+        $(document).on('click', '#cancelBtn', function () {
+            closeAndClearAddStaffModal();
+        });
+
+        $(document).on('click', '#ucancelBtn', function () {
+            closeAndClearUpdateStaffModal();
+        });
+
+        $("#addModalForm").validate({
+            rules: {
+                firstname: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                },
+                lastname: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    remote: {
+                        url: "staff/check-email",
+                        method: "POST"
+                    }
+                },
+                password: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#passwordConfirm"
+                },
+                passwordConfirm: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#password"
+                },
+                phoneNumber: {
+                    required: true,
+                    phoneUA: true
+                },
+                role: {
+                    required: true
+                },
+                status: {
+                    required: true
+                }
+            },
+            messages: {
+                firstname: {
+                    required: "Введите имя",
+                    minlength: "Имя должно быть как минимум из 3 символов",
+                    maxlength: "Имя должно быть как максимум из 40 символов"
+                },
+                lastname: {
+                    required: "Введите фамилию",
+                    minlength: "Фамилия должно быть как минимум из 3 символов",
+                    maxlength: "Фамилия должно быть как максимум из 40 символов"
+                },
+                email: {
+                    required: "Введите эл.почту",
+                    email: "Ввведите правильную эл.почту",
+                    remote: "Эта эл.почта уже занята. Пожалуйста, укажите другую"
+                },
+                password: {
+                    required: "Введите пароль",
+                    minlength: "Пароль должен быть как минимум из 5 символов",
+                    equalTo: "Введенные пароли не совпадают"
+                },
+                passwordConfirm: {
+                    required: "Введите пароль",
+                    minlength: "Пароль должен быть как минимум из 5 символов",
+                    equalTo: "Введенные пароли не совпадают"
+                },
+                phoneNumber: {
+                    required: "Введите номер телефона",
+                    phoneUA: "Введите номер телефона полностью"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                addStaff();
+                closeAndClearAddStaffModal();
+            }
+        });
+
+        $("#updateModalForm").validate({
+            rules: {
+                firstname: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                },
+                lastname: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    remote: {
+                        url: "staff/check-email",
+                        method: "POST",
+                        data: {
+                            id: function () {
+                                return $("#uid").val();
+                            }
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    }
+                },
+                password: {
+                    minlength: 5,
+                    equalTo: "#upasswordConfirm"
+                },
+                passwordConfirm: {
+                    minlength: 5,
+                    equalTo: "#upassword"
+                },
+                phoneNumber: {
+                    required: true,
+                    phoneUA: true
+                },
+                role: {
+                    required: true
+                },
+                status: {
+                    required: true
+                }
+            },
+            messages: {
+                firstname: {
+                    required: "Введите имя",
+                    minlength: "Имя должно быть как минимум из 3 символов",
+                    maxlength: "Имя должно быть как максимум из 40 символов"
+                },
+                lastname: {
+                    required: "Введите фамилию",
+                    minlength: "Фамилия должно быть как минимум из 3 символов",
+                    maxlength: "Фамилия должно быть как максимум из 40 символов"
+                },
+                email: {
+                    required: "Введите эл.почту",
+                    email: "Ввведите правильную эл.почту",
+                    remote: "Эта эл.почта уже занята. Пожалуйста, укажите другую"
+                },
+                password: {
+                    minlength: "Пароль должен быть как минимум из 5 символов",
+                    equalTo: "Введенные пароли не совпадают"
+                },
+                passwordConfirm: {
+                    minlength: "Пароль должен быть как минимум из 5 символов",
+                    equalTo: "Введенные пароли не совпадают"
+                },
+                phoneNumber: {
+                    required: "Введите номер телефона",
+                    phoneUA: "Введите номер телефона полностью"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                updateStaff();
+                closeAndClearUpdateStaffModal();
+            }
+        });
+
+        // Add Staff
+        function addStaff() {
+            let staff = {};
+            let role = {};
+            staff.id = $('#id').val();
+            staff.firstname = $('#firstname').val();
+            staff.lastname = $('#lastname').val();
+            staff.email = $('#email').val();
+            staff.password = $('#password').val();
+            staff.phoneNumber = $('#phoneNumber').val();
+            staff.status = $('#status').val();
+            role.name = $('#role').val();
+            staff.role = role;
             $.ajax({
                 method: 'POST',
-                url: 'transaction-purposes/add',
-                data: transactionPurpose,
+                url: 'staff/add',
+                data: JSON.stringify(staff),
+                contentType: 'application/json',
                 success: function () {
-                    successAction("Успешно сохранено");
+                    successWarning("Успешно сохранено");
+                    allStaffData = null;
                     $("#jsGrid").jsGrid("render");
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });
         }
 
+        // Update Staff
+        function updateStaff() {
+            let staff = {};
+            let role = {};
+            staff.id = $('#uid').val();
+            staff.firstname = $('#ufirstname').val();
+            staff.lastname = $('#ulastname').val();
+            staff.email = $('#uemail').val();
+            staff.password = $('#upassword').val();
+            staff.phoneNumber = $('#uphoneNumber').val();
+            staff.status = $('#ustatus').val();
+            role.name = $('#urole').val();
+            staff.role = role;
+            $.ajax({
+                method: 'PUT',
+                url: 'staff/' + staff.id + '/update',
+                data: JSON.stringify(staff),
+                contentType: 'application/json',
+                success: function () {
+                    successWarning("Успешно обновлено");
+                    allStaffData = null;
+                    $("#jsGrid").jsGrid("render");
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        // Get current Staff ID
+        function getCurrentStaffID() {
+            $.ajax({
+                method: 'GET',
+                url: 'staff/get-current-staff-id',
+                async: false,
+                success: function (data) {
+                    currentStaffID = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return id;
+        }
+
+        // Get Staff
+        function getStaff(staffId) {
+            $.ajax({
+                method: 'GET',
+                url: 'staff/' + staffId + '/get-staff',
+                success: function (data) {
+                    $('#updateStaffModal').modal('toggle');
+                    $('#uid').val(data.id);
+                    $('#ufirstname').val(data.firstname);
+                    $('#uemail').val(data.email);
+                    $('#ulastname').val(data.lastname);
+                    $('#upassword').val('');
+                    $('#uphoneNumber').val(data.phoneNumber);
+                    $('#upasswordConfirm').val('');
+                    $('#urole').val(data.role.name);
+                    $('#ustatus').val(data.status);
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        // Remove Staff
+        function deleteStaff(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'staff/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            allStaffData = null;
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        jQuery.validator.addMethod("phoneUA", function (phone_number, element) {
+            return this.optional(element) || phone_number.length > 13 &&
+                phone_number.match(/^\+?3?8?(0[\s\.-]\d{2}[\s\.-]\d{3}[\s\.-]\d{2}[\s\.-]\d{2})$/);
+        });
+        let allStaffData = null;
+
         function jsGridInit() {
             jsGrid.locale("ru");
             $("#jsGrid").jsGrid({
                 width: '100%',
-                height: '100%',
                 autoload: true,
-                confirmDeleting: false,
-                onItemDeleting: function (args) {
-                    if (!args.item.deleteConfirmed) { // custom property for confirmation
-                        args.cancel = true; // cancel deleting
-                        askBeforeDeletion(function (isConfirmed) {
-                            if (isConfirmed) {
-                                args.item.deleteConfirmed = true;
-                                $("#jsGrid").jsGrid('deleteItem', args.item); //call deleting once more in callback
-                            }
+                filtering: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                paging: true,
+                pageSize: 10,
+                controller: {
+                    loadData: function (filter) {
+                        if (allStaffData == null) {
+                            $.ajax({
+                                method: 'GET',
+                                url: "staff/get-all",
+                                dataType: 'json',
+                                async: false,
+                                success: function (result) {
+                                    allStaffData = result;
+                                    console.log(result);
+                                }
+                            });
+                        }
+                        return $.grep(allStaffData, function (item) {
+                            return (filter.fullname === "" || (item.firstname + " " + item.lastname) === filter.fullname || item.firstname === filter.fullname || item.lastname === filter.fullname || item.firstname?.search(filter.fullname) > -1 || item.lastname?.search(filter.fullname) > -1 || item.firstname?.toLowerCase().search(filter.fullname) > -1 || item.lastname?.toLowerCase().search(filter.fullname) > -1)
+                                && (filter.role.name === "" || item.role.name === filter.role.name)
+                                && (filter.phoneNumber === "" || item.phoneNumber === filter.phoneNumber || item.phoneNumber?.search(filter.phoneNumber) > -1)
+                                && (filter.email === "" || item.email === filter.email || item.email.search(filter.email) > -1 || item.email.toLowerCase().indexOf(filter.email) !== -1)
+                                && (filter.status === "" || item.status === filter.status);
                         });
                     }
                 },
-
-                inserting: false,
-                editing: true,
-                sorting: true,
-                paging: false,
-                controller: {
-                    loadData: function (data) {
-                        return $.ajax({
-                            method: "GET",
-                            url: "staff/get-all",
-                            data: data,
-                            error: function (jqXHR, exception) {
-                                errorAction();
-                                ajaxError(jqXHR, exception);
-                            }
-                        });
-                    },
-                    updateItem: function (item) {
-                        return $.ajax({
-                            method: "POST",
-                            url: "transaction-purposes/update",
-                            data: item,
-                            success: function () {
-                                successAction("Успешно обновлено");
-                            },
-                            error: function (jqXHR, exception) {
-                                errorAction();
-                                ajaxError(jqXHR, exception);
-                            }
-                        });
-                    },
-                    deleteItem: function (item) {
-                        return $.ajax({
-                            method: "DELETE",
-                            url: "transaction-purposes/" + item.id + "/delete",
-                            success: function () {
-                                successAction("Успешно удалено");
-                            },
-                            error: function (jqXHR, exception) {
-                                errorAction();
-                                ajaxError(jqXHR, exception);
-                            }
-                        });
-                    },
-                },
-
                 fields: [
                     {
-                        name: "number", title: "#", type: "number", width: 10
+                        name: "number", align: "center", title: "#", type: "number", width: 10, filtering: false,
+                        itemTemplate: function (value, item) {
+                            return this._grid.data.indexOf(item) + 1;
+                        }
                     },
                     {
-                        name: "name", title: "Пользователь", type: "text"
+                        name: "fullname", title: "Пользователь", type: "text",
+                        itemTemplate: function (value, item) {
+                            return ((item.firstname || '') + ' ' + (item.lastname || ''));
+                        }
                     },
                     {
-                        name: "role", title: "Роль", type: "select"
+                        name: "role.name", title: "Роль", type: "select", align: "left",
+                        items: [
+                            {name: "", id: ""},
+                            {name: "Директор", id: "ROLE_DIRECTOR"},
+                            {name: "Управляющий", id: "ROLE_MANAGER"},
+                            {name: "Бухгалтер", id: "ROLE_ACCOUNTANT"},
+                            {name: "Электрик", id: "ROLE_ELECTRICIAN"},
+                            {name: "Сантехник", id: "ROLE_PLUMBER"}
+                        ],
+                        valueField: "id",
+                        textField: "name",
+                        valueType: "string",
+                        itemTemplate: function (value) {
+                            switch (value) {
+                                case "ROLE_DIRECTOR":
+                                    return "Директор";
+                                case "ROLE_MANAGER":
+                                    return "Управляющий";
+                                case "ROLE_ACCOUNTANT":
+                                    return "Бухгалтер";
+                                case "ROLE_ELECTRICIAN":
+                                    return "Электрик";
+                                case "ROLE_PLUMBER":
+                                    return "Сантехник";
+                            }
+                        }
                     },
                     {
                         name: "phoneNumber", title: "Телефон", type: "text"
@@ -217,14 +682,134 @@
                         name: "email", title: "Email (логин)", type: "text"
                     },
                     {
-                        name: "status", title: "Статус", type: "select", width: 30
+                        name: "status", title: "Статус", type: "select", align: "center", width: 30,
+                        items: [
+                            {name: "", id: ""},
+                            {name: "Новый", id: "NEW"},
+                            {name: "Активен", id: "ACTIVE"},
+                            {name: "Отключен", id: "INACTIVE"}
+                        ],
+                        valueField: "id",
+                        textField: "name",
+                        valueType: "string",
+                        itemTemplate: function (value) {
+                            switch (value) {
+                                case "NEW":
+                                    return "<small style='font-size: 0.8em' class=\"badge badge-warning text-center\">Новый</small>";
+                                case "ACTIVE":
+                                    return "<small style='font-size: 0.8em' class=\"badge badge-success text-center\">Активен</small>";
+                                case "INACTIVE":
+                                    return "<small style='font-size: 0.8em' class=\"badge badge-danger text-center\">Отключен</small>";
+                            }
+                        },
                     },
                     {
-                        type: "control"
+                        type: "control", width: 70,
+                        align: "center",
+                        modeSwitchButton: false,
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .attr({id: "clearButton"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#jsGrid").jsGrid("clearFilter");
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+
+                            let $inviteButton = $("<button>")
+                                .attr({class: "btn btn-info btn-flat btn-sm"})
+                                .attr({id: "btn-invite-" + item.id})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-envelope"}));
+
+                            let $updateButton = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({id: "btn-edit-" + item.id})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    getStaff(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-user-pen"}));
+
+                            let $deleteButton = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({id: "btn-delete-" + item.id})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteStaff(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+                            if (item.id === 1) $deleteButton.attr("disabled", true);
+                            if (item.id === currentStaffID) $deleteButton.attr("disabled", true);
+                            return [$inviteButton, $updateButton, $deleteButton];
+                        }
                     }
                 ]
             });
         }
+
+
+        $(".getNewPassAdd").click(function () {
+            $(this).parents('#addStaffModal').find('.pass-value').val(randString('input.pass-value'))
+            $("#addModalForm").valid();
+        });
+
+        $(".getNewPassUpdate").click(function () {
+            $(this).parents('#updateStaffModal').find('.pass-value').val(randString('input.pass-value'))
+            $("#updateModalForm").valid();
+        });
+
+        //  Generate password
+        function randString(id) {
+            var dataSet = $(id).attr('data-character-set').split(',');
+            var possible = '';
+            if ($.inArray('a-z', dataSet) >= 0) {
+                possible += 'abcdefghijklmnopqrstuvwxyz';
+            }
+            if ($.inArray('A-Z', dataSet) >= 0) {
+                possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            }
+            if ($.inArray('0-9', dataSet) >= 0) {
+                possible += '0123456789';
+            }
+            if ($.inArray('#', dataSet) >= 0) {
+                possible += '![]{}()%&*$#^<>~@|';
+            }
+            var text = '';
+            for (var i = 0; i < $(id).attr('data-size'); i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+
+        //  Show hide password inputs
+        $('#showPassAdd').on('click', function () {
+            let inputText = $('#addStaffModal').find('.pass-value');
+            if (inputText.prop('type') === 'password') {
+                inputText.prop('type', 'text');
+                $(this).children().removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                inputText.prop('type', 'password');
+                $(this).children().removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
+        //  Show hide password inputs
+        $('#showPassUpdate').on('click', function () {
+            let inputText = $('#updateStaffModal').find('.pass-value');
+            if (inputText.prop('type') === 'password') {
+                inputText.prop('type', 'text');
+                $(this).children().removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                inputText.prop('type', 'password');
+                $(this).children().removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
 
     </script>
 </th:block>

@@ -1,30 +1,36 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
-import avada.media.myhouse24_admin.model.common.Role;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "_user")
 @Data
-@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends MappedEntity {
 
     private String uniqueId;
     private String email;
     private String password;
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Role> roles = new HashSet<>();
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Profile profile;
-    @OneToMany
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Flat> flats = new ArrayList<>();
+    @CreationTimestamp
+    private Date createdAt;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    private boolean hasDebt;
 
 }

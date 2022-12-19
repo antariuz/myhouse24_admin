@@ -1,76 +1,73 @@
 <aside class="main-sidebar elevation-1 sidebar-light-teal">
-    <!-- Brand Logo -->
     <a href="/" class="brand-link logo-switch text-sm">
         <img src="/img/logo-mini.svg" alt="Мой Дом 24 Small" class="brand-image-xl logo-xs">
-        <!--   Refactor position of image to center     -->
         <img src="/img/logo.svg" alt="Мой Дом 24 Large" class="brand-image-xs logo-xl" style="left: 25%;">
     </a>
-    <!-- Sidebar -->
     <div class="sidebar os-theme-dark">
-        <!-- Sidebar Menu -->
         <nav class="pt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column text-sm nav-collapse-hide-child" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item">
+            <ul class="nav nav-pills nav-sidebar flex-column text-sm nav-collapse-hide-child" data-widget="treeview"
+                role="menu" data-accordion="false">
+                <li class="nav-item" sec:authorize="hasAuthority('STATISTICS') || hasRole('DIRECTOR')">
                     <a href="/statistics" class="nav-link">
                         <i class="nav-icon fa-solid fa-chart-line"></i>
                         <p>Статистика</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('TRANSACTIONS') || hasRole('DIRECTOR')">
+                    <a href="/transactions" class="nav-link">
                         <i class="nav-icon fa-solid fa-dollar-sign"></i>
                         <p>Касса</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('INVOICES') || hasRole('DIRECTOR')">
+                    <a href="/invoices" class="nav-link">
                         <i class="nav-icon fa-solid fa-file-invoice-dollar"></i>
                         <p>Квитанции на оплату</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('ACCOUNTS') || hasRole('DIRECTOR')">
+                    <a href="/accounts" class="nav-link">
                         <i class="nav-icon fa-solid fa-credit-card"></i>
                         <p>Лицевые счета</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('FLATS') || hasRole('DIRECTOR')">
+                    <a href="/flats" class="nav-link">
                         <i class="nav-icon fa-solid fa-key"></i>
                         <p>Квартиры</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('USERS') || hasRole('DIRECTOR')">
+                    <a href="/users" class="nav-link">
                         <i class="nav-icon fa-solid fa-users"></i>
                         <p>Владельцы квартир</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('BUILDINGS') || hasRole('DIRECTOR')">
+                    <a href="/buildings" class="nav-link">
                         <i class="nav-icon fa-solid fa-building"></i>
                         <p>Дома</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('MESSAGES') || hasRole('DIRECTOR')">
+                    <a href="/messages" class="nav-link">
                         <i class="nav-icon fa-solid fa-envelope"></i>
                         <p>Сообщения</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('MASTER_REQUESTS') || hasRole('DIRECTOR')">
+                    <a href="/master-requests" class="nav-link">
                         <i class="nav-icon fa-solid fa-screwdriver-wrench"></i>
                         <p>Заявки вызова мастера</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item" sec:authorize="hasAuthority('COUNTERS') || hasRole('DIRECTOR')">
+                    <a href="/counters" class="nav-link">
                         <i class="nav-icon fa-solid fa-gauge"></i>
                         <p>Показания счётчиков</p>
                     </a>
                 </li>
-                <li class="nav-item" id="web">
+                <li class="nav-item" id="web" sec:authorize="hasAuthority('WEBSITE_CONTROL') || hasRole('DIRECTOR')">
                     <a class="nav-link">
                         <i class="nav-icon fa-solid fa-desktop"></i>
                         <p>Управление сайтом
@@ -79,13 +76,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/website-control/main-page-admin" class="nav-link">
+                            <a href="/website-control/web-main" class="nav-link">
                                 <i class="fa-regular fa-circle"></i>
                                 <p>Главная страница</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/about-us-admin" class="nav-link">
+                            <a href="/website-control/web-about-us" class="nav-link">
                                 <i class="fa-regular fa-circle"></i>
                                 <p>О нас</p>
                             </a>
@@ -96,12 +93,6 @@
                                 <p>Услуги</p>
                             </a>
                         </li>
-                        <!--                        <li class="nav-item">-->
-                        <!--                            <a href="#" class="nav-link">-->
-                        <!--                                <i class="fa-regular fa-circle"></i>-->
-                        <!--                                <p>Тарифы</p>-->
-                        <!--                            </a>-->
-                        <!--                        </li>-->
                         <li class="nav-item">
                             <a href="/website-control/web-feedback" class="nav-link">
                                 <i class="fa-regular fa-circle"></i>
@@ -118,37 +109,43 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="/system-settings/admin-service" class="nav-link">
+                        <li class="nav-item"
+                            sec:authorize="hasAuthority('SYSTEM_SETTINGS_SERVICES') || hasRole('DIRECTOR')">
+                            <a href="/system-settings/services" class="nav-link">
                                 <i class="fa-solid fa-briefcase"></i>
                                 <p>Услуги</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
+                        <li class="nav-item"
+                            sec:authorize="hasAuthority('SYSTEM_SETTINGS_TARIFFS') || hasRole('DIRECTOR')">
+                            <a href="/system-settings/tariffs" class="nav-link">
                                 <i class="fa-solid fa-money-bill"></i>
                                 <p>Тарифы</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item"
+                            sec:authorize="hasAuthority('SYSTEM_SETTINGS_ROLES') || hasRole('DIRECTOR')">
                             <a href="/system-settings/roles" class="nav-link">
                                 <i class="fa-solid fa-user-tie"></i>
                                 <p>Роли</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item"
+                            sec:authorize="hasAuthority('SYSTEM_SETTINGS_STAFF') || hasRole('DIRECTOR')">
                             <a href="/system-settings/staff" class="nav-link">
                                 <i class="fa-solid fa-user-plus"></i>
                                 <p>Пользователи</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item"
+                            sec:authorize="hasAuthority('SYSTEM_SETTINGS_PAYMENT_DETAILS') || hasRole('DIRECTOR')">
                             <a href="/system-settings/payment-details" class="nav-link">
                                 <i class="fa-solid fa-credit-card"></i>
                                 <p>Платежные реквизиты</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item"
+                            sec:authorize="hasAuthority('SYSTEM_SETTINGS_TRANSACTION_PURPOSES') || hasRole('DIRECTOR')">
                             <a href="/system-settings/transaction-purposes" class="nav-link">
                                 <i class="fa-solid fa-list-ol"></i>
                                 <p>Статьи платежей</p>
@@ -158,7 +155,5 @@
                 </li>
             </ul>
         </nav>
-        <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
 </aside>

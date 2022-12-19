@@ -2,7 +2,8 @@
 
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link border-right" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            <a class="nav-link border-right" data-widget="pushmenu" href="#" role="button"><i
+                    class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <span class="nav-link active">Панель администратора</span>
@@ -13,49 +14,61 @@
 
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="fa fa-child fa-lg"></i>
-                <span class="badge badge-warning">15</span>
+                <i class="fa-solid fa-child-reaching fa-lg"></i>
+                <span class="badge badge-warning" hidden></span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">15 новых пользователей</span>
+                <span class="dropdown-item dropdown-header">загрузка данных...</span>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-envelope mr-2"></i> Bla bla bla
-                    <span class="float-right text-muted text-sm">3 mins</span>
-                </a>
+                <div id="new-users-row" style="max-height: 111px" class="overflow-auto"></div>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> Bla bla bla
-                    <span class="float-right text-muted text-sm">12 hours</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i> Bla bla bla
-                    <span class="float-right text-muted text-sm">2 days</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer">Перейти в раздел пользователей</a>
+                <a href="/users" class="dropdown-item dropdown-footer">Перейти в раздел пользователей</a>
             </div>
         </li>
         <li class="nav-item dropdown user-menu">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                 <i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i>
-                <!--                <img src="/img/default_avatar.png" class="user-image img-circle elevation-2" alt="User Image">-->
-                <span class="d-none d-md-inline">Администратор</span>
+                <span class="d-none d-md-inline">
+                     <th:block th:each="authority : ${#authentication.getAuthorities()}">
+                         <th:block th:switch="${authority.getAuthority()}">
+                             <th:block th:case="'ROLE_DIRECTOR'">Директор</th:block>
+                             <th:block th:case="'ROLE_MANAGER'">Управляющий</th:block>
+                             <th:block th:case="'ROLE_ACCOUNTANT'">Бухгалтер</th:block>
+                             <th:block th:case="'ROLE_ELECTRICIAN'">Электрик</th:block>
+                             <th:block th:case="'ROLE_PLUMBER'">Сантехник</th:block>
+                        </th:block>
+                     </th:block>
+                </span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <ul class="dropdown-menu">
 
                 <li class="user-header bg-warning">
                     <i class="fa fa-user-circle text-purple bg-gray-light img-circle" style="font-size: 78px"></i>
-                    <!--                    <img src="/img/default_avatar.png" class="img-circle elevation-2" alt="User Image">-->
                     <p>
-                        Администратор (Директор)
-                        <small>Зарегистрирован с 2012</small>
+                        <th:block th:each="authority : ${#authentication.getAuthorities()}">
+                            <th:block th:switch="${authority.getAuthority()}">
+                                <th:block th:case="'ROLE_DIRECTOR'"
+                                          th:text="${#authentication.getName + ' (Директор)'}"></th:block>
+                                <th:block th:case="'ROLE_MANAGER'"
+                                          th:text="${#authentication.getName + ' (Управляющий)'}"></th:block>
+                                <th:block th:case="'ROLE_ACCOUNTANT'"
+                                          th:text="${#authentication.getName + ' (Бухгалтер)'}"></th:block>
+                                <th:block th:case="'ROLE_ELECTRICIAN'"
+                                          th:text="${#authentication.getName + ' (Электрик)'}"></th:block>
+                                <th:block th:case="'ROLE_PLUMBER'"
+                                          th:text="${#authentication.getName + ' (Сантехник)'}"></th:block>
+                            </th:block>
+                        </th:block>
                     </p>
                 </li>
                 <li class="user-footer">
-                    <a href="#" class="btn btn-default btn-flat">Профиль</a>
-                    <a href="#" class="btn btn-default btn-flat float-right" data-method="post" th:href="@{/logout}">Выход</a>
+                    <form th:action="@{/logout}" method="post">
+                        <a href="/system-settings/staff" class="btn btn-outline-secondary"><i
+                                class="fa-solid fa-user-pen"></i> Профиль</a>
+                        <button class="btn btn-outline-secondary float-right" type="submit">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Выход
+                        </button>
+                    </form>
                 </li>
             </ul>
         </li>

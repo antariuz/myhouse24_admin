@@ -1,13 +1,15 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
+import avada.media.myhouse24_admin.model.systemSettings.pages.Tariff;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,30 +18,32 @@ import java.util.List;
 @NoArgsConstructor
 public class Invoice extends MappedEntity {
 
-    private String number;
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDate createDate;
-    @ManyToOne
-    private Building building;
+    private String uniqueNumber;
+    private Date requestedDate;
     @ManyToOne
     private User user;
     @ManyToOne
     private Flat flat;
     @ManyToOne
     private Account account;
+    @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne
     private Tariff tariff;
-    private LocalDate periodStart;
-    private LocalDate periodEnd;
+    private Date periodStart;
+    private Date periodEnd;
     @OneToMany
     private List<InvoiceService> invoiceService = new ArrayList<>();
+    private boolean used;
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Status {
-        PAID,
-        PARTLY_PAID,
-        UNPAID
+        PAID("Оплачена"),
+        PARTLY_PAID("Частично оплачена"),
+        UNPAID("Неоплачена");
+
+        private final String title;
     }
 
 }

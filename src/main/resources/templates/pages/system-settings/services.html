@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Редактирование услуг</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Настройки системы</li>
+                <li class="breadcrumb-item active">Услуги</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row pt-3">
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <form id="services-form">
+                    <div class="card-body">
+                        <div class="card card-primary card-outline card-outline-tabs">
+                            <div class="card-header p-0 border-bottom-0">
+                                <ul class="nav nav-tabs" id="tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="services-tab" data-toggle="pill" href="#services"
+                                           role="tab"
+                                           aria-controls="services" aria-selected="true">Услуги</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="units-tab" data-toggle="pill" href="#units"
+                                           role="tab" aria-controls="units" aria-selected="false">Единицы измерения</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content" id="tabs-content">
+                                    <div class="tab-pane fade active show" id="services" role="tabpanel"
+                                         aria-labelledby="services-tab">
+                                        <div class="row" id="service-block-rows"></div>
+                                        <div class="row pt-3">
+                                            <div class="col-12 text-center">
+                                                <button type="button" class="btn btn-secondary" id="addServiceButton">
+                                                    Добавить
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="units" role="tabpanel"
+                                         aria-labelledby="units-tab">
+                                        <div class="row" id="unit-block-rows"></div>
+                                        <div class="row pt-3">
+                                            <div class="col-12 text-center">
+                                                <button type="button" class="btn btn-secondary" id="addUnitButton">
+                                                    Добавить
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/system-settings/services">Отменить</a>
+                                <button type="submit" class="btn btn-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+        let serviceCount = 0;
+        let unitCount = 0;
+        let allServices = null;
+        let allUnits = null;
+
+        //First initialization
+        $(document).ready(function () {
+            getAllUnits();
+            getAllServices();
+        });
+
+        //Get List<Service>
+        function getAllServices() {
+            $.ajax({
+                method: 'GET',
+                url: 'services/get-all-services',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    allServices = data;
+                    let place = $('#service-block-rows');
+                    place.empty();
+                    $(data).each(function (index, element) {
+                        serviceCount++;
+                        index++;
+                        place.append(
+                            '<div class="col-6 pt-3 service-block">' +
+                            '        <div class="row">' +
+                            '            <input type="hidden" class="form-control service-id" value="' + element.id + '">' +
+                            '            <div class="col-8">' +
+                            '                <div class="form-group">' +
+                            '                    <label for="service-' + serviceCount + '">Услуга</label>' +
+                            '                    <div class="input-group">' +
+                            '                        <input type="text" class="form-control service-name required" name="service-name-' + serviceCount + '"' +
+                            '                               id="service-' + serviceCount + '" value="' + element.name + '">' +
+                            '                    </div>' +
+                            '                </div>' +
+                            '            </div>' +
+                            '            <div class="col-4 service">' +
+                            '                <div class="form-group">' +
+                            '                    <label for="unit-block-' + serviceCount + '">Ед. изм.</label>' +
+                            '                    <div class="input-group">' +
+                            '                        <select class="custom-select service-unit-id" id="select-service-' + index + '"></select>   ' +
+                            '                        <div class="input-group-append">' +
+                            '                            <button type="button" class="btn btn-secondary remove-service-button"' + (element.used === true ? "disabled" : "") + '>' +
+                            '                                <i class="fa-solid fa-trash-can"></i>' +
+                            '                            </button>' +
+                            '                        </div>' +
+                            '                    </div>' +
+                            '                </div>' +
+                            '            </div>' +
+                            '        </div>' +
+                            '        <div class="row">' +
+                            '            <div class="col-12">' +
+                            '                <div class="custom-control custom-checkbox">' +
+                            '                    <input class="custom-control-input service-show-in-counter" type="checkbox" id="service-show-in-counter-' + serviceCount + '"' + (element.showInCounters ? "checked" : "") + '>' +
+                            '                    <label for="service-show-in-counter-' + serviceCount + '" class="custom-control-label">Показывать в счетчиках</label>' +
+                            '                </div>' +
+                            '            </div>' +
+                            '        </div>' +
+                            '    </div>'
+                        );
+                        $.each(allUnits, function (i, element) {
+                            $('#select-service-' + index).append('<option value="' + element.id + '">' + element.name + '</option>');
+                        });
+                        $('#select-service-' + index).val(element.unit.id);
+                    });
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        // Add new block of Service
+        $(document).on('click', '#addServiceButton', function () {
+            serviceCount++;
+            $('#service-block-rows').append(
+                '<div class="col-6 pt-3 service-block">' +
+                '        <div class="row">' +
+                '            <input type="hidden" class="form-control service-id" value="">' +
+                '            <div class="col-8">' +
+                '                <div class="form-group">' +
+                '                    <label for="service-' + serviceCount + '">Услуга</label>' +
+                '                    <div class="input-group">' +
+                '                        <input type="text" class="form-control service-name required" name="service-name-' + serviceCount + '"' +
+                '                               id="service-' + serviceCount + '">' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '            <div class="col-4 service">' +
+                '                <div class="form-group">' +
+                '                    <label for="unit-block-' + serviceCount + '">Ед. изм.</label>' +
+                '                    <div class="input-group">' +
+                '                        <select class="custom-select service-unit-id" id="select-service-' + serviceCount + '"></select>   ' +
+                '                        <div class="input-group-append">' +
+                '                            <button type="button" class="btn btn-secondary remove-service-button">' +
+                '                                <i class="fa-solid fa-trash-can"></i>' +
+                '                            </button>' +
+                '                        </div>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '        <div class="row">' +
+                '            <div class="col-12">' +
+                '                <div class="custom-control custom-checkbox">' +
+                '                    <input class="custom-control-input service-show-in-counter" type="checkbox" id="service-show-in-counter-' + serviceCount + '">' +
+                '                    <label for="service-show-in-counter-' + serviceCount + '" class="custom-control-label">Показывать в счетчиках</label>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '    </div>'
+            );
+            $.each(allUnits, function (i, element) {
+                $('#select-service-' + serviceCount).append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+        });
+
+        //  Get List<Units>
+        function getAllUnits() {
+            $.ajax({
+                method: 'GET',
+                url: 'services/get-all-units',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    allUnits = data;
+                    let place = $('#unit-block-rows');
+                    place.empty();
+                    $(data).each(function (index, element) {
+                        unitCount++;
+                        place.append(
+                            '<div class="col-3 unit-block">' +
+                            '   <input type="hidden" class="form-control unit-id" value="' + element.id + '">' +
+                            '   <div class="form-group">' +
+                            '       <label for="unit-' + unitCount + '">Ед. изм.</label>' +
+                            '       <div class="input-group">' +
+                            '           <input type="text" class="form-control unit-name required" name="name-' + unitCount + '" id="unit-' + unitCount + '" value="' + element.name + '">' +
+                            '           <div class="input-group-append">' +
+                            '                   <button type="button" class="btn btn-secondary remove-unit-button"' + (element.used === true ? "disabled" : "") + '>' +
+                            '                       <i class="fa-solid fa-trash-can"></i>' +
+                            '                   </button>' +
+                            '           </div>' +
+                            '       </div>' +
+                            '   </div>' +
+                            '</div>'
+                        );
+                    });
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Add new block of Unit
+        $(document).on('click', '#addUnitButton', function () {
+            unitCount++;
+            $('#unit-block-rows').append(
+                '<div class="col-3 unit-block">' +
+                '   <input type="hidden" class="form-control unit-id">' +
+                '   <div class="form-group">' +
+                '       <label for="unit-' + unitCount + '">Ед. изм.</label>' +
+                '       <div class="input-group">' +
+                '           <input type="text" class="form-control unit-name required" name="name-' + unitCount + '" id="unit-' + unitCount + '">' +
+                '           <div class="input-group-append">' +
+                '                   <button type="button" class="btn btn-secondary remove-unit-button">' +
+                '                       <i class="fa-solid fa-trash-can"></i>' +
+                '                   </button>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>' +
+                '</div>'
+            );
+        });
+
+        // Remove the block of Unit
+        $(document).on('click', '.remove-unit-button', function () {
+            let formGroup = $(this).parents('div.unit-block');
+            let unitId = formGroup.find('input.unit-id').val();
+            if (unitId === undefined || unitId === '') {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        unitCount--;
+                        $(formGroup).remove();
+                        successWarning('Успешно удалено');
+                    }
+                })
+            } else {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            method: 'DELETE',
+                            url: 'services/units/' + unitId + '/delete',
+                            success: function () {
+                                successWarning('Успешно удалено');
+                                getAllUnits();
+                                getAllServices();
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        // Remove the block of Service
+        $(document).on('click', '.remove-service-button', function () {
+            let formGroup = $(this).parents('div.service-block');
+            let serviceId = formGroup.find('input.service-id').val();
+            if (serviceId === undefined || serviceId === '') {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        serviceCount--;
+                        $(formGroup).remove();
+                        successWarning('Успешно удалено');
+                    }
+                })
+            } else {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            method: 'DELETE',
+                            url: 'services/' + serviceId + '/delete',
+                            success: function () {
+                                successWarning('Успешно удалено');
+                                getAllUnits();
+                                getAllServices();
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        $("#services-form").validate({
+            messages: {
+                required: "Введите единицу измерения"
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        $.validator.messages.required = 'Введите единицу измерения';
+
+        //Action on Save button
+        function saveAction() {
+            let isOk = true;
+
+            let units = [];
+            $('div.unit-block').each(function (index, element) {
+                let unit = {};
+                unit.id = $(element).find('input.unit-id').val();
+                unit.name = $(element).find('input.unit-name').val();
+                units.push(unit);
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: 'services/save-units',
+                data: JSON.stringify(units),
+                contentType: 'application/json',
+                success: function () {
+                    getAllUnits();
+
+                    let services = [];
+                    $('div.service-block').each(function (index, element) {
+                        let service = {};
+                        service.id = $(element).find('input.service-id').val();
+                        service.name = $(element).find('input.service-name').val();
+                        service.showInCounters = $(element).find('input.service-show-in-counter').is(':checked');
+                        service.unit = $(element).find('select.service-unit-id').val() ? {id: $(element).find('select.service-unit-id').val()} : null;
+
+                        services.push(service);
+                    });
+                    if (services.length > 0) {
+                        $.ajax({
+                            method: 'POST',
+                            url: 'services/save-services',
+                            data: JSON.stringify(services),
+                            contentType: 'application/json',
+                            success: function () {
+                                getAllServices();
+                                getAllUnits();
+                            },
+                            error: function (jqXHR, exception) {
+                                isOk = false;
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        })
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    isOk = false;
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            if (isOk) successWarning('Успешно сохранено');
+        }
+
+    </script>
+</th:block>
+
+</html>

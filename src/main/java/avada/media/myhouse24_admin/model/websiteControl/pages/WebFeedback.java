@@ -1,7 +1,7 @@
 package avada.media.myhouse24_admin.model.websiteControl.pages;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
-import avada.media.myhouse24_admin.model.websiteControl.extra.Seo;
+import avada.media.myhouse24_admin.model.common.Seo;
 import lombok.Data;
 
 import javax.persistence.*;

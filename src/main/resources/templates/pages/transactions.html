@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Касса</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active" id="last-breadcrumb">Касса</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="table">
+        <div class="col-4">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Состояние кассы</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Баланс по счетам</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Задолженность по счетам</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div id="jsGrid"></div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12" id="balances">
+                        Проведен приход: <b></b> грн.<br>
+                        Проведен расход: <b></b> грн.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="newOrEdit" hidden>
+        <div class="col-12">
+            <form id="form">
+                <div class="row">
+                    <input type="hidden" class="form-control ignore" id="id">
+                    <div class="col-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">№</span>
+                            </div>
+                            <input type="text" class="form-control" id="uniqueNumber" name="uniqueNumber">
+                        </div>
+                    </div>
+                    <div class="col-auto text-center" style="margin-top: 6px">
+                        <span>от</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="requestedDate"
+                                       name="requestedDate"
+                                       data-target="#requestedDate"/>
+                                <div class="input-group-append" data-target="#requestedDate"
+                                     data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa-solid fa-calendar-days"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-outline card-secondary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="user">Владелец квартиры</label>
+                                            <select class="form-control ignore" id="user"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="account">Лицевой счет</label>
+                                            <select class="form-control ignore" id="account"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="transactionPurpose">Статья</label>
+                                            <select class="custom-select ignore" id="transactionPurpose">
+                                                <option value="">Выберите...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="amount">Сумма</label>
+                                            <input type="number" class="form-control" step="0.01" min="0" id="amount"
+                                                   name="amount">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="staff">Менеджер</label>
+                                            <select class="custom-select ignore" id="staff">
+                                                <option value="">Выберите...</option>
+                                            </select>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" id="is-used" checked>
+                                            <label for="is-used" class="custom-control-label">Проведен</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="comment">Комментарий</label>
+                                            <textarea class="form-control" rows="5"
+                                                      placeholder="Оставьте комментарий..."
+                                                      id="comment"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <a class="btn btn-secondary" href="/transactions">Отменить</a>
+                                        <button type="submit" class="btn btn-success">Сохранить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show" hidden>
+        <div class="col-3">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">№</span>
+                </div>
+                <input type="text" class="form-control" id="show-unique-number" readonly>
+            </div>
+        </div>
+        <div class="col-auto text-center" style="margin-top: 6px">
+            <span>от</span>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <div class="input-group date">
+                    <input type="text" class="form-control" id="show-requestedDate" readonly>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa-solid fa-calendar-days"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-sm btn-secondary">Копировать</button>
+                        <button type="button" class="btn btn-sm btn-secondary">Удалить</button>
+                        <button type="button" onclick="editAction(currentItem);" class="btn btn-sm btn-info">
+                            Редактировать заявку
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary">Выгрузить в Excel</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row pt-3">
+                        <div class="col-12">
+                            <table class="table table-hover table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td style="width: 50%"><b>Владелец квартиры</b></td>
+                                    <td id="show-user"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Лицевой счет</b></td>
+                                    <td id="show-account"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Статья</b></td>
+                                    <td id="show-purpose"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Квитанция</b></td>
+                                    <td id="show-invoice"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Услуга</b></td>
+                                    <td id="show-service"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Менеджер</b></td>
+                                    <td id="show-staff"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Сумма</b></td>
+                                    <td id="show-amount"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Комментарий</b></td>
+                                    <td id="show-comment"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/transactions">Вернуться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script type="application/javascript">
+
+        let currentItem;
+        let currentType;
+        let stompClient = Stomp.over(new SockJS('/websocket'));
+        let h3Amounts = $('div.small-box').find('h3');
+        let balances = $('#balances').children('b');
+        let currentFilter;
+        let currentData = [];
+
+        function connect() {
+            stompClient.connect({}, function () {
+                stompClient.subscribe('/data/transactions-balance', function (amount) {
+                    $(h3Amounts[0]).html("<h3>" + formatter.format(JSON.parse(amount.body)) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+                });
+                stompClient.subscribe('/data/accounts-balance', function (amount) {
+                    $(h3Amounts[1]).html("<h3>" + formatter.format(JSON.parse(amount.body)) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+                });
+                stompClient.subscribe('/data/accounts-debt', function (amount) {
+                    $(h3Amounts[2]).html("<h3>" + formatter.format(JSON.parse(amount.body)) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+                });
+                stompClient.subscribe('/data/transaction-amounts-sum-IN', function (amount) {
+                    $(balances[0]).text(formatter.format(JSON.parse(amount.body)));
+                });
+                stompClient.subscribe('/data/transaction-amounts-sum-OUT', function (amount) {
+                    $(balances[1]).text(formatter.format(JSON.parse(amount.body)));
+                });
+                stompClient.subscribe('/data/new-transaction', function (id) {
+                    $("#jsGrid").jsGrid("render");
+                });
+                stompClient.subscribe('/data/updated-transaction', function (id) {
+                    console.log(currentData.find(transaction => transaction.id === id));
+                    if (currentData.find(transaction => transaction.id === JSON.parse(id.body)) !== undefined) {
+                        $("#jsGrid").jsGrid("render");
+                    }
+                });
+                stompClient.subscribe('/data/deleted-transaction', function (id) {
+                    $("#jsGrid").jsGrid("render");
+                });
+            });
+        }
+
+        $(document).ready(function () {
+            connect();
+            jsGridInit();
+            initUserSelect();
+            initAccountSelect();
+            let balancesData = getAllTransactionBalancesData();
+            $(balances[0]).text(formatter.format(balancesData.transactionAmountsSumByInType));
+            $(balances[1]).text(formatter.format(balancesData.transactionAmountsSumByOutType));
+            $(h3Amounts[0]).html("<h3>" + formatter.format(balancesData.transactionAmountsSumByInType - balancesData.transactionAmountsSumByOutType) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            $(h3Amounts[1]).html("<h3>" + formatter.format(getAllAccountsBalance()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            $(h3Amounts[2]).html("<h3>" + formatter.format(getAllAccountsDebt()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+        });
+
+        //  Get new number of transaction
+        function getNewUniqueNumber() {
+            let transactionNumber;
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-new-unique-number",
+                async: false,
+                success: function (data) {
+                    transactionNumber = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return transactionNumber;
+        }
+
+        //  Get Transaction-purposes by type
+        function getTransactionPurposesByType() {
+            let transactionPurposes = [];
+            $.ajax({
+                method: "GET",
+                url: "system-settings/transaction-purposes/get-all-by-type",
+                async: false,
+                data: {type: currentType},
+                success: function (data) {
+                    transactionPurposes = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return transactionPurposes;
+        }
+
+        //  Get all staff except INACTIVE
+        function getAllStaffExceptInactive() {
+            let staff = [];
+            $.ajax({
+                method: "GET",
+                url: "system-settings/staff/get-all-staff",
+                async: false,
+                success: function (data) {
+                    staff = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return staff;
+        }
+
+        //  Get all types
+        function getAllTypes() {
+            let types = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-types",
+                async: false,
+                success: function (data) {
+                    types = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return types;
+        }
+
+        //  Get all Transaction Purposes
+        function getAllTransactionPurposes() {
+            let transactionPurposes = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-transaction-purposes",
+                async: false,
+                success: function (data) {
+                    transactionPurposes = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return transactionPurposes;
+        }
+
+        //  Get all Transaction Balances data
+        function getAllTransactionBalancesData() {
+            let transactionBalancesData = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-transaction-balances-data",
+                async: false,
+                success: function (data) {
+                    transactionBalancesData = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return transactionBalancesData;
+        }
+
+        //  Get All Accounts Balance
+        function getAllAccountsBalance() {
+            let accountsBalance = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-accounts-balance",
+                async: false,
+                success: function (data) {
+                    accountsBalance = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return accountsBalance;
+        }
+
+        //  Get All Accounts Debt
+        function getAllAccountsDebt() {
+            let accountsDebt = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-accounts-debt",
+                async: false,
+                success: function (data) {
+                    accountsDebt = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return accountsDebt;
+        }
+
+        function initUserSelect() {
+            $('#user').select2({
+                allowClear: true,
+                ajax: {
+                    url: "users/search-user",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Выберите...'
+            });
+            $('#filterUser').select2({
+                allowClear: true,
+                ajax: {
+                    url: "users/search-user",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ''
+            });
+        }
+
+        function initAccountSelect() {
+            $('#account').select2({
+                allowClear: true,
+                ajax: {
+                    url: "accounts/search-account",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || "",
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Выберите...'
+            });
+            $('#filterAccount').select2({
+                allowClear: true,
+                ajax: {
+                    url: "accounts/search-account",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || "",
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.term = "1";
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ''
+            });
+        }
+
+        //  Add new account action
+        function addNewTransaction(type) {
+            currentType = type;
+            let pageTitle;
+            if (type === "IN") pageTitle = "Новая приходная ведомость";
+            else {
+                pageTitle = "Новая расходная ведомость";
+                $('#user').parents('div.form-group').attr("hidden", true);
+                $('#account').parents('div.form-group').attr("hidden", true);
+            }
+            $('#uniqueNumber').val(getNewUniqueNumber());
+            $.each(getTransactionPurposesByType(), function (i, element) {
+                $('#transactionPurpose').append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+            $.each(getAllStaffExceptInactive(), function (i, element) {
+                $('#staff').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+            $('#requestedDate').datetimepicker({
+                locale: 'ru',
+                format: 'L',
+                allowInputToggle: true,
+                defaultDate: moment().format(),
+                useCurrent: false
+            });
+
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Edit button action
+        function editAction(item) {
+            currentType = item.type.value;
+            $('#id').val(item.id);
+            $('#uniqueNumber').val(item.uniqueNumber);
+            $('#requestedDate')
+                .val(new Date(item.requestedDate).toLocaleDateString('ru'))
+                .datetimepicker({
+                    locale: 'ru',
+                    format: 'L',
+                    allowInputToggle: true,
+                    defaultDate: moment().format(),
+                    useCurrent: false
+                });
+            if (item.user) {
+                $('#user').append('<option value="' + item.user.id + '">' + item.user.fullName + '</option>');
+            }
+            $.each(getAllStaffExceptInactive(), function (i, element) {
+                $('#staff').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+            $('#staff').val(item.staff?.id);
+            if (item.account) {
+                $('#account').append('<option value="' + item.account.id + '">' + item.account.uniqueNumber + '</option>');
+            }
+            $.each(getTransactionPurposesByType(), function (i, element) {
+                $('#transactionPurpose').append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+            $('#transactionPurpose').val(item.transactionPurpose?.id);
+            $('#is-used').attr("checked", item.used);
+            $('#amount').val(item.amount);
+            $('#comment').val(item.comment);
+
+            let pageTitle;
+            if (item.type.value === "IN") pageTitle = "Приходная ведомость";
+            else {
+                pageTitle = "Расходная ведомость";
+                $('#user').parents('div.form-group').attr("hidden", true);
+                $('#account').parents('div.form-group').attr("hidden", true);
+            }
+            let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Row click action
+        function rowClickAction(item) {
+            $('#show-unique-number').val(item.uniqueNumber);
+            $('#show-requestedDate').val(new Date(item.requestedDate).toLocaleDateString('ru'));
+            $('#show-user').append(item.user?.fullName);
+            $('#show-account').append(item.account?.uniqueNumber);
+            $('#show-purpose').append(item.transactionPurpose?.name);
+            $('#show-invoice').append();
+            $('#show-service').append();
+            $('#show-staff').append(item.staff?.fullName);
+            if (item.type.value === "IN") $('#show-amount').append('<span style="color: green">' + item.amount + '</span>');
+            else $('#show-amount').append('<span style="color: red">- ' + item.amount + '</span>');
+            $('#show-comment').append(item.comment);
+
+            let pageTitle;
+            if (item.type.value === "IN") pageTitle = "Приходная ведомость";
+            else pageTitle = "Расходная ведомость";
+            let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', true);
+            $('#show').attr('hidden', false);
+
+            currentItem = item;
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'transactions/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        //  Validation
+        $('#form').validate({
+            ignore: ".ignore",
+            rules: {
+                uniqueNumber: {
+                    required: true,
+                    number: true,
+                    min: 0,
+                    remote: {
+                        url: "transactions/is-unique-number-not-exists",
+                        method: "POST",
+                        async: false,
+                        data: {
+                            id: function () {
+                                return $('#id').val();
+                            },
+                            uniqueNumber: function () {
+                                return $("#uniqueNumber").val();
+                            }
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    }
+                },
+                requestedDate: {
+                    required: true
+                },
+                amount: {
+                    required: true
+                }
+            },
+            messages: {
+                uniqueNumber: {
+                    required: "Введите номер ведомости",
+                    number: "Пожалуйста, введите корректное число",
+                    min: "Пожалуйста, введите положительное число",
+                    remote: "Этот номер ведомости уже занят. Пожалуйста, укажите другой"
+                },
+                requestedDate: {
+                    required: "Укажите дату"
+                },
+                amount: {
+                    required: "Укажите сумму"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        //  Add button action
+        function saveAction() {
+            let transaction = {};
+            transaction.id = $('#id').val();
+            transaction.uniqueNumber = $('#uniqueNumber').val();
+            let date = $('#requestedDate').val();
+            transaction.requestedDate = new Date(date.split('.')[2], (date.split('.')[1] - 1), date.split('.')[0]);
+            transaction.user = $('#user').val() ? {id: $('#user').val()} : null;
+            transaction.staff = $('#staff').val() ? {id: $('#staff').val()} : null;
+            transaction.account = $('#account').val() ? {id: $('#account').val()} : null;
+            transaction.used = $('#is-used').is(':checked');
+            transaction.transactionPurpose = $('#transactionPurpose').val() ? {id: $('#transactionPurpose').val()} : null;
+            transaction.amount = $('#amount').val();
+            transaction.comment = $('#comment').val();
+            transaction.type = {value: currentType};
+
+            if (transaction.id) {
+                $.ajax({
+                    method: 'PUT',
+                    url: 'transactions/' + transaction.id + '/update',
+                    contentType: 'application/json',
+                    data: JSON.stringify(transaction),
+                    success: function () {
+                        successWarning('Успешно обновлено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'transactions/save',
+                    contentType: 'application/json',
+                    data: JSON.stringify(transaction),
+                    success: function () {
+                        successWarning('Успешно сохранено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            }
+        }
+
+        $(document).on('change', '#filterRequestedDate, #filterUser, #filterAccount', function () {
+            $("#jsGrid").jsGrid("search");
+        });
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: true,
+                rowClick: function (args) {
+                    rowClickAction(args.item);
+                },
+                controller: {
+                    loadData: function (filter) {
+                        currentFilter = filter;
+                        return $.ajax({
+                            method: "GET",
+                            url: "transactions/get-all-transactions",
+                            data: filter,
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                currentData = data.data;
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "uniqueNumber", title: "№", type: "text", width: "10%", sorting: false,
+                    },
+                    {
+                        name: "requestedDate", title: "Дата", type: "text", width: "5%",
+                        itemTemplate: function (item) {
+                            return new Date(item).toLocaleDateString("ru");
+                        },
+                        filterTemplate: function () {
+                            return $('<input>').attr({type: "date", id: "filterRequestedDate"});
+                        },
+                        filterValue: function () {
+                            return $('#filterRequestedDate').val();
+                        }
+                    },
+                    {
+                        name: "used", title: "Статус", type: "select", width: "7%", sorting: false,
+                        items: [
+                            {title: "", value: ""},
+                            {title: "Проведен", value: true},
+                            {title: "Не проведен", value: false},
+                        ],
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            return item ? "Проведен" : "Не проведен";
+                        },
+                    },
+                    {
+                        name: "transactionPurpose", title: "Тип платежа", type: "select", width: "15%", sorting: false,
+                        items: [{id: "", name: ""}].concat(getAllTransactionPurposes()),
+                        valueField: "id",
+                        textField: "name",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            return item?.name;
+                        },
+                    },
+                    {
+                        name: "user", title: "Владелец", type: "select", width: "15%", sorting: false,
+                        items: [],
+                        valueField: "id",
+                        textField: "fullName",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) return item.fullName;
+                            else return "";
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterUser"});
+                        },
+                        filterValue: function () {
+                            return $('#filterUser').val();
+                        }
+                    },
+                    {
+                        name: "account", title: "Лицевой счет", type: "select", width: "15%", sorting: false,
+                        items: [],
+                        valueField: "id",
+                        textField: "uniqueNumber",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) return item.uniqueNumber;
+                            else return "";
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterAccount"});
+                        },
+                        filterValue: function () {
+                            return $('#filterAccount').val();
+                        }
+                    },
+                    {
+                        name: "type", title: "Приход/расход", type: "select", width: "10%", sorting: false,
+                        items: [{id: "", name: ""}].concat(getAllTypes()),
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            if (item.value === 'IN') return '<span style="color: green">' + item.title + '</span>';
+                            else return '<span style="color: red">' + item.title + '</span>';
+                        }
+                    },
+                    {
+                        name: "amount",
+                        title: "Сумма (грн)",
+                        type: "number",
+                        align: "center",
+                        width: "8%",
+                        filtering: false,
+                        sorting: false,
+                        itemTemplate: function (value, item) {
+                            if (item.type.value === "IN") return '<span style="color: green">' + formatter.format(value) + '</span>';
+                            else return '<span style="color: red"> - ' + formatter.format(value) + '</span>';
+                        }
+                    },
+                    {
+                        type: "control", width: "15%", align: "center",
+                        headerTemplate: function () {
+                            let $dropDownBtn = $("<button>")
+                                .attr({type: "button", class: "btn btn-sm btn-flat btn-success dropdown-toggle"})
+                                .attr("data-toggle", "dropdown")
+                                .append("Выберите действие");
+                            let $dropdownMenu = $("<div>").attr({class: "dropdown-menu"})
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        addNewTransaction('IN');
+                                    })
+                                    .append("Создать приход"))
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        addNewTransaction('OUT');
+                                    })
+                                    .append("Создать расход"))
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                    })
+                                    .append("Выгрузить в Excel"))
+
+                            return [$dropDownBtn, $dropdownMenu];
+                        },
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .attr({title: "Очистить фильтры"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#jsGrid").jsGrid("clearFilter");
+                                    initUserSelect();
+                                    initAccountSelect();
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $updateBtn = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({title: "Редактировать"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteBtn = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({title: "Удалить"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteAction(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$updateBtn, $deleteBtn];
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

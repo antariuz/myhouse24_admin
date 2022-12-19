@@ -1,6 +1,7 @@
 package avada.media.myhouse24_admin.service;
 
-import avada.media.myhouse24_admin.model.Staff;
+import avada.media.myhouse24_admin.model.dto.StaffDTO;
+import avada.media.myhouse24_admin.model.systemSettings.pages.Staff;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface StaffService {
 
     Staff getStaffByEmail(String email);
 
-    List<Staff> getAllStaffs();
+    List<Staff> getAllStaff();
+
+    List<StaffDTO> getAllStaffDTOExceptInactive();
 
 }

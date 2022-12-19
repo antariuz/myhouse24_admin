@@ -38,7 +38,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="description">Информация</label>
-                                    <textarea rows="25" class="form-control" id="description" name="description"
+                                    <textarea rows="10" class="form-control" id="description" name="description"
                                               placeholder="Введите информацию"></textarea>
                                 </div>
                             </div>
@@ -104,11 +104,11 @@
                 url: 'payment-details/update',
                 data: paymentDetails,
                 success: function () {
-                    successAction("Успешно сохранено");
+                    successWarning("Успешно сохранено");
                     getPaymentDetails();
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });
@@ -125,7 +125,7 @@
                     $('#description').val(data.description);
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });

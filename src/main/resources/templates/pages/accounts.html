@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Лицевые счета</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active" id="last-breadcrumb">Лицевые счета</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="table">
+        <div class="col-4">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Состояние кассы</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Баланс по счетам</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Задолженность по счетам</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="newOrEdit" hidden>
+        <div class="col-12">
+            <form id="form">
+                <div class="col-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">№</span>
+                        </div>
+                        <input type="text" class="form-control" id="uniqueNumber" name="uniqueNumber">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card card-outline card-secondary">
+                        <div class="card-body">
+                            <div class="row">
+                                <input type="hidden" class="form-control ignore" id="id">
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="status">Статус</label>
+                                        <select class="custom-select ignore" id="status" name="status">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="building">Дом</label>
+                                        <select class="custom-select ignore" id="building" name="building">
+                                            <option value="">Выберите...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="section">Секция</label>
+                                        <select class="custom-select ignore" id="section" name="section" disabled>
+                                            <option value="">Сперва выберите дом...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="flat">Квартира</label>
+                                        <select class="custom-select ignore" id="flat" name="flat" disabled>
+                                            <option value="">Сперва выберите дом...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <b>Владелец:</b> <span id="userFullName">сперва выберите квартиру...</span>
+                                </div>
+                                <div class="col-3">
+                                    <b>Телефон:</b> <span id="userPhoneNumber">сперва выберите квартиру...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <a class="btn btn-secondary" href="/accounts">Отменить</a>
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show" hidden>
+        <div class="col-4">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">№</span>
+                </div>
+                <input type="text" class="form-control" id="show-uniqueNumber" readonly>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-sm btn-default">
+                            <i class="fa-solid fa-dollar-sign"></i> Принять платеж
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default">
+                            <i class="fa-regular fa-copy"></i> Оформить квитанцию
+                        </button>
+                        <button type="button" onclick="editAction(currentItem);" class="btn btn-sm btn-info"
+                                id="editButton">
+                            Редактировать счёт
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-hover table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td style="width: 50%"><b>Статус</b></td>
+                                    <td id="show-status"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Дом</b></td>
+                                    <td id="show-building"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Секция</b></td>
+                                    <td id="show-section"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Квартира</b></td>
+                                    <td id="show-flat"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Владелец</b></td>
+                                    <td id="show-user"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Остаток, грн.</b></td>
+                                    <td id="show-balance"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <a>Посмотреть показания счетчиков</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <a>Посмотреть приходы</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <a>Посмотреть квитанции</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/accounts">Вернуться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let allStatus = null;
+        let allBuildings = null;
+        let allSections = null;
+        let allFlats = [];
+        let allUsers = null;
+        let createNew = false;
+        let accountNumber = null;
+        let currentItem;
+        let h3Amounts = $('div.small-box').find('h3');
+
+        $(document).ready(function () {
+            getAllBuildings();
+            jsGridInit();
+            initFlatFilter();
+            initUserSelect();
+            let balancesData = getAllTransactionBalancesData();
+            $(h3Amounts[0]).html("<h3>" + formatter.format(balancesData.transactionAmountsSumByInType - balancesData.transactionAmountsSumByOutType) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            $(h3Amounts[1]).html("<h3>" + formatter.format(getAllAccountsBalance()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            $(h3Amounts[2]).html("<h3>" + formatter.format(getAllAccountsDebt()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+        });
+
+        //  Add new account action
+        function addNewAccountAction() {
+            getAllStatus();
+            getNewAccountNumber();
+            $.each(allBuildings, function (i, element) {
+                $('#building').append('<option value="' + element.id + '">' + element.title + '</option>');
+            });
+            $.each(allSections, function (i, element) {
+                $('#section').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+            $.each(allUsers, function (i, element) {
+                $('#user').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+            $('#pageTitle').text("Новый лицевой счет");
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">Новый лицевой счет</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+            $('#uniqueNumber').val(accountNumber);
+        }
+
+        //  Row click action
+        function rowClickAction(item) {
+            $('#show-uniqueNumber').val(item.uniqueNumber);
+            let $statusText = $('<span>').append(item.status.title);
+            if (item.status.value === "ACTIVE") $statusText.attr({class: "badge badge-success"});
+            else $statusText.attr({class: "badge badge-danger"});
+            $('#show-status').append($('<h6>').append($statusText));
+            $('#show-building').append(item.building?.title);
+            $('#show-section').append(item.section?.name);
+            $('#show-flat').append(item.flat?.number);
+            $('#show-user').append(item.user?.fullName);
+            $('#show-balance').append(item.balance);
+
+            let pageTitle = "Лицевой счет";
+            let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', true);
+            $('#show').attr('hidden', false);
+            currentItem = item;
+        }
+
+        //  Edit button action
+        function editAction(item) {
+            console.log(item);
+            getAllStatus();
+            $.each(allBuildings, function (i, element) {
+                $('#building').append('<option value="' + element.id + '">' + element.title + '</option>');
+            });
+            $.each(allSections, function (i, element) {
+                $('#section').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+            $.each(allUsers, function (i, element) {
+                $('#user').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+
+            $('#id').val(item.id);
+            $('#uniqueNumber').val(item.uniqueNumber);
+            $('#building')
+                .val(item.building?.id)
+                .trigger('change');
+            $('#section')
+                .val(item.section?.id)
+                .trigger('change');
+            $('#flat')
+                .val(item.flat?.id)
+                .trigger('change');
+
+            let pageTitle = "Лицевой счет";
+            let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').nextAll().remove();
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Change of Selects
+        $(document).on('change', '#building', function () {
+            let buildingId = $(this).val();
+            if (buildingId === "") {
+                $('#section, #flat')
+                    .empty()
+                    .append('<option value="">Сперва выберите дом...</option>')
+                    .attr("disabled", true);
+                $('#userFullName').text('сперва выберите квартиру...');
+                $('#userPhoneNumber').text("сперва выберите квартиру...");
+            } else {
+                let building = allBuildings.find(building => building.id === parseInt($(this).val()));
+                if (building.sections === undefined || building.sections.length === 0) {
+                    $('#section')
+                        .empty()
+                        .append('<option value="">Секции отсутствуют</option>')
+                        .attr("disabled", true);
+                } else {
+                    $('#section')
+                        .empty()
+                        .append('<option value="">Выберите секцию...</option>')
+                        .attr("disabled", false);
+                    $.each(building.sections, function (i, element) {
+                        $('#section').append('<option value="' + element.id + '">' + element.name + '</option>');
+                    });
+                }
+                getBuildingFlats(buildingId);
+                if (allFlats === undefined || allFlats.length === 0) {
+                    $('#flat')
+                        .empty()
+                        .append('<option value="">Квартиры отсутствуют</option>')
+                        .attr("disabled", true);
+                } else {
+                    $('#flat')
+                        .empty()
+                        .append('<option value="">Выберите квартиру...</option>')
+                        .attr("disabled", false);
+                    $.each(allFlats, function (i, element) {
+                        $('#flat').append('<option value="' + element.id + '">' + element.title + '</option>');
+                    });
+                }
+            }
+        })
+
+        //  Change of Selects
+        $(document).on('change', '#section', function () {
+            let sectionId = $(this).val();
+            let buildingId = $('#building').val();
+            if (sectionId === "") {
+                getBuildingFlats(buildingId);
+                if (allFlats === undefined || allFlats.length === 0) {
+                    $('#flat')
+                        .empty()
+                        .append('<option value="">Квартиры отсутствуют</option>')
+                        .attr("disabled", true);
+
+                } else {
+                    $('#flat')
+                        .empty()
+                        .append('<option value="">Выберите квартиру...</option>')
+                        .attr("disabled", false);
+                    $.each(allFlats, function (i, element) {
+                        $('#flat').append('<option value="' + element.id + '">' + element.title + '</option>');
+                    });
+                }
+            } else {
+                getBuildingFlats(buildingId, sectionId);
+                if (allFlats === undefined || allFlats.length === 0) {
+                    $('#flat')
+                        .empty()
+                        .append('<option value="">Квартиры отсутствуют</option>')
+                        .attr("disabled", true);
+                } else {
+                    $('#flat')
+                        .empty()
+                        .append('<option value="">Выберите квартиру...</option>')
+                        .attr("disabled", false);
+                    $.each(allFlats, function (i, element) {
+                        $('#flat').append('<option value="' + element.id + '">' + element.title + '</option>');
+                    });
+                }
+            }
+        });
+
+        //  Change of Selects
+        $(document).on('change', '#flat', function () {
+            let flatId = $(this).val();
+            if (flatId === "") {
+                $('#userFullName').text('сперва выберите квартиру...');
+                $('#userPhoneNumber').text("сперва выберите квартиру...");
+            } else {
+                let user = allFlats.find(flat => flat.id === parseInt(flatId)).user;
+                $('#userFullName').text(user.fullName);
+                $('#userPhoneNumber').text(user.phoneNumber);
+            }
+        });
+
+        function initFlatFilter() {
+            $('#filterFlat').select2({
+                allowClear: true,
+                ajax: {
+                    url: "master-requests/search-flat",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ""
+            });
+        }
+
+        function initUserSelect() {
+            $('#filterUser').select2({
+                allowClear: true,
+                ajax: {
+                    url: "users/search-user",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ''
+            });
+        }
+
+        //  Get All Sections
+        function getAllSections() {
+            let result;
+            $.ajax({
+                method: "GET",
+                url: "flats/get-all-sections",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    result = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return result;
+        }
+
+        //  Get new number of account
+        function getNewAccountNumber() {
+            $.ajax({
+                method: "GET",
+                url: "accounts/get-new-unique-number",
+                async: false,
+                success: function (data) {
+                    accountNumber = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Status
+        function getAllStatus() {
+            $.ajax({
+                method: "GET",
+                url: "accounts/get-all-status",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $.each(data, function (i, element) {
+                        $('#status').append('<option value="' + element.value + '">' + element.title + '</option>');
+                    });
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Buildings
+        function getAllBuildings() {
+            $.ajax({
+                method: "GET",
+                url: "accounts/get-all-buildings",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allBuildings = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get Flats of Building
+        function getBuildingFlats(buildingId, sectionId) {
+            $.ajax({
+                method: "GET",
+                url: "accounts/get-flats-of-building",
+                dataType: "json",
+                async: false,
+                data: {buildingId: buildingId, sectionId: sectionId},
+                success: function (data) {
+                    allFlats = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get all Transaction Balances data
+        function getAllTransactionBalancesData() {
+            let transactionBalancesData = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-transaction-balances-data",
+                async: false,
+                success: function (data) {
+                    transactionBalancesData = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return transactionBalancesData;
+        }
+
+        //  Get All Accounts Balance
+        function getAllAccountsBalance() {
+            let accountsBalance = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-accounts-balance",
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                    accountsBalance = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return accountsBalance;
+        }
+
+        //  Get All Accounts Debt
+        function getAllAccountsDebt() {
+            let accountsDebt = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-accounts-debt",
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                    accountsDebt = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return accountsDebt;
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'accounts/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        $(document).on('change', '#filterUser, #filterFlat', function () {
+            $("#jsGrid").jsGrid("search");
+        });
+
+        //  Validation
+        $('#form').validate({
+            ignore: ".ignore",
+            rules: {
+                number: {
+                    required: true,
+                    remote: {
+                        url: "accounts/is-unique-number-not-exists",
+                        method: "POST",
+                        async: false,
+                        data: {
+                            number: function () {
+                                return $("#number").val();
+                            }
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    }
+                }
+            },
+            messages: {
+                number: {
+                    required: "Введите номер лицевого счёта",
+                    remote: "Этот номер лицевого счёта уже занят. Пожалуйста, укажите другой"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        //  Add button action
+        function saveAction() {
+            let account = {};
+            account.id = $('#id').val();
+            account.uniqueNumber = $('#uniqueNumber').val();
+            account.status = {value: $('#status').val()};
+            account.flat = $('#flat').val() ? {id: $('#flat').val()} : null;
+
+            if (account.id) {
+                $.ajax({
+                    method: 'PUT',
+                    url: 'accounts/' + account.id + '/update',
+                    contentType: 'application/json',
+                    data: JSON.stringify(account),
+                    success: function () {
+                        successWarning('Успешно обновлено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'accounts/save',
+                    contentType: 'application/json',
+                    data: JSON.stringify(account),
+                    success: function () {
+                        successWarning('Успешно сохранено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            }
+        }
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: true,
+                rowClick: function (args) {
+                    rowClickAction(args.item);
+                },
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            method: "GET",
+                            url: "accounts/get-all-accounts",
+                            data: filter,
+                            dataType: "json",
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "uniqueNumber", title: "№", type: "text", width: "5%", align: "center"
+                    },
+                    {
+                        name: "status", title: "Статус", type: "select", width: "7%",
+                        items: [
+                            {title: "", value: ""},
+                            {title: "Активен", value: "ACTIVE"},
+                            {title: "Отключен", value: "INACTIVE"},
+                        ],
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            let $statusText = $('<span>').append(item.title);
+                            if (item.value === "ACTIVE") $statusText.attr({class: "badge badge-success"});
+                            if (item.value === "INACTIVE") $statusText.attr({class: "badge badge-danger"});
+                            return $('<h6>').append($statusText);
+                        },
+                    },
+                    {
+                        name: "flat", title: "Квартира", type: "select", width: "10%",
+                        items: [],
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            return item?.number;
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterFlat"});
+                        },
+                        filterValue: function () {
+                            return $('#filterFlat').val();
+                        }
+                    },
+                    {
+                        name: "building", title: "Дом", type: "select", width: "12%",
+                        items: [{id: 0, title: ""}].concat(allBuildings),
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            return item?.title;
+                        }
+                    },
+                    {
+                        name: "section", title: "Секция", type: "select", width: "10%",
+                        items: [""].concat(getAllSections()),
+                        valueField: "name",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            return item?.name;
+                        }
+                    },
+                    {
+                        name: "user", title: "Владелец", type: "select", width: "25%",
+                        items: [],
+                        valueField: "id",
+                        textField: "fullName",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            return item?.fullName;
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterUser"});
+                        },
+                        filterValue: function () {
+                            return $('#filterUser').val();
+                        }
+                    },
+                    {
+                        name: "balance", title: "Остаток (грн)", type: "select", width: "10%", align: "center",
+                        items: [
+                            {id: "", title: ""},
+                            {id: "hasDebt", title: "Есть долг"},
+                            {id: "hasNoDebt", title: "Нет долга"},
+                        ],
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (value, item) {
+                            if (value > 0) return '<span style="color: green">' + formatter.format(value) + '</span>';
+                            if (value < 0) return '<span style="color: red">' + formatter.format(value) + '</span>';
+                            if (value === 0) return '<span>' + formatter.format(value) + '</span>';
+                        }
+                    },
+                    {
+                        type: "control", width: "15%", align: "center",
+                        headerTemplate: function () {
+                            let $dropDownBtn = $("<button>")
+                                .attr({type: "button", class: "btn btn-sm btn-flat btn-success dropdown-toggle"})
+                                .attr("data-toggle", "dropdown")
+                                .append("Выберите действие");
+
+                            let $dropdownMenu = $("<div>").attr({class: "dropdown-menu"})
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        addNewAccountAction();
+                                    })
+                                    .append("Добавить лицевой счет"))
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                    })
+                                    .append("Выгрузить в Excel"))
+
+                            return [$dropDownBtn, $dropdownMenu];
+                        },
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .attr({title: "Очистить фильтры"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#jsGrid").jsGrid("clearFilter");
+                                    initFlatFilter();
+                                    initUserSelect();
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $updateBtn = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({title: "Редактировать"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteBtn = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({title: "Удалить"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteAction(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$updateBtn, $deleteBtn];
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

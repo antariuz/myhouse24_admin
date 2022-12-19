@@ -1,39 +1,46 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
+import avada.media.myhouse24_admin.model.systemSettings.pages.Role;
+import avada.media.myhouse24_admin.model.systemSettings.pages.Staff;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table
 @Data
-@NoArgsConstructor
 public class MasterRequest extends MappedEntity {
 
-    private MasterType masterType;
+    private Date requestedDate;
+    @Column(length = 1048576)
     private String description;
-    private LocalDate dateRequest;
+    @Column(length = 1048576)
+    private String comment;
+    @Enumerated(EnumType.STRING)
     private Status status;
+    @ManyToOne
+    private Role role;
+    @ManyToOne
+    private User user;
     @ManyToOne
     private Flat flat;
     @ManyToOne
     private Staff staff;
+    @CreationTimestamp
+    private Date createdAt;
 
-    public enum MasterType {
-        ELECTRICIAN,
-        ANY
-    }
-
+    @Getter
+    @RequiredArgsConstructor
     public enum Status {
-        NEW,
-        IN_WORK,
-        DONE
+        NEW("Новая"),
+        IN_WORK("В работе"),
+        DONE("Выполнена");
+        private final String title;
     }
 
 }

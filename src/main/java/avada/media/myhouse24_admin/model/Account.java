@@ -2,29 +2,30 @@ package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table
 @Data
-@NoArgsConstructor
 public class Account extends MappedEntity {
 
-    private String number;
+    private String uniqueNumber;
+    @Enumerated(EnumType.STRING)
     private Status status;
     @OneToOne
-    private Building building;
-    @ManyToOne
+    @JoinColumn
     private Flat flat;
+    private Double balance;
 
+    @RequiredArgsConstructor
+    @Getter
     public enum Status {
-        ACTIVE,
-        INACTIVE
+        ACTIVE("Активный"),
+        INACTIVE("Отключен");
+        private final String title;
     }
 
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org" lang="ru">
+      xmlns:th="http://www.thymeleaf.org"
+      lang="ru">
 
 <!-- head -->
 <th:block th:replace="~{template/head}"></th:block>
@@ -19,7 +20,7 @@
                 <th:block layout:fragment="breadcrumbs"></th:block>
             </div>
         </div>
-        <div class="content">
+        <div class="content pt-3">
             <div class="container-fluid">
                 <!-- main content -->
                 <th:block layout:fragment="content"></th:block>

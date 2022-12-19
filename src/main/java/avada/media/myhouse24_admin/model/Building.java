@@ -1,13 +1,12 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
+import avada.media.myhouse24_admin.model.systemSettings.pages.Staff;
+import avada.media.myhouse24_admin.model.websiteControl.extra.Image;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +18,21 @@ public class Building extends MappedEntity {
 
     private String title;
     private String address;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "building_id", referencedColumnName = "id")
+    private List<Image> images = new ArrayList<>();
     private String image1;
     private String image2;
     private String image3;
     private String image4;
     private String image5;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "building_id", referencedColumnName = "id")
     private List<Section> sections = new ArrayList<>();
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "building_id", referencedColumnName = "id")
     private List<Floor> floors = new ArrayList<>();
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "building_id", referencedColumnName = "id")
-    private List<Staff> staffList = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Staff> staff = new ArrayList<>();
 
 }

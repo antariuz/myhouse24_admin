@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Редактирование страницы</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Управление сайтом</li>
+                <li class="breadcrumb-item active">О нас</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <form id="form">
+                    <div class="card-header">
+                        <h5 class="card-title" style="margin: 0">Редактирование страницы "О нас"</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Информация</h4>
+                                <input type="hidden" name="id" id="id" value="">
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label for="title">Заголовок</label>
+                                    <input type="text" class="form-control" id="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Краткий текст</label>
+                                    <textarea class="summernote" id="description"
+                                              placeholder="Текст описания"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label for="photo-of-director">Фото директора</label>
+                                <img src="" alt="" class="img-fluid" id="photo-of-director">
+                                <div class="form-group">
+                                    <label for="photo-of-director-link">Рекомендуемый размер: (250x310)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="photo-of-director-link">
+                                            <label class="custom-file-label" for="photo-of-director-link">Файл не
+                                                выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Фотогалерея</h4>
+                            </div>
+                        </div>
+                        <div class="row" id="gallery-rows"></div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="gallery">Рекомендуемый размер: (1200x1200)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="gallery"
+                                                   accept="image/jpeg, image/png" multiple>
+                                            <label class="custom-file-label" for="gallery">Файлы не выбраны</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Дополнительная информация</h4>
+                                <input type="hidden" id="extra-id" value="">
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="extra-title">Заголовок</label>
+                                    <input type="text" class="form-control" id="extra-title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="extra-description">Краткий текст</label>
+                                    <textarea class="summernote" id="extra-description"
+                                              placeholder="Текст описания"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Дополнительная фотогалерея</h4>
+                            </div>
+                        </div>
+                        <div class="row" id="extra-gallery-rows"></div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="extra-gallery">Рекомендуемый размер: (1200x1200)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="extra-gallery"
+                                                   accept="image/jpeg, image/png" multiple>
+                                            <label class="custom-file-label" for="extra-gallery">Файлы не
+                                                выбраны</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Документы</h4>
+                            </div>
+                        </div>
+                        <div class="row" id="webDocuments-rows"></div>
+                        <div class="row pt-3">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-info" id="addDocument">
+                                    Добавить документ
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Настройки SEO</h4>
+                            </div>
+                            <div class="col-12">
+                                <input type="hidden" id="seo-id" value="">
+                                <div class="form-group">
+                                    <label for="seo-title">Title</label>
+                                    <input type="text" class="form-control" id="seo-title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="seo-description">Description</label>
+                                    <textarea class="form-control" rows="5" id="seo-description"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seo-keywords">Keywords</label>
+                                    <textarea class="form-control" rows="5" id="seo-keywords"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/website-control/web-about-us">Отменить</a>
+                                <button type="submit" class="btn btn-success" id="saveBtn">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="extra-js">
+
+    <script type="application/javascript">
+
+        let webDocumentCount = 0;
+
+        //  Initialization
+        $(document).ready(function () {
+            getData();
+            bsCustomFileInput.init();
+            summernoteInit(230, 230);
+        });
+
+        //  Auto preview of image
+        // $(document).on('change', '.custom-file-input', function () {
+        //     $(this).parents('div[class^="col-"]').find('.img-fluid')[0].src = URL.createObjectURL(event.target.files[0]);
+        // });
+        $(document).on('change', '#photo-of-director-link', function () {
+            $('#photo-of-director')[0].src = URL.createObjectURL(event.target.files[0]);
+        });
+
+        //  Get data
+        function getData() {
+            $.ajax({
+                method: 'GET',
+                url: 'web-about-us/get',
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    $('#id').val(data.id);
+                    $('#title').val(data.title);
+                    $('#description').val(data.description);
+                    $('#photo-of-director').attr("src", (data.photoOfDirector ? data.photoOfDirector : '/img/empty-(250x310).jpg'));
+
+                    let galleryPath = '/uploaded/webAboutUs/gallery/'
+                    $('#gallery-rows').empty();
+                    $(data.gallery).each(function (index, item) {
+                        $('#gallery-rows').append(
+                            '<div class="col-2 text-center">' +
+                            '   <input type="hidden" id="gallery-image-id-' + item.id + '" value="' + item.id + '">' +
+                            '    <img src="' + galleryPath + item.name + '" alt="" class="img-thumbnail">' +
+                            '    <div class="form-group">' +
+                            '        <a type="button" class="text-red remove-gallery-image-btn">' +
+                            '            <i class="fa fa-trash"></i>' +
+                            '        </a>' +
+                            '    </div>' +
+                            '</div>'
+                        );
+                    });
+
+                    $('#extra-id').val(data.webExtraInformation.id);
+                    $('#extra-title').val(data.webExtraInformation.title);
+                    $('#extra-description').val(data.webExtraInformation.description);
+
+                    let extraGalleryPath = '/uploaded/webAboutUs/extra-gallery/'
+                    $('#extra-gallery-rows').empty();
+                    $(data.webExtraInformation.gallery).each(function (index, item) {
+                        $('#extra-gallery-rows').append(
+                            '<div class="col-2 text-center">' +
+                            '   <input type="hidden" id="extra-gallery-image-id-' + item.id + '" value="' + item.id + '">' +
+                            '    <img src="' + extraGalleryPath + item.name + '" alt="" class="img-thumbnail">' +
+                            '    <div class="form-group">' +
+                            '        <a type="button" class="text-red remove-extra-gallery-image-btn">' +
+                            '            <i class="fa fa-trash"></i>' +
+                            '        </a>' +
+                            '    </div>' +
+                            '</div>'
+                        );
+                    });
+
+                    $('#webDocuments-rows').empty();
+                    $(data.documents).each(function (index, item) {
+                        webDocumentCount++;
+                        let fileExtension = item.name.substring((item.name.lastIndexOf('.') + 1));
+                        console.log(fileExtension);
+                        $('#webDocuments-rows').append(
+                            '<div class="col-4 webDocument-row">' +
+                            '    <input type="hidden" id="webDocument-id-' + webDocumentCount + '" value="' + item.id + '">' +
+                            '    <div class="form-group mb-0">' +
+                            '        <a type="button" class="float-right text-red remove-btn">' +
+                            '            <i class="fa fa-trash"></i>' +
+                            '        </a>' +
+                            '        <i class="fa-regular fa-2xl icon"></i>' +
+                            '        <label for="webDocument-file-' + webDocumentCount + '">PDF, JPG (макс. размер 20 Mb)</label>' +
+                            '        <input type="file" id="webDocument-file-' + webDocumentCount + '" accept="image/jpeg, application/pdf" value="' + item.name + '">' +
+                            '    </div>' +
+                            '    <div class="form-group">' +
+                            '        <label for="webDocument-title-' + webDocumentCount + '">Название документа</label>' +
+                            '        <input type="text" class="form-control" id="webDocument-title-' + webDocumentCount + '" value="' + item.title + '">' +
+                            '    </div>' +
+                            '</div>'
+                        );
+                        if (fileExtension === 'pdf') $('.webDocument-row').find('i.fa-2xl').last().addClass('fa-file-pdf');
+                        else if (fileExtension === 'jpg') $('.webDocument-row').find('i.fa-2xl').last().addClass('fa-file-image');
+                        else $('.webDocument-row').find('i.fa-2xl').last().addClass('fa-file');
+                    });
+
+                    $('#seo-id').val(data.seo.id);
+                    $('#seo-title').val(data.seo.title);
+                    $('#seo-description').val(data.seo.description);
+                    $('#seo-keywords').val(data.seo.keywords);
+                    bsCustomFileInput.init();
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Add new block of WebDocument
+        $(document).on('click', '#addDocument', function () {
+            webDocumentCount++;
+            $('#webDocuments-rows').append(
+                '<div class="col-4 webDocument-row">' +
+                '    <input type="hidden" id="webDocument-id-' + webDocumentCount + '" value="">' +
+                '    <div class="form-group mb-0">' +
+                '        <a type="button" class="float-right text-red remove-btn">' +
+                '            <i class="fa fa-trash"></i>' +
+                '        </a>' +
+                '        <i class="fa-regular fa-file fa-2xl"></i>' +
+                '        <label for="webDocument-file-' + webDocumentCount + '">PDF, JPG (макс. размер 20 Mb)</label>' +
+                '        <input type="file" id="webDocument-file-' + webDocumentCount + '" accept="image/jpeg, application/pdf">' +
+                '    </div>' +
+                '    <div class="form-group">' +
+                '        <label for="webDocument-title-' + webDocumentCount + '">Название документа</label>' +
+                '        <input type="text" class="form-control" id="webDocument-title-' + webDocumentCount + '">' +
+                '    </div>' +
+                '</div>'
+            );
+            bsCustomFileInput.init();
+        });
+
+        //  Remove the block of WebDocument
+        $(document).on('click', '.remove-btn', function () {
+            let id = $(this).parents('.webDocument-row').find('input[id^="webDocument-id-"]').val();
+            let deleteForm = $(this).parents('.webDocument-row');
+            if (id === '' || id === undefined) {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        webDocumentCount--;
+                        $(deleteForm).remove();
+                        successWarning('Успешно удалено');
+                    }
+                })
+            } else {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            method: 'DELETE',
+                            url: 'web-about-us/web-document/' + id + '/delete',
+                            success: function () {
+                                getData();
+                                successWarning('Успешно удалено');
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        //  Remove the image from gallery
+        $(document).on('click', '.remove-gallery-image-btn', function () {
+            let id = $(this).parents('div.col-2').find('input[id^="gallery-image-id-"]').val();
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'web-about-us/gallery/' + id + '/delete',
+                        success: function () {
+                            getData();
+                            successWarning('Успешно удалено');
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        });
+
+        //  Remove the image from extra-gallery
+        $(document).on('click', '.remove-extra-gallery-image-btn', function () {
+            let id = $(this).parents('div.col-2').find('input[id^="extra-gallery-image-id-"]').val();
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'web-about-us/extra-gallery/' + id + '/delete',
+                        success: function () {
+                            getData();
+                            successWarning('Успешно удалено');
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        });
+
+        //  Action on Save button
+        $(document).on('submit', '#form', function (event) {
+            event.preventDefault();
+
+            let formData = new FormData();
+
+            let webAboutUs = {};
+            webAboutUs.id = $('#id').val();
+            webAboutUs.title = $('#title').val();
+            webAboutUs.description = $('#description').val();
+            let webDocuments = [];
+            $('.webDocument-row').each(function (index, item) {
+                let webDocument = {};
+                webDocument.id = $(this).find('input[id^="webDocument-id-"]').val();
+                webDocument.title = $(this).find('input[id^="webDocument-title-"]').val();
+                formData.append('webDocumentsFiles', $(this).find('input[id^="webDocument-file-"]')[0].files[0] ? $(this).find('input[id^="webDocument-file-"]')[0].files[0] : new File([], 'empty'));
+                webDocuments.push(webDocument);
+            });
+            webAboutUs.documents = webDocuments;
+            const webAboutUsJSONBlob = new Blob([JSON.stringify(webAboutUs)], {
+                type: 'application/json'
+            });
+            formData.append('webAboutUs', webAboutUsJSONBlob);
+            formData.append('photoOfDirector', $('#photo-of-director-link')[0].files[0]);
+
+            $.each($('#gallery')[0].files, function (index, item) {
+                formData.append('gallery', item);
+            });
+
+            let webExtraInformation = {};
+            webExtraInformation.id = $('#extra-id').val();
+            webExtraInformation.title = $('#extra-title').val();
+            webExtraInformation.description = $('#extra-description').val();
+            const webExtraInformationJSONBlob = new Blob([JSON.stringify(webExtraInformation)], {
+                type: 'application/json'
+            });
+            formData.append('webExtraInformation', webExtraInformationJSONBlob);
+
+            $.each($('#extra-gallery')[0].files, function (index, item) {
+                formData.append('extraGallery', item);
+            });
+
+            let seo = {};
+            seo.id = $('#seo-id').val();
+            seo.title = $('#seo-title').val();
+            seo.description = $('#seo-description').val();
+            seo.keywords = $('#seo-keywords').val();
+            const seoJSONBlob = new Blob([JSON.stringify(seo)], {
+                type: 'application/json'
+            });
+            formData.append('seo', seoJSONBlob);
+
+            $.ajax({
+                method: 'POST',
+                url: 'web-about-us/update',
+                async: false,
+                data: formData,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function () {
+                    successWarning('Успешно сохранено');
+                    getData();
+                    $('.custom-file-label').text('Файлы не выбраны');
+                    $('label[for="photo-of-director-link"]').text('Файл не выбран');
+                    $('label#photo-of-director-link').val('');
+                    $('#gallery').val('');
+                    $('#extra-gallery').val('');
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            })
+
+        });
+
+
+    </script>
+
+</th:block>
+
+</html>

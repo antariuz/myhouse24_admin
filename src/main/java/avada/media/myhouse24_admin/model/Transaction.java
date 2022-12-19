@@ -1,26 +1,26 @@
 package avada.media.myhouse24_admin.model;
 
 import avada.media.myhouse24_admin.model.common.MappedEntity;
-import avada.media.myhouse24_admin.model.systemSettings.TransactionPurpose;
+import avada.media.myhouse24_admin.model.systemSettings.pages.Staff;
+import avada.media.myhouse24_admin.model.systemSettings.pages.TransactionPurpose;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import java.time.LocalDate;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table
 @Data
-@NoArgsConstructor
 public class Transaction extends MappedEntity {
 
-    private Long number;
-    private LocalDate dateFrom;
+    private String uniqueNumber;
+    private Date requestedDate;
+    @Enumerated(EnumType.STRING)
     private Type type;
-    private String description;
-    private boolean carryOut;
+    private String comment;
+    private boolean used;
     private Double amount;
     @ManyToOne
     private TransactionPurpose transactionPurpose;
@@ -31,9 +31,13 @@ public class Transaction extends MappedEntity {
     @ManyToOne
     private User user;
 
+    @RequiredArgsConstructor
+    @Getter
     public enum Type {
-        IN,
-        OUT
+        IN("Приход"),
+        OUT("Расход");
+
+        private final String title;
     }
 
 }

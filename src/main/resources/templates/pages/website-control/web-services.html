@@ -118,22 +118,27 @@
         // Remove the block of WebService
         $(document).on('click', '.remove-btn', function () {
             let id = $(this).parents('.form-webservice').find('.webservice-id').val();
+            let deleteForm = $(this).parents('.form-webservice');
             if (id === undefined) {
-                webServiceCount--;
-                $(this).parents('.form-webservice').remove();
-                successAction('Успешно удалено');
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        webServiceCount--;
+                        $(deleteForm).remove();
+                        successWarning('Успешно удалено');
+                    }
+                })
             } else {
-                askBeforeDeletion(function (confirmed) {
+                askWarning(function (confirmed) {
                     if (confirmed) {
                         $.ajax({
                             method: 'DELETE',
                             url: 'web-services/' + id + '/delete',
                             success: function () {
                                 getAllWebServices();
-                                successAction('Успешно удалено');
+                                successWarning('Успешно удалено');
                             },
                             error: function (jqXHR, exception) {
-                                errorAction();
+                                errorWarning();
                                 ajaxError(jqXHR, exception);
                             }
                         });
@@ -165,7 +170,7 @@
                     getSeo();
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });
@@ -198,13 +203,13 @@
                         getAllWebServices();
                     },
                     error: function (jqXHR, exception) {
-                        errorAction();
+                        errorWarning();
                         ajaxError(jqXHR, exception);
                     }
                 })
 
             });
-            successAction('Успешно сохранено');
+            successWarning('Успешно сохранено');
         });
 
         //Seo data get
@@ -220,7 +225,7 @@
                     $('#seoKeywords').val(data.keywords);
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });
@@ -270,7 +275,7 @@
                     summernoteInit();
                 },
                 error: function (jqXHR, exception) {
-                    errorAction();
+                    errorWarning();
                     ajaxError(jqXHR, exception);
                 }
             });
