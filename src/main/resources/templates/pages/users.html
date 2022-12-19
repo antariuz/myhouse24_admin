@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Владельцы квартир</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active" id="last-breadcrumb">Владельцы квартир</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="initial">
+        <div class="col-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="user" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <form id="user-form">
+                    <div class="card-body">
+                        <div class="row">
+                            <input type="hidden" class="form-control ignore" id="id">
+                            <div class="col-6">
+                                <img class="img-circle float-left img-responsive mr-3"
+                                     style="max-height: 160px; max-width: 160px" src="/img/empty-(160x160).jpg">
+                                <div class="form-group">
+                                    <label for="profile-image">Сменить изображение</label><br>
+                                    <input type="file" id="profile-image" accept="image/jpeg, image/png">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="status">Статус</label>
+                                    <select class="custom-select ignore" id="status" name="status">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="uniqueId">ID</label>
+                                    <input type="text" class="form-control" id="uniqueId" name="uniqueId">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="lastname">Фамилия</label>
+                                    <input type="text" class="form-control ignore" id="lastname" name="lastname">
+                                </div>
+                                <div class="form-group">
+                                    <label for="firstname">Имя</label>
+                                    <input type="text" class="form-control ignore" id="firstname" name="firstname">
+                                </div>
+                                <div class="form-group">
+                                    <label for="middleName">Отчество</label>
+                                    <input type="text" class="form-control ignore" id="middleName" name="middleName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="birthdate">Дата рождения</label>
+                                    <input type="date" class="form-control ignore" id="birthdate"
+                                           name="birthdate">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="notes">О владельце (заметки)</label>
+                                    <textarea class="form-control ignore" rows="12" style="height: 295px" id="notes"
+                                              name="notes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <h5 class="border-bottom">Контактные данные</h5>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Телефон</label>
+                                    <input type="text" class="form-control ignore" id="phoneNumber" name="phoneNumber">
+                                </div>
+                                <div class="form-group">
+                                    <label for="viberLogin">Viber</label>
+                                    <input type="text" class="form-control ignore" id="viberLogin" name="viberLogin">
+                                </div>
+                                <div class="form-group">
+                                    <label for="telegramLogin">Telegram</label>
+                                    <input type="text" class="form-control ignore" id="telegramLogin"
+                                           name="telegramLogin">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email (логин)</label>
+                                    <input type="text" class="form-control" id="email" name="email">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="border-bottom">Изменить пароль</h5>
+                                <div class="form-group">
+                                    <label for="password">Пароль</label>
+                                    <div class="input-group mb-3">
+                                        <input type="password" data-size="16" data-character-set="a-z,A-Z,0-9,#"
+                                               class="form-control pass-value" id="password" name="password">
+                                        <div class="input-group-append">
+                                            <a type="button" class="btn btn-secondary btn-flat generatePass">
+                                                Сгенерировать
+                                            </a>
+                                            <a type="button" class="btn btn-primary btn-flat" id="showPass">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="passwordConfirm">Повторить пароль</label>
+                                    <input type="password" class="form-control pass-value" id="passwordConfirm"
+                                           name="passwordConfirm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/users">Отменить</a>
+                                <button type="submit" class="btn btn-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show-user" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-sm btn-default"><i
+                                class="fa-solid fa-arrow-up-right-from-square"></i> Перейти в кабинет
+                        </button>
+                        <button type="button" onclick="editAction(editItem);" class="btn btn-sm btn-info"
+                                id="editButton">
+                            Редактировать профиль
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <img class="img-circle float-left img-responsive" id="show-profile-image"
+                                 style="max-height: 160px; max-width: 160px" src="/img/empty-(160x160).jpg">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-hover table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td style="width: 50%"><b>Статус</b></td>
+                                    <td id="show-status"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>ID</b></td>
+                                    <td id="show-unique-id"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Фамилия</b></td>
+                                    <td id="show-lastname"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Имя</b></td>
+                                    <td id="show-firstname"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Отчество</b></td>
+                                    <td id="show-middle-name"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Дата рождения</b></td>
+                                    <td id="show-birthdate"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>О владельце (заметки)</b></td>
+                                    <td id="show-notes"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Телефон</b></td>
+                                    <td id="show-phone-number"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Viber</b></td>
+                                    <td id="show-viber-login"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Telegram</b></td>
+                                    <td id="show-telegram-login"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Email</b></td>
+                                    <td id="show-email"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/users">Вернуться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show-invite" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h3 style="margin: 0" class="card-title">Отправить приглашение</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="invitePhone">Телефон</label>
+                                <input type="text" class="form-control ignore" id="invitePhone" name="invitePhone">
+                            </div>
+                            <div class="form-group">
+                                <label for="inviteEmail">Email</label>
+                                <input type="email" class="form-control ignore" id="inviteEmail" name="inviteEmail">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/users">Вернуться</a>
+                            <button type="button" class="btn btn-success" id="inviteBtn">Отправить приглашение</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let newUniqueId = null;
+        let editItem = null;
+        let user = null;
+        let allBuildings = [];
+
+        $(document).ready(function () {
+            getAllBuildings();
+            getAllStatus();
+            jsGridInit();
+            initFlatFilter();
+            bsCustomFileInput.init();
+        });
+
+        function initFlatFilter() {
+            $('#filterFlat').select2({
+                allowClear: true,
+                ajax: {
+                    url: "master-requests/search-flat",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ""
+            });
+        }
+
+        //  Get All Buildings
+        function getAllBuildings() {
+            $.ajax({
+                method: "GET",
+                url: "flats/get-all-buildings",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allBuildings = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        $('#phoneNumber, #invitePhone').inputmask('+380 99 999 99 99', {
+            placeholder: "*",
+            clearIncomplete: true,
+            // removeMaskOnSubmit: true,
+            clearMaskOnLostFocus: true,
+        });
+
+        $("#date").inputmask("99.99.9999", {
+            clearIncomplete: true,
+            clearMaskOnLostFocus: true
+        });
+
+        // Add new User Action
+        function addNewUserAction() {
+            getNewUniqueID();
+            $('#uniqueId').val(newUniqueId);
+            $('#pageTitle').text("Новый владелец");
+            $('#breadcrumb').append('<li class="breadcrumb-item active">Новый владелец</li>');
+            $('#initial').attr('hidden', true);
+            $('#user').attr('hidden', false);
+            $('#show-user').attr('hidden', true);
+            $('#show-invite').attr('hidden', true);
+        }
+
+        //  Auto preview of image
+        $(document).on('change', '#profile-image', function () {
+            $('img.img-circle')[0].src = URL.createObjectURL(event.target.files[0]);
+        });
+
+        //  Get new unique ID
+        function getNewUniqueID() {
+            $.ajax({
+                method: "GET",
+                url: "users/get-new-unique-id",
+                async: false,
+                success: function (data) {
+                    newUniqueId = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Row click action
+        function rowClickAction(item) {
+
+            $('#last-breadcrumb').nextAll().remove();
+            $('#breadcrumb').append('<li class="breadcrumb-item active">Профиль владельца</li>');
+
+            $('#initial').attr('hidden', true);
+            $('#user').attr('hidden', true);
+            $('#show-user').attr('hidden', false);
+            $('#show-invite').attr('hidden', true);
+
+            if (item.profileImage != null) $('#show-profile-image').attr("src", '/uploaded/users/' + item.profileImage);
+            let $statusText = $('<span>').append(item.status.title);
+            if (item.status.value === "NEW") $statusText.attr({class: "badge badge-warning"});
+            if (item.status.value === "ACTIVE") $statusText.attr({class: "badge badge-success"});
+            if (item.status.value === "INACTIVE") $statusText.attr({class: "badge badge-danger"});
+            $('#show-status').append($('<h6>').append($statusText));
+            $('#show-unique-id').append(item.uniqueId);
+            $('#show-lastname').append(item.lastname);
+            $('#show-firstname').append(item.firstname);
+            $('#show-middle-name').append(item.middleName);
+            $('#show-birthdate').append(item.birthdate);
+            $('#show-notes').append(item.notes);
+            $('#show-phone-number').append(item.phoneNumber);
+            $('#show-viber-login').append(item.viberLogin);
+            $('#show-telegram-login').append(item.telegramLogin);
+            $('#show-email').append(item.email);
+
+            editItem = item;
+        }
+
+        //  Invite button action
+        function inviteAction() {
+            $('#pageTitle').text('Пригласить владельца квартир');
+            $('#last-breadcrumb').nextAll().remove();
+            $('#breadcrumb')
+                .append('<li class="breadcrumb-item active">Пригласить владельца квартир</li>');
+
+            $('#initial').attr('hidden', true);
+            $('#user').attr('hidden', true);
+            $('#show-user').attr('hidden', true);
+            $('#show-invite').attr('hidden', false);
+        }
+
+        $(document).on('click', '#inviteBtn', function () {
+            successWarning('Приглашение успешно отправлено');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        })
+
+        //  Edit button action
+        function editAction(item) {
+            $('#last-breadcrumb').nextAll().remove()
+            $('#breadcrumb')
+                .append('<li class="breadcrumb-item active">Профиль владельца</li>')
+                .append('<li class="breadcrumb-item active">Редактирование</li>');
+
+            $('#initial').attr('hidden', true);
+            $('#user').attr('hidden', false);
+            $('#show-user').attr('hidden', true);
+            $('#show-invite').attr('hidden', true);
+
+            if (item.profileImage != null) $('img.img-circle').attr("src", '/uploaded/users/' + item.profileImage);
+            $('#id').val(item.id);
+            $('#status').val(item.status.value);
+            $('#uniqueId').val(item.uniqueId);
+            $('#lastname').val(item.lastname);
+            $('#firstname').val(item.firstname);
+            $('#middleName').val(item.middleName);
+            if (item.birthdate) $('#birthdate').val(moment(item.birthdate).locale('ru').format('DD.MM.YYYY'));
+            $('#notes').val(item.notes);
+            $('#phoneNumber').val(item.phoneNumber);
+            $('#viberLogin').val(item.viberLogin);
+            $('#telegramLogin').val(item.telegramLogin);
+            $('#email').val(item.email);
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'users/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        //  Get User
+        function getUser(id) {
+            $.ajax({
+                method: "GET",
+                url: "users/get-user",
+                dataType: "json",
+                async: false,
+                data: {"id": id},
+                success: function (data) {
+                    user = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Status
+        function getAllStatus() {
+            $.ajax({
+                method: "GET",
+                url: "users/get-all-status",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $.each(data, function (i, element) {
+                        $('#status').append('<option value="' + element.value + '">' + element.title + '</option>');
+                    });
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Generate password button action
+        $(document).on('click', '.generatePass', function () {
+            $(this).parents('#user-form').find('.pass-value').val(randString('input.pass-value'));
+            $('#password, #passwordConfirm').valid();
+        });
+
+        //  Generate password
+        function randString(id) {
+            let dataSet = $(id).attr('data-character-set').split(',');
+            let possible = '';
+            if ($.inArray('a-z', dataSet) >= 0) {
+                possible += 'abcdefghijklmnopqrstuvwxyz';
+            }
+            if ($.inArray('A-Z', dataSet) >= 0) {
+                possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            }
+            if ($.inArray('0-9', dataSet) >= 0) {
+                possible += '0123456789';
+            }
+            if ($.inArray('#', dataSet) >= 0) {
+                possible += '![]{}()%&*$#^<>~@|';
+            }
+            let text = '';
+            for (let i = 0; i < $(id).attr('data-size'); i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+
+        //  Show hide password inputs
+        $(document).on('click', '#showPass', function () {
+            let inputText = $('#user-form').find('.pass-value');
+            if (inputText.prop('type') === 'password') {
+                inputText.prop('type', 'text');
+                $(this).children().removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                inputText.prop('type', 'password');
+                $(this).children().removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
+        $(document).ready(function () {
+            //  Validation
+            $('#user-form').validate({
+                ignore: ".ignore",
+                rules: {
+                    uniqueId: {
+                        required: true,
+                        remote: {
+                            url: "users/unique-id-check",
+                            method: "POST",
+                            async: false,
+                            data: {
+                                id: function () {
+                                    return $("#id").val();
+                                }
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        }
+                    },
+                    email: {
+                        required: true,
+                        email: true,
+                        remote: {
+                            url: "users/email-check",
+                            method: "POST",
+                            async: false,
+                            data: {
+                                id: function () {
+                                    return $("#id").val();
+                                }
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        }
+                    },
+                    password: {
+                        required: true,
+                        minlength: 5,
+                        equalTo: "#passwordConfirm"
+                    },
+                    passwordConfirm: {
+                        required: true,
+                        minlength: 5,
+                        equalTo: "#password"
+                    }
+                },
+                messages: {
+                    uniqueId: {
+                        required: "Введите ID",
+                        remote: "Этот ID уже занят. Пожалуйста, укажите другой"
+                    },
+                    email: {
+                        required: "Введите эл.почту",
+                        email: "Ввведите правильную эл.почту",
+                        remote: "Эта эл.почта уже занята. Пожалуйста, укажите другую"
+                    },
+                    password: {
+                        required: "Введите пароль",
+                        minlength: "Пароль должен быть как минимум из 5 символов",
+                        equalTo: "Введенные пароли не совпадают"
+                    },
+                    passwordConfirm: {
+                        required: "Введите пароль",
+                        minlength: "Пароль должен быть как минимум из 5 символов",
+                        equalTo: "Введенные пароли не совпадают"
+                    }
+                },
+                submitHandler: function (form, event) {
+                    event.preventDefault();
+                    saveAction();
+                }
+            });
+        });
+
+        $(document).on('change', '#filterDate', function () {
+            $("#jsGrid").jsGrid("search");
+        });
+
+        //  Add button action
+        function saveAction() {
+            let formData = new FormData();
+
+            let user = {};
+            user.id = $('#id').val();
+            user.email = $('#email').val();
+            user.password = $('#password').val();
+            user.status = $('#status').val();
+            user.uniqueId = $('#uniqueId').val();
+
+            let profile = {};
+            profile.birthdate = $('#birthdate').val();
+            profile.firstname = $('#firstname').val();
+            profile.middleName = $('#middleName').val();
+            profile.lastname = $('#lastname').val();
+            profile.notes = $('#notes').val();
+            profile.phoneNumber = $('#phoneNumber').val();
+            profile.telegramLogin = $('#telegramLogin').val();
+            profile.viberLogin = $('#viberLogin').val();
+
+            user.profile = profile;
+
+            const userJSONBlob = new Blob([JSON.stringify(user)], {
+                type: 'application/json'
+            });
+
+            formData.append('user', userJSONBlob);
+
+            formData.append('profileImage', $('#profile-image')[0].files[0]);
+
+            if (user.id) {
+                $.ajax({
+                    method: 'PUT',
+                    url: 'users/' + user.id + '/update',
+                    async: false,
+                    data: formData,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function () {
+                        successWarning('Успешно обновлено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'users/save',
+                    async: false,
+                    data: formData,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function () {
+                        successWarning('Успешно сохранено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            }
+        }
+
+        $(document).on('change', '#filterFlat', function () {
+            $("#jsGrid").jsGrid("search");
+        });
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: true,
+                rowClick: function (args) {
+                    rowClickAction(args.item);
+                },
+                controller: {
+                    loadData: function (filter) {
+                        console.log(filter);
+                        return $.ajax({
+                            method: "GET",
+                            url: "users/get-all-users",
+                            data: filter,
+                            dataType: "json",
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "uniqueId", title: "ID", type: "text", width: "5%", sorting: false, align: "center"
+                    },
+                    {
+                        name: "fullName", title: "ФИО", type: "text", width: "17%"
+                    },
+                    {
+                        name: "phoneNumber", title: "Телефон", type: "text", width: "8%", sorting: false,
+                    },
+                    {
+                        name: "email", title: "Email", type: "text", width: "12%", sorting: false,
+                    },
+                    {
+                        name: "building", title: "Дом", type: "select", width: "12%", sorting: false,
+                        items: [{id: 0, title: ""}].concat(allBuildings),
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number",
+                        itemTemplate: function (v, i) {
+                            if (i.buildings !== undefined && i.buildings !== null) {
+                                let $buildings = $('<div>');
+                                if (i.buildings.length > 0) {
+                                    $.each(i.buildings, function (i, e) {
+                                        $buildings.append(e.title).append($('<br>'));
+                                    });
+                                }
+                                return $buildings;
+                            } else return "";
+                        }
+                    },
+                    {
+                        name: "flat", title: "Квартира", type: "select", width: "10%", sorting: false,
+                        items: [],
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number",
+                        itemTemplate: function (v, i) {
+                            if (i.flats !== undefined && i.flats !== null) {
+                                let $flats = $('<div>');
+                                if (i.flats.length > 0) {
+                                    $.each(i.flats, function (i, e) {
+                                        $flats.append(e.title).append($('<br>'));
+                                    });
+                                }
+                                return $flats;
+                            } else return "";
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterFlat"});
+                        },
+                        filterValue: function () {
+                            return $('#filterFlat').val();
+                        }
+                    },
+                    {
+                        name: "createdAt", title: "Добавлен", type: "text", width: "7%", align: "center",
+                        filterTemplate: function () {
+                            return $('<input>').attr({type: "date", id: "filterDate"});
+                        },
+                        filterValue: function () {
+                            return $('#filterDate').val();
+                        }
+                    },
+                    {
+                        name: "status", title: "Статус", type: "select", width: "7%", sorting: false,
+                        items: [
+                            {title: "", value: ""},
+                            {title: "Новый", value: "NEW"},
+                            {title: "Активен", value: "ACTIVE"},
+                            {title: "Отключен", value: "INACTIVE"},
+                        ],
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            let $statusText = $('<span>').append(item.title);
+                            if (item.value === "NEW") $statusText.attr({class: "badge badge-warning"});
+                            if (item.value === "ACTIVE") $statusText.attr({class: "badge badge-success"});
+                            if (item.value === "INACTIVE") $statusText.attr({class: "badge badge-danger"});
+                            return $('<h6>').append($statusText);
+                        },
+                    },
+                    {
+                        name: "hasDebt", title: "Есть долг", type: "select", width: "7%", sorting: false,
+                        items: [
+                            {name: ""},
+                            {name: "Да"},
+                        ],
+                        valueField: "name",
+                        textField: "name",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            return item ? "Да" : null;
+                        },
+                        filterValue: function () {
+                            return this.filterControl.val() === '' ? null : true;
+                        }
+                    },
+                    {
+                        type: "control", width: "15%", align: "center",
+                        headerTemplate: function () {
+                            let $dropDownBtn = $("<button>")
+                                .attr({type: "button", class: "btn btn-sm btn-flat btn-success dropdown-toggle"})
+                                .attr("data-toggle", "dropdown")
+                                .append("Выберите действие");
+
+                            let $dropdownMenu = $("<div>").attr({class: "dropdown-menu"})
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        addNewUserAction();
+                                    })
+                                    .append("Добавить владельца квартиры"))
+                                .append($("<a>").attr({
+                                    class: "dropdown-item",
+                                    href: "#"
+                                }).append("Отправить сообщение должникам"))
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        inviteAction();
+                                    })
+                                    .append("Отправить приглашение"))
+
+                            return [$dropDownBtn, $dropdownMenu];
+                        },
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .attr({title: "Очистить фильтры"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#jsGrid").jsGrid("clearFilter");
+                                    initFlatFilter();
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $messageBtn = $("<button>")
+                                .attr({class: "btn btn-info btn-flat btn-sm"})
+                                .attr({title: "Отправить сообщение"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-envelope"}));
+
+                            let $updateBtn = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({title: "Редактировать"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteBtn = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({title: "Удалить"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteAction(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$messageBtn, $updateBtn, $deleteBtn];
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

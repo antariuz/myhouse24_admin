@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Редактирование страницы</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Управление сайтом</li>
+                <li class="breadcrumb-item active">Контакты</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row pt-3">
+        <div class="col-12">
+            <form th:method="POST" th:action="*{'/website-control/web-feedback/update'}" th:object="${webFeedback}">
+                <div class="card card-outline card-secondary">
+                    <div class="card-header">
+                        <h3 style="margin: 0" class="card-title">Редактирование страницы "Контакты"</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <h4 class="border-bottom">Контактная информация</h4>
+                                <input type="hidden" class="form-control" id="id" th:field="${webFeedback.id}">
+                                <div class="form-group">
+                                    <label for="title">Name</label>
+                                    <input type="text" class="form-control" id="title"
+                                           placeholder="Разработчик системы &quot;Мой Дом 24&quot;"
+                                           th:field="${webFeedback.title}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="textarea">Краткий текст</label>
+                                    <textarea class="summernote" id="textarea" placeholder="Текст сообщения"
+                                              th:field="${webFeedback.description}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="link">Ссылка на коммерческий сайт</label>
+                                    <input type="text" class="form-control" id="link"
+                                           placeholder="website.com"
+                                           th:field="${webFeedback.link}">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h4 class="border-bottom">Контакты</h4>
+                                <div class="form-group">
+                                    <label for="fullName">ФИО</label>
+                                    <input type="text" class="form-control" id="fullName"
+                                           placeholder="Иванов Иван Иванович"
+                                           th:field="${webFeedback.fullName}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="location">Локация</label>
+                                    <input type="text" class="form-control" id="location"
+                                           placeholder="ул. Космонавтов, 32"
+                                           th:field="${webFeedback.location}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Адрес</label>
+                                    <input type="text" class="form-control" id="address"
+                                           placeholder="Малиновский р-н, г. Одесса"
+                                           th:field="${webFeedback.address}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Телефон</label>
+                                    <input type="text" class="form-control" id="phoneNumber"
+                                           placeholder="+38 (097) 179-96-63"
+                                           th:field="${webFeedback.phoneNumber}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input type="text" class="form-control" id="email"
+                                           placeholder="info@avada-media.com.ua"
+                                           th:field="${webFeedback.email}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Карта</h4>
+                                <div class="form-group">
+                                    <label for="map">Код карты</label>
+                                    <textarea class="form-control" rows="5" placeholder="Вставьте код карты сюда"
+                                              id="map" th:field="${webFeedback.mapCode}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Настройки SEO</h4>
+                                <div class="form-group">
+                                    <label for="seoTitle">Title</label>
+                                    <input type="text" class="form-control" id="seoTitle"
+                                           th:field="${webFeedback.seo.title}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="seoDescription">Description</label>
+                                    <textarea class="form-control" rows="5" id="seoDescription"
+                                              th:field="${webFeedback.seo.description}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seoKeywords">Keywords</label>
+                                    <textarea class="form-control" rows="5" id="seoKeywords"
+                                              th:field="${webFeedback.seo.keywords}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/website-control/web-feedback">Отменить</a>
+                                <button class="btn btn-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+
+    <!-- summernote init -->
+    <script type="application/javascript">
+        $(document).ready(function () {
+            summernoteInit();
+        });
+    </script>
+</th:block>
+
+</html>

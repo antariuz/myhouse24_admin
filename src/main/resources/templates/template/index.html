@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="ru">
+
+<!-- head -->
+<th:block th:replace="~{template/head}"></th:block>
+
+<body class="sidebar-mini control-sidebar-slide-open layout-navbar-fixed layout-fixed layout-footer-fixed">
+<div class="wrapper">
+    <!-- sidebar -->
+    <th:block th:replace="template/topbar"></th:block>
+    <!-- sidebar -->
+    <th:block th:replace="template/sidebar"></th:block>
+
+    <div class="content-wrapper">
+        <div class="content-header border-bottom" style="padding: 5px">
+            <div class="container-fluid">
+                <!-- fragment of breadcrumbs -->
+                <th:block layout:fragment="breadcrumbs"></th:block>
+            </div>
+        </div>
+        <div class="content pt-3">
+            <div class="container-fluid">
+                <!-- main content -->
+                <th:block layout:fragment="content"></th:block>
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <th:block th:replace="template/footer"></th:block>
+</div>
+<!-- js -->
+<th:block th:replace="template/js"></th:block>
+<!-- extra-js-->
+<th:block layout:fragment="extra-js"></th:block>
+</body>
+</html>

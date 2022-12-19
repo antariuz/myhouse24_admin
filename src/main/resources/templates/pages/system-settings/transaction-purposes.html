@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Статьи приходов/расходов</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Настройки системы</li>
+                <li class="breadcrumb-item active">Статьи приходов/расходов</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row pt-3">
+        <div class="col-12 text-right">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addTransactionPurposeModal">
+                Добавить статью
+            </button>
+        </div>
+    </div>
+
+    <div class="row pt-3">
+        <div class="col-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+
+    <!--  Add modal  -->
+    <div class="modal fade" id="addTransactionPurposeModal" data-backdrop="static" tabindex="-1" role="dialog"
+         aria-labelledby="addTransactionPurposeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTransactionPurposeLabel">Новая статья</h5>
+                </div>
+                <form id="modalForm">
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="id" name="id">
+                        <div class="form-group">
+                            <label for="name">Название</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Приход/расход</label>
+                            <select class="form-control" id="type" name="type">
+                                <option value="IN">Приход</option>
+                                <option value="OUT">Расход</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">Отменить</button>
+                        <button type="submit" class="btn btn-success" id="saveBtn">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+
+    <script type="application/javascript">
+
+        $(document).ready(function () {
+            jsGridInit();
+        });
+
+        $("#modalForm").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3
+                },
+                type: {
+                    required: true
+                },
+            },
+            messages: {
+                name: {
+                    required: "Введите название статьи",
+                    minlength: "Название статьи должно быть как минимум из 3 символов"
+                },
+                type: {
+                    required: "Выберите тип статьи"
+                },
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                $('#addTransactionPurposeModal').modal('hide');
+                addTransactionPurpose();
+                $('.form-control').each(function (index, element) {
+                    $(element).removeClass('is-valid');
+                });
+                $('#name').val('');
+            }
+        });
+
+        $(document).on('click', '#cancelBtn', function (){
+            $('#addTransactionPurposeModal').modal('hide');
+            $('#name').val('');
+            $('.form-control').each(function (index, element) {
+                $(element).removeClass('is-invalid');
+                $(element).removeClass('is-valid');
+            });
+        });
+
+
+        function addTransactionPurpose() {
+            let transactionPurpose = {};
+            transactionPurpose.id = $('#id').val();
+            transactionPurpose.name = $('#name').val();
+            transactionPurpose.type = $('#type').val();
+            $.ajax({
+                method: 'POST',
+                url: 'transaction-purposes/add',
+                data: transactionPurpose,
+                success: function () {
+                    successWarning("Успешно сохранено");
+                    $("#jsGrid").jsGrid("render");
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                confirmDeleting: false,
+                onItemDeleting: function (args) {
+                    if (!args.item.deleteConfirmed) { // custom property for confirmation
+                        args.cancel = true; // cancel deleting
+                        askWarning(function (confirmed) {
+                            if (confirmed) {
+                                args.item.deleteConfirmed = true;
+                                $("#jsGrid").jsGrid('deleteItem', args.item); //call deleting once more in callback
+                            }
+                        });
+                    }
+                },
+
+                inserting: false,
+                editing: true,
+                sorting: true,
+                paging: false,
+                controller: {
+                    loadData: function (data) {
+                        return $.ajax({
+                            method: "GET",
+                            url: "transaction-purposes/get-all",
+                            data: data,
+                            success: function (array) {
+                                console.log(array);
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    },
+                    updateItem: function (item) {
+                        return $.ajax({
+                            method: "POST",
+                            url: "transaction-purposes/update",
+                            data: item,
+                            success: function () {
+                                successWarning("Успешно обновлено");
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    },
+                    deleteItem: function (item) {
+                        return $.ajax({
+                            method: "DELETE",
+                            url: "transaction-purposes/" + item.id + "/delete",
+                            success: function () {
+                                successWarning("Успешно удалено");
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    },
+                },
+
+                fields: [
+                    {
+                        name: "name", title: "Название", type: "text", width: 200
+                    },
+                    {
+                        name: "type", title: "Приход/Расход", type: "select", width: 50, align: 'center',
+                        items: [
+                            {name: "Приход", id: "IN"},
+                            {name: "Расход", id: "OUT"},
+                        ],
+                        valueField: "id",
+                        textField: "name",
+                        valueType: "string",
+                        itemTemplate: function (value) {
+                            if (value === "IN") return "<small style='font-size: 1.1em' class=\"badge badge-success\">Приход</small>";
+                            else return "<small style='font-size: 1.1em' class=\"badge badge-danger\">Расход</small>";
+                        }
+                    },
+                    {
+                        type: "control",
+                        itemTemplate: function (value, item) {
+                            var $result = $([]);
+                            if (!item.used) {
+                                $result = $result.add(this._createDeleteButton(item));
+                            }
+                            return $result;
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Редактирование страницы</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Управление сайтом</li>
+                <li class="breadcrumb-item active">Главная страница</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <form id="form">
+                    <div class="card-header">
+                        <h5 class="card-title" style="margin: 0">Редактирование страницы "Главная"</h5>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-secondary btn-sm updateSeoFiles">Обновить robots и
+                                sitemap
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h4 class="border-bottom">Слайдер</h4>
+                                <input type="hidden" name="id" id="id" value="">
+                            </div>
+                            <div class="col-4">
+                                <h5>Слайд 1</h5>
+                                <img src="" alt="" class="img-fluid slide-1">
+                                <div class="form-group">
+                                    <label for="slide-1">Рекомендуемый размер: (1920x800)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input slide" id="slide-1">
+                                            <label class="custom-file-label" for="slide-1">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h5>Слайд 2</h5>
+                                <img src="" alt="" class="img-fluid slide-2">
+                                <div class="form-group">
+                                    <label for="slide-2">Рекомендуемый размер: (1920x800)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input slide" id="slide-2">
+                                            <label class="custom-file-label" for="slide-2">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h5>Слайд 3</h5>
+                                <img src="" alt="" class="img-fluid slide-3">
+                                <div class="form-group">
+                                    <label for="slide-3">Рекомендуемый размер: (1920x800)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input slide" id="slide-3">
+                                            <label class="custom-file-label" for="slide-3">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h4 class="border-bottom">Краткая информация</h4>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="brief-information-title">Заголовок</label>
+                                    <input type="text" class="form-control" id="brief-information-title" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="brief-information-description">Краткий текст</label>
+                                    <textarea class="summernote" id="brief-information-description"
+                                              placeholder="Краткий текст"
+                                              name="description"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox"
+                                               id="show-links-of-app">
+                                        <label for="show-links-of-app" class="custom-control-label">Показать ссылки на
+                                            приложения</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h4 class="border-bottom">Рядом с нами</h4>
+                            </div>
+                            <div class="col-4 next-to-us-block">
+                                <input type="hidden" class="block-id" name="id" id="block-id-1" value="">
+                                <h5>Блок 1</h5>
+                                <img src="" alt="" class="img-fluid">
+                                <div class="form-group">
+                                    <label for="block-image-1">Рекомендуемый размер: (1000x600)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input block-image" id="block-image-1">
+                                            <label class="custom-file-label" for="block-image-1">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-title-1">Заголовок блока</label>
+                                    <input type="text" class="form-control block-title" id="block-title-1" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-description-1">Описание</label>
+                                    <textarea class="summernote block-description" id="block-description-1"
+                                              placeholder="Текст описания"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-4 next-to-us-block">
+                                <input type="hidden" class="block-id" name="id" id="block-id-2" value="">
+                                <h5>Блок 2</h5>
+                                <img src="" alt="" class="img-fluid">
+                                <div class="form-group">
+                                    <label for="block-image-2">Рекомендуемый размер: (1000x600)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input block-image" id="block-image-2">
+                                            <label class="custom-file-label" for="block-image-2">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-title-2">Заголовок блока</label>
+                                    <input type="text" class="form-control block-title" id="block-title-2" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-description-2">Описание</label>
+                                    <textarea class="summernote block-description" id="block-description-2"
+                                              placeholder="Текст описания"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-4 next-to-us-block">
+                                <input type="hidden" class="block-id" name="id" id="block-id-3" value="">
+                                <h5>Блок 3</h5>
+                                <img src="" alt="" class="img-fluid">
+                                <div class="form-group">
+                                    <label for="block-image-3">Рекомендуемый размер: (1000x600)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input block-image" id="block-image-3">
+                                            <label class="custom-file-label" for="block-image-3">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-title-3">Заголовок блока</label>
+                                    <input type="text" class="form-control block-title" id="block-title-3" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-description-3">Описание</label>
+                                    <textarea class="summernote block-description" id="block-description-3"
+                                              placeholder="Текст описания"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-4 next-to-us-block">
+                                <input type="hidden" class="block-id" name="id" id="block-id-4" value="">
+                                <h5>Блок 4</h5>
+                                <img src="" alt="" class="img-fluid">
+                                <div class="form-group">
+                                    <label for="block-image-4">Рекомендуемый размер: (1000x600)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input block-image" id="block-image-4">
+                                            <label class="custom-file-label" for="block-image-4">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-title-4">Заголовок блока</label>
+                                    <input type="text" class="form-control block-title" id="block-title-4" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-description-4">Описание</label>
+                                    <textarea class="summernote block-description" id="block-description-4"
+                                              placeholder="Текст описания"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-4 next-to-us-block">
+                                <input type="hidden" class="block-id" name="id" id="block-id-5" value="">
+                                <h5>Блок 5</h5>
+                                <img src="" alt="" class="img-fluid">
+                                <div class="form-group">
+                                    <label for="block-image-5">Рекомендуемый размер: (1000x600)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input block-image" id="block-image-5">
+                                            <label class="custom-file-label" for="block-image-5">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-title-5">Заголовок блока</label>
+                                    <input type="text" class="form-control block-title" id="block-title-5" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-description-5">Описание</label>
+                                    <textarea class="summernote block-description" id="block-description-5"
+                                              placeholder="Текст описания"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-4 next-to-us-block">
+                                <input type="hidden" class="block-id" name="id" id="block-id-6" value="">
+                                <h5>Блок 6</h5>
+                                <img src="" alt="" class="img-fluid">
+                                <div class="form-group">
+                                    <label for="block-image-6">Рекомендуемый размер: (1000x600)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input block-image" id="block-image-6">
+                                            <label class="custom-file-label" for="block-image-6">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-title-6">Заголовок блока</label>
+                                    <input type="text" class="form-control block-title" id="block-title-6" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="block-description-6">Описание</label>
+                                    <textarea class="summernote block-description" id="block-description-6"
+                                              placeholder="Текст описания"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="border-bottom">Настройки SEO</h4>
+                            </div>
+                            <div class="col-12">
+                                <input type="hidden" name="seoId" id="seoId" value="">
+                                <div class="form-group pt-3">
+                                    <label for="seoTitle">Title</label>
+                                    <input type="text" class="form-control" id="seoTitle" name="seoTitle">
+                                </div>
+                                <div class="form-group">
+                                    <label for="seoDescription">Description</label>
+                                    <textarea class="form-control" rows="5" id="seoDescription"
+                                              name="seoDescription"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seoKeywords">Keywords</label>
+                                    <textarea class="form-control" rows="5" id="seoKeywords"
+                                              name="seoKeywords"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end of body-->
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/website-control/web-main">Отменить</a>
+                                <button type="submit" class="btn btn-success" id="saveBtn">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="extra-js">
+
+    <script type="application/javascript">
+
+        let imagePath = '/uploaded/webMain/';
+
+        //  Initialization
+        $(document).ready(function () {
+            getData();
+            bsCustomFileInput.init();
+            summernoteInit();
+        });
+
+        //  Auto preview of image
+        $(document).on('change', '.custom-file-input', function () {
+            $(this).parents('div.col-4').find('.img-fluid')[0].src = URL.createObjectURL(event.target.files[0]);
+        });
+
+        //  Get data
+        function getData() {
+            $.ajax({
+                method: 'GET',
+                url: 'web-main/get',
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+                    $('#id').val(data.id);
+                    $('img.slide-1').attr("src", (data.slide1 ? (imagePath + data.slide1) : '/img/services-empty.jpg'));
+                    $('img.slide-2').attr("src", (data.slide2 ? (imagePath + data.slide2) : '/img/services-empty.jpg'));
+                    $('img.slide-3').attr("src", (data.slide3 ? (imagePath + data.slide3) : '/img/services-empty.jpg'));
+                    $('#brief-information-title').val(data.title);
+                    $('#brief-information-description').val(data.description);
+                    if (data.showLinks) $('#show-links-of-app').attr('checked', true);
+                    $('div.next-to-us-block').each(function (index, element) {
+                        $(element).find('.block-id').val(data.webNextToUsList[index].id);
+                        $(element).find('.block-title').val(data.webNextToUsList[index].title);
+                        console.log(data.webNextToUsList[index].description);
+                        $(element).find('.block-description').val(data.webNextToUsList[index].description);
+                        $(element).find('img.img-fluid').attr("src", (data.webNextToUsList[index].image ? (imagePath + data.webNextToUsList[index].image) : '/img/services-empty.jpg'));
+                    });
+                    $('#seoId').val(data.seo.id);
+                    $('#seoTitle').val(data.seo.title);
+                    $('#seoDescription').val(data.seo.description);
+                    $('#seoKeywords').val(data.seo.keywords);
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Action on Save button
+        $(document).on('submit', '#form', function (event) {
+            event.preventDefault();
+
+            let formData = new FormData();
+
+            let webMainDTO = {};
+            webMainDTO.id = $('#id').val();
+            webMainDTO.title = $('#brief-information-title').val();
+            webMainDTO.description = $('#brief-information-description').val();
+            webMainDTO.showLinks = $('#show-links-of-app').is(':checked');
+            const mainPageJSONBlob = new Blob([JSON.stringify(webMainDTO)], {
+                type: 'application/json'
+            });
+            formData.append('webMainDTO', mainPageJSONBlob);
+
+            $('input.slide').each(function (index, element) {
+                formData.append('slides', $(element)[0].files[0] ? $(element)[0].files[0] : new File([], "empty"));
+            });
+
+            let webNextToUsList = [];
+
+            $('div.next-to-us-block').each(function (index, element) {
+                let nextToUs = {};
+                nextToUs.id = $(element).find('.block-id').val();
+                nextToUs.title = $(element).find('.block-title').val();
+                nextToUs.description = $(element).find('.block-description').val();
+                webNextToUsList.push(nextToUs);
+                formData.append('nextToUsImages', $(element).find('.block-image')[0].files[0] ? $(element).find('.block-image')[0].files[0] : new File([], "empty"));
+            });
+            const nextToUsListJSONBlob = new Blob([JSON.stringify(webNextToUsList)], {
+                type: 'application/json'
+            });
+            formData.append('webNextToUsList', nextToUsListJSONBlob);
+
+            let seo = {};
+            seo.id = $('#seoId').val();
+            seo.title = $('#seoTitle').val();
+            seo.description = $('#seoDescription').val();
+            seo.keywords = $('#seoKeywords').val();
+            const seoJSONBlob = new Blob([JSON.stringify(seo)], {
+                type: 'application/json'
+            });
+            formData.append('seo', seoJSONBlob);
+
+            $.ajax({
+                method: 'PUT',
+                url: 'web-main/' + webMainDTO.id + '/update',
+                async: false,
+                data: formData,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function () {
+                    successWarning('Успешно сохранено');
+                    getData();
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            })
+        });
+
+    </script>
+
+</th:block>
+
+</html>

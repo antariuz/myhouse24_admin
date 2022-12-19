@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Заявки вызова мастера</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active" id="last-breadcrumb">Заявки вызова мастера</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="table">
+        <div class="col-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="newOrEdit" hidden>
+        <div class="col-12">
+            <form id="form">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input ignore" id="requestedDate"
+                                       data-target="#requestedDate"/>
+                                <div class="input-group-append" data-target="#requestedDate"
+                                     data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa-solid fa-calendar-days"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto text-center" style="margin-top: 6px">
+                        <span>от</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input ignore" id="requestedTime"
+                                       data-target="#requestedTime"/>
+                                <div class="input-group-append" data-target="#requestedTime"
+                                     data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa-solid fa-clock"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="hidden" class="form-control ignore" id="id">
+                        <div class="card card-outline card-secondary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="user">Владелец квартиры</label>
+                                            <select class="form-control ignore" id="user"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="description">Описание</label>
+                                            <textarea class="form-control" rows="8" placeholder="Опишите проблему..."
+                                                      id="description" name="description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="flat">Квартира</label>
+                                            <select class="custom-select" id="flat" name="flat"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="role">Тип мастера</label>
+                                            <select class="custom-select ignore" id="role">
+                                                <option value="0">Любой специалист</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="status">Статус</label>
+                                            <select class="custom-select ignore" id="status">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="staff">Мастер</label>
+                                            <select class="custom-select ignore" id="staff">
+                                                <option value="">Выберите...</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="comment">Комментарий</label>
+                                            <textarea class="summernote" placeholder="Оставьте комментарий..."
+                                                      id="comment"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <a class="btn btn-secondary" href="/master-requests">Отменить</a>
+                                        <button type="submit" class="btn btn-success">Сохранить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <button type="button" onclick="editAction(currentItem);" class="btn btn-sm btn-info">
+                            Редактировать заявку
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row pt-3">
+                        <div class="col-12">
+                            <table class="table table-hover table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td style="width: 50%"><b>Статус</b></td>
+                                    <td id="show-status"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Владелец</b></td>
+                                    <td id="show-user"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Телефон</b></td>
+                                    <td id="show-user-phoneNumber"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Квартира</b></td>
+                                    <td id="show-flat"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Тип мастера</b></td>
+                                    <td id="show-staff-role"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Мастер</b></td>
+                                    <td id="show-staff"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Описание</b></td>
+                                    <td id="show-description"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Добавлено</b></td>
+                                    <td id="show-created-at"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/master-requests">Вернуться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let allUsers, allFlats, allStaffRoles, allStatus, allStaff = [];
+        let currentItem = null;
+
+        $(document).ready(function () {
+            initializeSelects();
+            jsGridInit();
+            $('#requestedDate').datetimepicker({
+                locale: 'ru',
+                format: 'L',
+                allowInputToggle: true,
+                defaultDate: moment().format(),
+                useCurrent: false
+            });
+            $('#requestedTime').datetimepicker({
+                locale: 'ru',
+                format: 'HH:mm',
+                allowInputToggle: true,
+                defaultDate: moment().format(),
+                useCurrent: false
+            });
+            initSelect2();
+            summernoteInit();
+        });
+
+        function initSelect2() {
+            $('#filterRequestedDate').datetimepicker({
+                locale: 'ru',
+                format: 'L',
+                allowInputToggle: true,
+                useCurrent: false
+            });
+            $('#user, #filterUser').select2({
+                allowClear: true,
+                ajax: {
+                    url: "users/search-user",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term,
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Выберите...',
+                minimumInputLength: 1
+            });
+            $('#flat, #filterFlat').select2({
+                allowClear: true,
+                ajax: {
+                    url: "master-requests/search-flat",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term,
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Выберите...',
+                minimumInputLength: 1
+            });
+        }
+
+        function initializeSelects() {
+            getAllUsers();
+            getAllFlats();
+            getAllStaffRoles();
+            getAllStatus();
+            getAllStaffByRole($('#staff').val());
+            $.each(allStaffRoles, function (i, element) {
+                $('#role').append('<option value="' + element.id + '">' + element.title + '</option>');
+            });
+            $.each(allStatus, function (i, element) {
+                $('#status').append('<option value="' + element.value + '">' + element.title + '</option>');
+            });
+            if (allStaff.length > 0) {
+                $.each(allStaff, function (i, element) {
+                    $('#staff').append('<option value="' + element.id + '">' + element.title + '</option>');
+                });
+            } else {
+                $('#staff')
+                    .empty()
+                    .append('<option value="">Мастера отсутствуют</option>')
+                    .attr("disabled", true);
+            }
+
+        }
+
+        //  Selection change event of selection
+        $(document).on('change', '#role', function () {
+            let roleId = $(this).val();
+            getAllStaffByRole(roleId);
+            if (allStaff.length > 0) {
+                $('#staff')
+                    .empty()
+                    .append('<option value="">Выберите...</option>')
+                    .attr("disabled", false);
+                $.each(allStaff, function (i, element) {
+                    $('#staff').append('<option value="' + element.id + '">' + element.title + '</option>');
+                });
+            } else {
+                $('#staff')
+                    .empty()
+                    .append('<option value="">Мастера отсутствуют</option>')
+                    .attr("disabled", true);
+            }
+        });
+
+        //  Row click action
+        function rowClickAction(item) {
+            console.log(item);
+            let $statusText = $('<span>').append(item.status.title);
+            if (item.status.value === "NEW") $statusText.attr({class: "badge badge-danger"});
+            if (item.status.value === "IN_WORK") $statusText.attr({class: "badge badge-warning"});
+            if (item.status.value === "DONE") $statusText.attr({class: "badge badge-success"});
+            $('#show-status').append($statusText);
+            if (item.user) {
+                $('#show-user').text(item.user.fullName);
+                $('#show-user-phoneNumber').text(item.user.phoneNumber);
+            }
+            $('#show-flat').text(item.flat.title);
+            if (item.role) {
+                $('#show-staff-role').text(item.role.title);
+            }
+            if (item.staff) {
+                $('#show-staff').text(item.staff.fullName);
+            }
+            $('#show-description').text(item.description);
+            $('#show-created-at').text(new Date(item.createdAt).toLocaleDateString() + " - " + new Date(item.createdAt).toLocaleTimeString().substring(0, 5));
+
+            let pageTitle = "Заявка №" + item.id;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', true);
+            $('#show').attr('hidden', false);
+            currentItem = item;
+        }
+
+        //  Add new button action
+        function addNewMasterRequestAction() {
+            let pageTitle = "Новая заявка";
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Edit button action
+        function editAction(item) {
+            $('#id').val(item.id);
+            $('#requestedDate').val(new Date(item.requestedDate).toLocaleDateString('ru'));
+            $('#requestedTime').val(new Date(item.requestedDate).toLocaleTimeString('ru').substring(0, 5));
+            $('#description').val(item.description);
+            $('#comment').summernote("code", item.comment);
+            if (item.user) {
+                $('#user').append('<option value="' + item.user.id + '">' + item.user.fullName + '</option>');
+            }
+            $('#flat').append('<option value="' + item.flat.id + '">' + item.flat.title + '</option>');
+            if (item.role) {
+                $('#role').val(item.role.id);
+            }
+            $('#status').val(item.status.value);
+            if (item.staff) {
+                $('#staff').val(item.staff.id);
+            }
+
+            let pageTitle = "Заявка №" + item.id;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Get All Users
+        function getAllUsers() {
+            $.ajax({
+                method: "GET",
+                url: "master-requests/get-all-users",
+                async: false,
+                success: function (data) {
+                    allUsers = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Flats
+        function getAllFlats() {
+            $.ajax({
+                method: "GET",
+                url: "master-requests/get-all-flats",
+                async: false,
+                success: function (data) {
+                    allFlats = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Staff Roles
+        function getAllStaffRoles() {
+            $.ajax({
+                method: "GET",
+                url: "master-requests/get-all-staff-roles",
+                async: false,
+                success: function (data) {
+                    allStaffRoles = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Status
+        function getAllStatus() {
+            $.ajax({
+                method: "GET",
+                url: "master-requests/get-all-status",
+                async: false,
+                success: function (data) {
+                    allStatus = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Staff by Role
+        function getAllStaffByRole(roleId) {
+            $.ajax({
+                method: "GET",
+                url: "master-requests/get-all-staff-by-role",
+                async: false,
+                data: {id: roleId},
+                success: function (data) {
+                    allStaff = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'master-requests/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        //  Validation
+        $('#form').validate({
+            ignore: ".ignore",
+            rules: {
+                flat: {
+                    required: true
+                },
+                description: {
+                    required: true
+                }
+            },
+            messages: {
+                flat: {
+                    required: "Выберите квартиру"
+                },
+                description: {
+                    required: "Вкратце опишите проблему"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        //  Add button action
+        function saveAction() {
+            let masterRequest = {};
+            masterRequest.id = $('#id').val();
+            let date = $('#requestedDate').val();
+            let time = $('#requestedTime').val();
+            masterRequest.requestedDate = new Date(date.split('.')[2], (date.split('.')[1] - 1), date.split('.')[0], time.split(':')[0], time.split(':')[1]);
+            masterRequest.description = $('#description').val();
+            masterRequest.comment = $('#comment').val();
+            masterRequest.user = {id: $('#user').val()};
+            masterRequest.flat = {id: $('#flat').val()};
+            masterRequest.role = {id: $('#role').val()};
+            masterRequest.status = {value: $('#status').val()};
+            masterRequest.staff = {id: $('#staff').val()};
+            if (masterRequest.id) {
+                $.ajax({
+                    method: 'PUT',
+                    url: 'master-requests/' + masterRequest.id + '/update',
+                    contentType: 'application/json',
+                    data: JSON.stringify(masterRequest),
+                    success: function () {
+                        successWarning('Успешно обновлено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'master-requests/save',
+                    contentType: 'application/json',
+                    data: JSON.stringify(masterRequest),
+                    success: function () {
+                        successWarning('Успешно сохранено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            }
+        }
+
+        $(document).on('change', '#filterNumber, #filterRequestedDate, #filterFlat, #filterUser', function () {
+            $("#jsGrid").jsGrid("search");
+        });
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: true,
+                rowClick: function (args) {
+                    rowClickAction(args.item);
+                },
+                controller: {
+                    loadData: function (filter) {
+                        console.log(filter)
+                        return $.ajax({
+                            method: "GET",
+                            url: "master-requests/get-all-master-requests",
+                            data: filter,
+                            dataType: "json",
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "id", title: "№ заявки", type: "number", width: "10%",
+                        filterTemplate: function () {
+                            return $('<input>').attr({type: "number", min: 1, id: "filterNumber"});
+                        },
+                        filterValue: function () {
+                            return $('#filterNumber').val();
+                        }
+                    },
+                    {
+                        name: "requestedDate", title: "Удобное время", type: "text", width: "10%",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) {
+                                let date = new Date(item);
+                                return date.toLocaleDateString("ru") + " - " + date.toLocaleTimeString("ru").substring(0, 5);
+                            } else return "";
+                        },
+                        filterTemplate: function () {
+                            return $('<input>').attr({type: "date", id: "filterRequestedDate"});
+                        },
+                        filterValue: function () {
+                            return $('#filterRequestedDate').val();
+                        }
+                    },
+                    {
+                        name: "role", title: "Тип мастера", type: "select", width: "10%",
+                        items: [{id: "", title: ""}, {id: -1, title: "Любой специалист"}].concat(allStaffRoles),
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) {
+                                return item.title;
+                            } else return "";
+                        }
+                    },
+                    {
+                        name: "description", title: "Описание", type: "text", width: "10%", sorting: false,
+                        itemTemplate: function (item) {
+                            if (item.length > 40) {
+                                return item.substring(0, 36).concat("...")
+                            } else return item;
+                        }
+                    },
+                    {
+                        name: "flat", title: "Квартира", type: "select", width: "10%", sorting: false,
+                        items: [{id: "", title: ""}].concat(allFlats),
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) {
+                                return item.title;
+                            } else return "";
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterFlat"});
+                        },
+                        filterValue: function () {
+                            return $('#filterFlat').val();
+                        }
+                    },
+                    {
+                        name: "user", title: "Владелец", type: "select", width: "10%", sorting: false,
+                        items: [],
+                        valueField: "id",
+                        textField: "fullName",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) {
+                                return item.fullName;
+                            } else return "";
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterUser"});
+                        },
+                        filterValue: function () {
+                            return $('#filterUser').val();
+                        }
+                    },
+                    {
+                        name: "phoneNumber", title: "Телефон", type: "text", width: "10%", sorting: false,
+                    },
+                    {
+                        name: "staff", title: "Мастер", type: "select", width: "10%", sorting: false,
+                        items: [{id: "", fullName: ""}].concat(allStaff),
+                        valueField: "id",
+                        textField: "fullName",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            if (item !== undefined && item !== null) {
+                                return item.fullName;
+                            } else return "";
+                        }
+                    },
+                    {
+                        name: "status", title: "Статус", type: "select", width: "10%", sorting: false,
+                        items: [{id: "", title: ""}].concat(allStatus),
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            let $statusText = $('<span>').append(item.title);
+                            if (item.value === "NEW") $statusText.attr({class: "badge badge-danger"});
+                            if (item.value === "IN_WORK") $statusText.attr({class: "badge badge-warning"});
+                            if (item.value === "DONE") $statusText.attr({class: "badge badge-success"});
+                            return $('<h6>').append($statusText);
+                        },
+                    },
+                    {
+                        type: "control", width: "15%", align: "center",
+                        headerTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-success btn-flat btn-sm"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    addNewMasterRequestAction();
+                                })
+                                .append("Добавить заявку");
+                        },
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .attr({title: "Очистить фильтры"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#jsGrid").jsGrid("clearFilter");
+                                    initSelect2();
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $updateBtn = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({title: "Редактировать"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteBtn = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({title: "Удалить"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteAction(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$updateBtn, $deleteBtn];
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Сообщения</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active" id="last-breadcrumb">Сообщения</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="table">
+        <div class="col-12 text-right">
+            <button type="button" class="btn btn-sm btn-success" id="sendMsgBtn">
+                Отправить сообщение
+            </button>
+        </div>
+        <div class="col-12 pt-3">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <button type="button" class="btn btn-sm" style="margin-left:-4px" onclick="batchDelete();"><i
+                            class="fa-solid fa-trash-can"></i></button>
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Поиск">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <div id="jsGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="newOrEdit" hidden>
+        <div class="col-12">
+            <form id="form">
+                <div class="card card-outline card-secondary">
+                    <div class="card-body">
+                        <input type="hidden" class="form-control ignore" id="id">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="subject">Тема сообщения</label>
+                                    <input type="text" class="form-control" id="subject" name="subject">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <textarea class="summernote" rows="5" placeholder="Текст сообщения..."
+                                              id="text"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <h5 class="border-bottom">Кому отправить:</h5>
+                            </div>
+                            <div class="col-6">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="have-debt">
+                                    <label for="have-debt" class="custom-control-label"> Владельцам с
+                                        задолженностями</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="building">ЖК</label>
+                                    <select class="custom-select ignore" id="building">
+                                        <option value="">Всем</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="section">Секция</label>
+                                    <select class="custom-select ignore" id="section" disabled>
+                                        <option value="">Сперва выберите дом...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="floor">Этаж</label>
+                                    <select class="custom-select ignore" id="floor" disabled>
+                                        <option value="">Сперва выберите дом...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="flat">Квартира</label>
+                                    <select class="custom-select ignore" id="flat" name="flat" disabled>
+                                        <option value="">Сперва выберите дом...</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/messages">Отменить</a>
+                                <button type="submit" class="btn btn-success"><i class="fa-regular fa-envelope"></i>
+                                    Отправить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h6 style="margin: 0"><b><span id="show-subject"></span></b><br>
+                            <span id="show-staff">От: </span>
+                        </h6>
+                    </div>
+                    <div class="card-tools">
+                        <span id="show-createdAt"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row pt-3">
+                        <div class="col-12">
+                            <span id="show-text"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/messages">Вернуться</a>
+                            <button type="button" class="btn btn-danger" onclick="deleteAction(currentItem.id)">
+                                <i class="fa-solid fa-trash-can"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let allBuildings = [];
+        let allFlats = [];
+        let currentItem;
+        let toDeleteList = [];
+
+        $(document).ready(function () {
+            getAllBuildings();
+            jsGridInit();
+            $.each(allBuildings, function (i, element) {
+                $('#building').append('<option value="' + element.id + '">' + element.title + '</option>');
+            });
+            summernoteInit();
+        });
+
+        $('#sendMsgBtn').on('click', function () {
+
+            let pageTitle = "Новое сообщение";
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        });
+
+        //  Change of Building select
+        $(document).on('change', '#building', function () {
+            let buildingId = $(this).val();
+            if (buildingId === "") {
+                $('#section, #floor, #flat')
+                    .empty()
+                    .append('<option value="">Сперва выберите дом...</option>')
+                    .attr("disabled", true);
+                $('#flat')
+                    .removeClass('is-invalid')
+                    .removeClass('is-valid');
+            } else {
+                let building = allBuildings.find(building => building.id === parseInt(buildingId));
+                if (building.sections.length === 0) {
+                    $('#section')
+                        .empty()
+                        .append('<option value="">Секции отсутствуют</option>')
+                        .attr("disabled", true);
+                } else {
+                    $('#section')
+                        .empty()
+                        .append('<option value="">Выберите секцию...</option>')
+                        .attr("disabled", false);
+                    $.each(building.sections, function (i, e) {
+                        $('#section').append('<option value="' + e.id + '">' + e.name + '</option>');
+                    });
+                }
+                if (building.floors.length === 0) {
+                    $('#floor')
+                        .empty()
+                        .append('<option value="">Этажи отсутствуют</option>')
+                        .attr("disabled", true);
+                } else {
+                    $('#floor')
+                        .empty()
+                        .append('<option value="">Выберите этаж...</option>')
+                        .attr("disabled", false);
+                    $.each(building.floors, function (i, e) {
+                        $('#floor').append('<option value="' + e.id + '">' + e.name + '</option>');
+                    });
+                }
+                getFlatsList();
+            }
+        })
+
+        //  Change of Section select
+        $(document).on('change', '#section, #floor', function () {
+            getFlatsList();
+        });
+
+        function getFlatsList() {
+            getAllFlats($('#building').val(), $('#section').val(), $('#floor').val());
+            if (allFlats.length === 0) {
+                $('#flat')
+                    .empty()
+                    .append('<option value="">Квартиры отсутствуют</option>')
+                    .attr("disabled", true);
+            } else {
+                $('#flat')
+                    .empty()
+                    .append('<option value="">Выберите квартиру...</option>')
+                    .attr("disabled", false);
+                $.each(allFlats, function (i, e) {
+                    $('#flat').append('<option value="' + e.id + '">' + e.title + '</option>');
+                });
+            }
+        }
+
+        //  Get All Buildings
+        function getAllBuildings() {
+            $.ajax({
+                method: "GET",
+                url: "messages/get-all-buildings",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allBuildings = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get Flats of Building
+        function getAllFlats(buildingId, sectionId, floorId) {
+            $.ajax({
+                method: "GET",
+                url: "messages/get-all-flats-by-building-and-section-and-floor",
+                dataType: "json",
+                async: false,
+                data: {buildingId: buildingId, sectionId: sectionId, floorId: floorId},
+                success: function (data) {
+                    allFlats = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Row click action
+        function rowClickAction(item) {
+            $('#show-subject').text(item.subject);
+            $('#show-staff').append(item.staff?.email);
+            let date = new Date(item.createdAt);
+            $('#show-createdAt').text(date.toLocaleDateString("ru") + " - " + date.toLocaleTimeString("ru").substring(0, 5));
+            $('#show-text').html(item.text);
+
+            let pageTitle = "Сообщение";
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#show').attr('hidden', false);
+
+            currentItem = item;
+        }
+
+        function batchDelete() {
+            if (toDeleteList.length > 0) {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        $.each(toDeleteList, function (i, v) {
+                            $.ajax({
+                                method: 'DELETE',
+                                url: 'messages/' + v + '/delete',
+                                error: function (jqXHR, exception) {
+                                    errorWarning();
+                                    ajaxError(jqXHR, exception);
+                                }
+                            });
+                        });
+                        successWarning('Успешно удалено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                });
+            }
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'messages/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        //  Validation
+        $('#form').validate({
+            ignore: ".ignore",
+            rules: {
+                subject: {
+                    required: true
+                }
+            },
+            messages: {
+                subject: {
+                    required: "Укажите тему сообщения"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        //  Add button action
+        function saveAction() {
+            let message = {};
+            message.subject = $('#subject').val();
+            message.text = $('#text').val();
+            message.haveDebt = $('#have-debt').is(":checked");
+            message.building = $('#building').val() ? {id: $('#building').val()} : null;
+            message.section = $('#section').val() ? {id: $('#section').val()} : null;
+            message.floor = $('#floor').val() ? {id: $('#floor').val()} : null;
+            message.flat = $('#flat').val() ? {id: $('#flat').val()} : null;
+            message.user = $('#user').val() ? {id: $('#user').val()} : null;
+
+            $.ajax({
+                method: 'POST',
+                url: 'messages/save',
+                contentType: 'application/json',
+                data: JSON.stringify(message),
+                success: function () {
+                    successWarning('Успешно сохранено');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: false,
+                rowClick: function (args) {
+                    let $target = $(args.event.target);
+                    if (!$target.closest('.deleteCheckbox').length) {
+                        rowClickAction(args.item);
+                    }
+                },
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            method: "GET",
+                            url: "messages/get-all-messages",
+                            data: filter,
+                            dataType: "json",
+                            success: function (response) {
+                                console.info(response);
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "id",
+                        type: "checkbox",
+                        width: "3%",
+                        sorting: false,
+                        filtering: false,
+                        css: "deleteCheckbox",
+                        headerTemplate: function () {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .on("change", function () {
+                                    $('.jsgrid-grid-body')
+                                        .find('.jsgrid-cell.deleteCheckbox')
+                                        .find('input')
+                                        .attr('checked', $(this).is(":checked"))
+                                        .trigger('change');
+                                });
+                        },
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) toDeleteList.push(item.id);
+                                    else toDeleteList = jQuery.grep(toDeleteList, function (value) {
+                                        return value !== item.id;
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "toWhom",
+                        title: "Получатель",
+                        type: "text",
+                        width: "37%",
+                        align: "center"
+                    },
+                    {
+                        name: "message",
+                        title: "Текст",
+                        type: "text",
+                        width: "50%",
+                        align: "center",
+                        itemTemplate: function (value, item) {
+                            return '<b>' + item.subject + '</b> - ' + (item.text.length > 45 ? (item.text.substring(3, 45) + "...") : item.text.substring(3, item.text.length - 4));
+                        }
+                    },
+                    {
+                        name: "createdAt", title: "Дата", type: "text", width: "10%", align: "center",
+                        itemTemplate: function (item) {
+                            let date = new Date(item);
+                            return date.toLocaleDateString("ru") + " - " + date.toLocaleTimeString("ru").substring(0, 5);
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

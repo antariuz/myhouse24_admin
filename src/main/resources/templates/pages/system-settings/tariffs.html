@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Тарифы</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Настройки системы</li>
+                <li class="breadcrumb-item active">Услуги</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row pt-3" id="content">
+        <div class="col-12 pt-3">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+
+    <!--  Add modal  -->
+    <div class="modal fade" id="addTariff" data-backdrop="static" tabindex="-1" role="dialog"
+         aria-labelledby="addTariffLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTariffLabel">Новый тариф</h5>
+                </div>
+                <form id="addTariffModal">
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="id" name="id">
+                        <div class="form-group">
+                            <label for="name">Название тарифа</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Описание тарифа</label>
+                            <textarea rows="5" class="form-control" id="description" name="description"></textarea>
+                        </div>
+                        <div class="row" id="service-block-rows"></div>
+                        <div class="row pt-3">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-info" id="addServiceButton">
+                                    Добавить услугу
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" id="cancelBtn" onclick="$('#addTariff').modal('hide');"
+                                class="btn btn-secondary">Отменить
+                        </button>
+                        <button type="submit" class="btn btn-success" id="saveBtn">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let serviceCount = 0;
+        let unitCount = 0;
+        let services = null;
+        let units = null;
+
+        $(document).ready(function () {
+            jsGridInit();
+            getAllServices();
+            getAllUnits();
+        });
+
+        function copyAction(item) {
+            $('#name').val(item.name);
+            $('#description').val(item.description);
+            $(item.tariffServices).each(function (i, element) {
+                $('#addServiceButton').trigger('click');
+                $('#select-service-' + serviceCount).val(element.id);
+                $('#price-' + serviceCount).val(element.price);
+                $('#select-unit-' + unitCount).val(services.find(service => service.id === parseInt(element.service.id)).unit.id);
+            });
+            $('#addTariff').modal('show');
+        }
+
+        function updateAction(item) {
+            console.info("item:");
+            console.info(item);
+            let serviceList = services;
+            $('#addTariffLabel').text("Тариф: " + item.name);
+            $('#id').val(item.id);
+            $('#name').val(item.name);
+            $('#description').val(item.description);
+            $(item.tariffServices).each(function (i, element) {
+                $('#addServiceButton').trigger('click');
+                $('#select-service-' + serviceCount).val(element.id);
+                $('#price-' + serviceCount).val(element.price);
+                $('#select-unit-' + unitCount).val(serviceList.find(service => service.id === parseInt(element.service.id)).unit.id);
+            });
+            $('#addTariff').modal('show');
+        }
+
+        // Add new block of Service
+        $(document).on('click', '#addServiceButton', function () {
+            serviceCount++;
+            unitCount++;
+            $('#service-block-rows').append(
+                '<div class="col-12 service-block">' +
+                '    <div class="row">' +
+                '        <input type="hidden" class="form-control" id="id-' + serviceCount + '" name="id-' + serviceCount + '" value="">' +
+                '        <div class="col-4">' +
+                '            <div class="form-group">' +
+                '                <label for="select-service-' + serviceCount + '">Услуга</label>' +
+                '                <select class="custom-select service-id" id="select-service-' + serviceCount + '" name="service-' + serviceCount + '">' +
+                '                <option value="">Выберите...</option></select>' +
+                '            </div>' +
+                '        </div>' +
+                '        <div class="col-3">' +
+                '            <div class="form-group">' +
+                '                <label for="price-' + serviceCount + '">Цена</label>' +
+                '                <input type="number" step="0.01" class="form-control service-price" id="price-' + serviceCount + '" name="price-' + serviceCount + '">' +
+                '            </div>' +
+                '        </div>' +
+                '        <div class="col-2">' +
+                '            <div class="form-group">' +
+                '                <label for="currency-' + serviceCount + '">Валюта</label>' +
+                '                <input type="text" class="form-control" value="грн." id="currency' + serviceCount + '" name="currency-' + serviceCount + '" disabled>' +
+                '            </div>' +
+                '        </div>' +
+                '        <div class="col-3">' +
+                '            <div class="form-group">' +
+                '                <label for="select-unit-' + unitCount + '">Ед. изм.</label>' +
+                '                <div class="input-group">' +
+                '                    <select class="custom-select unit-id" id="select-unit-' + unitCount + '" disabled>' +
+                '                    <option value="">Выберите...</option></select>' +
+                '                    <div class="input-group-append">' +
+                '                        <button type="button" class="btn btn-secondary remove-service-button">' +
+                '                            <i class="fa-solid fa-trash-can"></i>' +
+                '                        </button>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
+            $.each(services, function (i, element) {
+                $('#select-service-' + serviceCount).append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+            $.each(units, function (i, element) {
+                $('#select-unit-' + unitCount).append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+            ruleInit();
+        });
+
+        $(document).on('change', 'select.service-id', function () {
+            let serviceId = $(this).val();
+            if (serviceId === '') $(this).parents('div.service-block').find('select.unit-id').val('');
+            else $(this).parents('div.service-block').find('select.unit-id').val(services.find(service => service.id === parseInt(serviceId)).unit.id);
+        });
+
+        //Get List<Service>
+        function getAllServices() {
+            $.ajax({
+                method: 'GET',
+                url: 'services/get-all-services',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    console.info("services:");
+                    console.info(data);
+                    services = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get List<Units>
+        function getAllUnits() {
+            $.ajax({
+                method: 'GET',
+                url: 'services/get-all-units',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    units = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        // Remove the block of Service
+        $(document).on('click', '.remove-service-button', function () {
+            let formGroup = $(this).parents('div.service-block');
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    serviceCount--;
+                    unitCount--;
+                    $(formGroup).remove();
+                    successWarning('Успешно удалено');
+                }
+            })
+        });
+
+        // Remove Tariff
+        function deleteTariff(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'tariffs/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        $("#addTariff").on('hide.bs.modal', function () {
+            $('#addTariffLabel').text("Новый тариф");
+            $('#name').val('');
+            $('#description').val('');
+            $('.form-control, .custom-select').each(function (index, element) {
+                $(element).removeClass('is-invalid');
+                $(element).removeClass('is-valid');
+            });
+            $('.service-block').each(function () {
+                $(this).remove();
+            })
+            unitCount = 0;
+            serviceCount = 0;
+        });
+
+        //  Add button action
+        function saveAction() {
+            let tariff = {};
+            let services = [];
+            tariff.id = $('#id').val();
+            tariff.name = $('#name').val();
+            tariff.description = $('#description').val();
+            $('div.service-block').each(function (index, element) {
+                let service = {};
+                service.service = $(element).find('select.service-id').val() ? {id: $(element).find('select.service-id').val()} : null;
+                service.price = $(element).find('input.service-price').val();
+                services.push(service);
+            });
+            tariff.services = services;
+            $.ajax({
+                method: 'POST',
+                url: 'tariffs/add',
+                data: JSON.stringify(tariff),
+                contentType: 'application/json',
+                success: function () {
+                    $('#addTariff').modal('hide');
+                    successWarning('Успешно добавлено');
+                    $("#jsGrid").jsGrid("render");
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        $("#addTariffModal").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                }
+            },
+            messages: {
+                name: {
+                    required: "Введите название тарифа",
+                    minlength: "Название тарифа должно быть минимум из 3 символов",
+                    maxlength: "Название тарифа должно быть максимум из 40 символов"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        function ruleInit() {
+            $('[name^="price-"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    step: 0.01,
+                    messages: {
+                        required: "Введите цену",
+                        step: "Введите дробную часть до сотых (0,ХХ)"
+                    }
+                });
+            });
+            $('[name^="service-"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Выберите услугу"
+                    }
+                });
+            });
+        }
+
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                paging: false,
+                controller: {
+                    loadData: function (data) {
+                        return $.ajax({
+                            method: "GET",
+                            url: "tariffs/get-all",
+                            async: false,
+                            data: data,
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    },
+                },
+                fields: [
+                    {
+                        name: "name", title: "Название тарифа", type: "text", width: 200
+                    },
+                    {
+                        name: "description", title: "Описание тарифа", type: "text", width: 400
+                    },
+                    {
+                        name: "updatedAt", title: "Дата редактирования", type: "text", width: 100
+                    },
+                    {
+                        type: "control", width: 90, align: "center",
+                        headerTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-success btn-flat btn-sm"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $('#addTariff').modal('show');
+                                })
+                                .append("Добавить тариф");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $copyButton = $("<button>")
+                                .attr({class: "btn btn-info btn-flat btn-sm"})
+                                .attr({title: "Копировать"})
+                                .attr({id: "btn-copy-" + item.id})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    copyAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-regular fa-copy"}));
+
+                            let $updateButton = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({title: "Редактировать"})
+                                .attr({id: "btn-edit-" + item.id})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    updateAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteButton = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({title: "Удалить"})
+                                .attr({id: "btn-delete-" + item.id})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteTariff(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$copyButton, $updateButton, $deleteButton];
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0">Роли</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Настройки системы</li>
+                <li class="breadcrumb-item active">Роли</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="row pt-3">
+        <div class="col-12">
+            <div id="jsGrid"></div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <a class="btn btn-secondary" href="/system-settings/roles">Отменить</a>
+                        <button class="btn btn-success" id="saveBtn">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="extra-js">
+
+    <script type="application/javascript">
+
+        let allRoles = [];
+
+        $(document).ready(function () {
+            getAllRoles();
+            jsGridInit();
+        });
+
+        //  Get All Roles
+        function getAllRoles() {
+            $.ajax({
+                method: "GET",
+                url: "roles/get-all-roles",
+                async: false,
+                success: function (data) {
+                    allRoles = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Save Action
+        $(document).on('click', '#saveBtn', function () {
+            $.ajax({
+                method: 'POST',
+                url: 'roles/update',
+                data: JSON.stringify(roles),
+                contentType: 'application/json',
+                success: function () {
+                    successWarning("Успешно сохранено");
+                    setTimeout(function () {
+                        location.reload(true);
+                    }, 1500);
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        });
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: '100%',
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                paging: false,
+                data: allRoles,
+                fields: [
+                    {
+                        name: "id", title: "Роль", type: "select", align: 'center',
+                        items: allRoles,
+                        valueField: "id",
+                        textField: "title",
+                        valueType: "number"
+                    },
+                    {
+                        name: "permissions", title: "Статистика", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("STATISTICS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("STATISTICS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "STATISTICS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Касса", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("TRANSACTIONS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("TRANSACTIONS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "TRANSACTIONS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Квитанции на оплату", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("INVOICES") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("INVOICES");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "INVOICES";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Лицевые счета", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("ACCOUNTS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("ACCOUNTS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "ACCOUNTS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Квартиры", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("FLATS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("FLATS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "FLATS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Владельцы квартир", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("USERS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("USERS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "USERS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Дома", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("BUILDINGS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("BUILDINGS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "BUILDINGS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Сообщения", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("MESSAGES") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("MESSAGES");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "MESSAGES";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Заявки вызова мастера", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("MASTER_REQUESTS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("MASTER_REQUESTS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "MASTER_REQUESTS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Счетчики", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("COUNTERS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("COUNTERS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "COUNTERS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Управление сайтом", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("WEBSITE_CONTROL") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("WEBSITE_CONTROL");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "WEBSITE_CONTROL";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Услуги", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("SYSTEM_SETTINGS_SERVICES") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("SYSTEM_SETTINGS_SERVICES");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "SYSTEM_SETTINGS_SERVICES";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Тарифы", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("SYSTEM_SETTINGS_TARIFFS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("SYSTEM_SETTINGS_TARIFFS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "SYSTEM_SETTINGS_TARIFFS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Роли", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("SYSTEM_SETTINGS_ROLES") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("SYSTEM_SETTINGS_ROLES");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "SYSTEM_SETTINGS_ROLES";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Пользователи", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("SYSTEM_SETTINGS_STAFF") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("SYSTEM_SETTINGS_STAFF");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "SYSTEM_SETTINGS_STAFF";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Платежные реквизиты", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("SYSTEM_SETTINGS_PAYMENT_DETAILS") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("SYSTEM_SETTINGS_PAYMENT_DETAILS");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "SYSTEM_SETTINGS_PAYMENT_DETAILS";
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "permissions", title: "Статьи платежей", type: "checkbox",
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .attr("checked", value.indexOf("SYSTEM_SETTINGS_TRANSACTION_PURPOSES") > -1)
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) item.permissions.push("SYSTEM_SETTINGS_TRANSACTION_PURPOSES");
+                                    else item.permissions = jQuery.grep(item.permissions, function (value) {
+                                        return value !== "SYSTEM_SETTINGS_TRANSACTION_PURPOSES";
+                                    });
+                                });
+                        }
+                    }
+                ]
+            });
+        }
+    </script>
+
+</th:block>
+
+</html>

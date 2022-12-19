@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Квитанции на оплату</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active" id="last-breadcrumb">Квитанции на оплату</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="table">
+        <div class="col-4">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Состояние кассы</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Баланс по счетам</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">грн.</sup></h3>
+                    <p>Задолженность по счетам</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div id="primary-table"></div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="newOrEdit" hidden>
+        <div class="col-12">
+            <form id="form">
+                <div class="row">
+                    <input type="hidden" class="form-control ignore" id="id">
+                    <div class="col-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">№</span>
+                            </div>
+                            <input type="text" class="form-control" id="uniqueNumber" name="uniqueNumber">
+                        </div>
+                    </div>
+                    <div class="col-auto text-center" style="margin-top: 6px">
+                        <span>от</span>
+                    </div>
+                    <div class="col-3 mr-auto">
+                        <div class="form-group">
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="requestedDate"
+                                       name="requestedDate"
+                                       data-target="#requestedDate"/>
+                                <div class="input-group-append" data-target="#requestedDate"
+                                     data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa-solid fa-calendar-days"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2 text-right mt-2 mr-2">
+                        <button type="button" class="btn btn-sm btn-flat btn-success dropdown-toggle"
+                                data-toggle="dropdown">Выберите действие
+                        </button>
+                        <div class="dropdown-menu">
+                            <button type="button" class="dropdown-item set-tariff-services">Выставить все услуги
+                                согласно тарифу
+                            </button>
+                            <button type="button" class="dropdown-item">Добавить показания счетчиков</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-outline card-secondary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="building">Дом</label>
+                                            <select class="custom-select ignore" id="building">
+                                                <option value="">Выберите...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="section">Секция</label>
+                                            <select class="custom-select ignore" id="section" disabled>
+                                                <option value="">Сперва выберите дом...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="flat">Квартира</label>
+                                            <select class="custom-select" id="flat" name="flat">
+                                                <option value="" readonly="readonly">Сперва выберите дом...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="account">Лицевой счет</label>
+                                            <input type="text" class="form-control ignore" id="account">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" id="is-used" checked>
+                                            <label for="is-used" class="custom-control-label">Проведена</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="status">Статус</label>
+                                            <select class="custom-select ignore" id="status">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tariff">Тариф</label>
+                                            <select class="custom-select" id="tariff" name="tariff">
+                                                <option value="">Выберите...</option>
+                                            </select>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="periodStart">Период с</label>
+                                                    <div class="input-group date" data-target-input="nearest">
+                                                        <div class="input-group-prepend" data-target="#periodStart"
+                                                             data-toggle="datetimepicker">
+                                                            <div class="input-group-text"><i
+                                                                    class="fa-solid fa-calendar-days"></i></div>
+                                                        </div>
+                                                        <input type="text" class="form-control datetimepicker-input"
+                                                               id="periodStart"
+                                                               name="periodStart"
+                                                               data-target="#periodStart"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="periodEnd">Период по</label>
+                                                    <div class="input-group date" data-target-input="nearest">
+                                                        <div class="input-group-prepend" data-target="#periodEnd"
+                                                             data-toggle="datetimepicker">
+                                                            <div class="input-group-text"><i
+                                                                    class="fa-solid fa-calendar-days"></i></div>
+                                                        </div>
+                                                        <input type="text" class="form-control datetimepicker-input"
+                                                               id="periodEnd"
+                                                               name="periodEnd"
+                                                               data-target="#periodEnd"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <b>Владелец:</b> <span
+                                                        id="userFullName">сперва выберите квартиру...</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <b>Телефон:</b> <span
+                                                        id="userPhoneNumber">сперва выберите квартиру...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="table-responsive no-padding">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th style="min-width: 200px;">Услуга</th>
+                                                    <th style="min-width: 180px;">Расход</th>
+                                                    <th style="min-width: 120px;">Ед. изм.</th>
+                                                    <th style="min-width: 180px;">Цена за ед., грн.</th>
+                                                    <th style="min-width: 180px;">Стоимость, грн.</th>
+                                                    <th style="width: 40px; min-width: 40px;"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="invoice-service-rows"></tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <button type="button" class="btn btn-sm btn-default"
+                                                                id="add-service-btn">
+                                                            Добавить услугу
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-default set-tariff-services">
+                                                            Установить все услуги согласно тарифу
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-default"
+                                                                id="add-counters">
+                                                            Добавить показания счетчиков
+                                                        </button>
+                                                    </td>
+                                                    <td style="min-width: 180px;">
+                                                        <div class="h4">
+                                                            Итого: <b><span id="table-price-total">0.00</span></b> грн
+                                                        </div>
+                                                    </td>
+                                                    <td style="width: 40px; min-width: 40px;"></td>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <a class="btn btn-secondary" href="/invoices">Отменить</a>
+                                        <button type="submit" class="btn btn-success">Сохранить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 pt-3">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">Показания счетчиков</h3>
+                </div>
+                <div class="card-body">
+                    <div id="counters-table" class="animate__animated animate__fadeIn"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="show" hidden>
+        <div class="col-3">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">№</span>
+                </div>
+                <input type="text" class="form-control" id="show-unique-number" readonly>
+            </div>
+        </div>
+        <div class="col-auto text-center" style="margin-top: 6px">
+            <span>от</span>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <div class="input-group date">
+                    <input type="text" class="form-control" id="show-requestedDate" readonly>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa-solid fa-calendar-days"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h6 class="card-title" style="margin: 0">Просмотр квитанции</h6>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-sm btn-secondary">Печать</button>
+                        <button type="button" class="btn btn-sm btn-secondary">Отправить на e-mail</button>
+                        <button type="button" onclick="editAction(currentItem, false);" class="btn btn-sm btn-primary">
+                            Редактировать квитанцию
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-hover table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td style="width: 50%"><b>Проведена</b></td>
+                                    <td id="show-is-used"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Статус</b></td>
+                                    <td id="show-status"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Период</b></td>
+                                    <td id="show-period"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Владелец</b></td>
+                                    <td id="show-user"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Лицевой счет</b></td>
+                                    <td id="show-account"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Телефон</b></td>
+                                    <td id="show-phone-number"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Дом</b></td>
+                                    <td id="show-building"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Квартира</b></td>
+                                    <td id="show-flat"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Секция</b></td>
+                                    <td id="show-section"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Тариф</b></td>
+                                    <td id="show-tariff"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered table-striped" id="show-services" hidden>
+                                <thead>
+                                <tr>
+                                    <th style="min-width: 40px;">#</th>
+                                    <th>Услуга</th>
+                                    <th>Количество потребления (расход)</th>
+                                    <th style="min-width: 90px;">Ед. изм.</th>
+                                    <th>Цена за ед., грн</th>
+                                    <th>Стоимость, грн</th>
+                                </tr>
+                                </thead>
+                                <tfoot></tfoot>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/invoices">Вернуться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let allBuildings = [];
+        let allFlats = [];
+        let selectedFlat = null;
+        let invoiceServiceIndex = 0;
+        let allServices = [];
+        let allTariffs = [];
+        let allUnits = [];
+        let h3Amounts = $('div.small-box').find('h3');
+        let toDeleteList = [];
+
+        $(document).ready(function () {
+            getAllBuildings();
+            getAllStatus();
+            primaryTableInit();
+            initFlatFilter();
+            initUserFilter();
+            let balancesData = getAllTransactionBalancesData();
+            $(h3Amounts[0]).html("<h3>" + formatter.format(balancesData.transactionAmountsSumByInType - balancesData.transactionAmountsSumByOutType) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            $(h3Amounts[1]).html("<h3>" + formatter.format(getAllAccountsBalance()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            $(h3Amounts[2]).html("<h3>" + formatter.format(getAllAccountsDebt()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+        });
+
+        //  Add new invoice action
+        function addNewInvoiceAction() {
+            countersTableInit();
+            getAllServices();
+            getAllUnits();
+            getAllTariffs();
+            $('#uniqueNumber').val(getNewUniqueNumber());
+            $('#requestedDate, #periodStart, #periodEnd').datetimepicker({
+                locale: 'ru',
+                format: 'L',
+                allowInputToggle: true,
+                defaultDate: moment().format(),
+                useCurrent: false
+            });
+            $.each(allBuildings, function (i, element) {
+                $('#building').append('<option value="' + element.id + '">' + element.title + '</option>');
+            });
+            $.each(allStatus, function (i, element) {
+                $('#status').append('<option value="' + element.value + '">' + element.title + '</option>');
+            });
+            $('#status').val("UNPAID");
+            $.each(allTariffs, function (i, element) {
+                $('#tariff').append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+
+            let pageTitle = "Новая квитанция";
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + pageTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Row click action
+        function rowClickAction(item) {
+            $('#show-unique-number').val(item.uniqueNumber);
+            $('#show-requestedDate').val(moment(item.requestedDate).locale('ru').format('DD.MM.YYYY'));
+            let $used = $('<span>').append(item.used ? "Проведена" : "Не проведена");
+            if (item.used) $used.attr({class: "badge badge-success"});
+            else $used.attr({class: "badge badge-danger"});
+            $('#show-is-used').append($('<h6>').append($used));
+            let $statusText = $('<span>').append(item.status.title);
+            if (item.status.value === "PAID") $statusText.attr({class: "badge badge-success"});
+            if (item.status.value === "PARTLY_PAID") $statusText.attr({class: "badge badge-warning"});
+            if (item.status.value === "UNPAID") $statusText.attr({class: "badge badge-danger"});
+            $('#show-status').append($('<h6>').append($statusText));
+            $('#show-period').append(moment(item.periodStart).locale('ru').format('DD.MM.YYYY') + ' - ' + moment(item.periodEnd).locale('ru').format('DD.MM.YYYY'));
+            $('#show-user').append(item.user?.fullName);
+            $('#show-account').append(item.flat?.account?.uniqueNumber);
+            $('#show-phone-number').append(item.user?.fullName);
+            $('#show-building').append(item.building?.title);
+            $('#show-flat').append(item.flat?.number);
+            $('#show-section').append(item.section?.name);
+            $('#show-tariff').append(item.tariff?.name);
+
+            if (item.invoiceServices.length > 0) {
+                let table = $('#show-services');
+                let totalAmount = 0.00;
+                $.each(item.invoiceServices, function (i, e) {
+                    $(table).find('tbody').append($('<tr>')
+                        .append($('<td>').append(i))
+                        .append($('<td>').append(e.service.name))
+                        .append($('<td>').append(formatter.format(e.amount)))
+                        .append($('<td>').append(e.unit.name))
+                        .append($('<td>').append(formatter.format(e.unitPrice)))
+                        .append($('<td>').append(formatter.format(e.totalPrice))));
+                    totalAmount += e.totalPrice;
+                });
+                $(table).find('tfoot').append($('<tr>')
+                    .append($('<td>').attr({colspan: "5"}))
+                    .append($('<td>').attr({colspan: "2"}).append($('<b>').append('Итого: ' + formatter.format(totalAmount)))));
+                $(table).attr('hidden', false);
+            }
+
+            let pageTitle = "Квитанция";
+            let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', true);
+            $('#show').attr('hidden', false);
+
+            currentItem = item;
+        }
+
+        //  Edit button action
+        function editAction(item, copy) {
+            countersTableInit();
+            getAllServices();
+            getAllUnits();
+            getAllTariffs();
+            if (!copy) $('#id').val(item.id);
+            $('#uniqueNumber').val(item.uniqueNumber);
+            $('#requestedDate').val(moment(item.requestedDate).locale('ru').format('DD.MM.YYYY'));
+            $.each(allBuildings, function (i, element) {
+                $('#building').append('<option value="' + element.id + '">' + element.title + '</option>');
+            });
+            $.each(allStatus, function (i, element) {
+                $('#status').append('<option value="' + element.value + '">' + element.title + '</option>');
+            });
+            $.each(allTariffs, function (i, element) {
+                $('#tariff').append('<option value="' + element.id + '">' + element.name + '</option>');
+            });
+            $('#status').val(item.status.value);
+            $('#is-used').attr("checked", item.used);
+            $('#building').val(item.building.id).trigger('change');
+            $('#section').val(item.section?.id).trigger('change');
+            $('#flat').val(item.flat.id).trigger('change');
+            $('#account').val(item.flat.account?.id);
+            $('#tariff').val(item.tariff.id);
+            $('#periodStart').val(moment(item.periodStart).locale('ru').format('DD.MM.YYYY'));
+            $('#periodEnd').val(moment(item.periodEnd).locale('ru').format('DD.MM.YYYY'));
+
+            $.each(item.invoiceServices, function (i, e) {
+                $('#add-service-btn').trigger('click');
+                let invoiceService = $('tr[id*="invoice-service-"]').last();
+                $(invoiceService).find('invoice-service-id').val(e.id);
+                $(invoiceService).find('select[id*="service-"]').val(e.service.id);
+                $(invoiceService).find('input[id*="amount-"]').val(e.amount);
+                $(invoiceService).find('select[id*="unit-"]').val(e.unit.id);
+                $(invoiceService).find('input[id*="unit-price-"]').val(e.unitPrice);
+                $(invoiceService).find('input[id*="total-price-"]').val(e.totalPrice);
+            });
+            $('input[id*="total-price-"]').trigger('change');
+
+            let pageTitle = "Квитанция";
+            let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
+            $('#pageTitle').text(pageTitle);
+            $('#last-breadcrumb').nextAll().remove();
+            $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
+            $('#table').attr('hidden', true);
+            $('#newOrEdit').attr('hidden', false);
+            $('#show').attr('hidden', true);
+        }
+
+        //  Change of Building select
+        $(document).on('change', '#building', function () {
+            let buildingId = $(this).val();
+            if (buildingId === "") {
+                $('#section, #flat')
+                    .empty()
+                    .append('<option value="">Сперва выберите дом...</option>')
+                    .attr("disabled", true);
+                $('#userFullName, #userPhoneNumber').text('сперва выберите квартиру...');
+            } else {
+                let building = allBuildings.find(building => building.id === parseInt(buildingId));
+                if (building.sections.length === 0) {
+                    $('#section')
+                        .empty()
+                        .append('<option value="">Секции отсутствуют</option>')
+                        .attr("disabled", true);
+                } else {
+                    $('#section')
+                        .empty()
+                        .append('<option value="">Выберите секцию...</option>')
+                        .attr("disabled", false);
+                    $.each(building.sections, function (i, e) {
+                        $('#section').append('<option value="' + e.id + '">' + e.name + '</option>');
+                    });
+                }
+                getFlatsList();
+            }
+            $('#flat').trigger('change');
+            $('.form-control, .custom-select').each(function (index, element) {
+                $(element).removeClass('is-invalid');
+                $(element).removeClass('is-valid');
+            });
+        })
+
+        //  Change of Section select
+        $(document).on('change', '#section', function () {
+            getFlatsList();
+        });
+
+        function getFlatsList() {
+            getAllFlats($('#building').val(), $('#section').val(), $('#floor').val());
+            if (allFlats.length === 0) {
+                $('#flat')
+                    .empty()
+                    .append('<option value="">Квартиры отсутствуют</option>')
+                    .attr("disabled", true);
+            } else {
+                $('#flat')
+                    .empty()
+                    .append('<option value="">Выберите квартиру...</option>')
+                    .attr("disabled", false);
+                $.each(allFlats, function (i, e) {
+                    $('#flat').append('<option value="' + e.id + '">' + e.title + '</option>');
+                });
+            }
+        }
+
+        //  Flat change action
+        $(document).on('change', '#flat', function () {
+            let flatId = $(this).val();
+            if (flatId === '') $('#account').val('');
+            else $('#account').val(allFlats.find(flat => flat.id === parseInt(flatId)).account?.uniqueNumber);
+        });
+
+        function initFlatFilter() {
+            $('#filterFlat').select2({
+                allowClear: true,
+                ajax: {
+                    url: "master-requests/search-flat",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ""
+            });
+        }
+
+        function initUserFilter() {
+            $('#filterUser').select2({
+                allowClear: true,
+                ajax: {
+                    url: "users/search-user",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.itemsCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: ''
+            });
+        }
+
+        //  Change of Selects
+        $(document).on('change', '#flat', function () {
+            let flatId = $(this).val();
+            if (flatId === "") $('#userFullName, #userPhoneNumber').text('сперва выберите квартиру...');
+            else {
+                let user = allFlats.find(flat => flat.id === parseInt(flatId)).user;
+                $('#userFullName').text(user?.fullName);
+                $('#userPhoneNumber').text(user?.phoneNumber);
+            }
+            selectedFlat = flatId;
+            $("#counters-table")
+                .attr("hidden", true)
+                .jsGrid("render");
+            $("#counters-table").attr("hidden", false);
+        });
+
+        //  Change of Selects
+        $(document).on('change', 'select[id*="service-"]', function () {
+            if ($(this).val() > 0)
+                $(this)
+                    .parents('tr[id*="invoice-service-"]')
+                    .find('select[id*="unit-"]')
+                    .val(allUnits.find(unit => unit.id === parseInt(allServices.find(service => service.id === parseInt($(this).val()))?.unit?.id)).id);
+            else $(this)
+                .parents('tr[id*="invoice-service-"]')
+                .find('select[id*="unit-"]')
+                .val('');
+        });
+
+        //  Add service button action
+        $('#add-service-btn').on('click', function () {
+            invoiceServiceIndex++;
+            $('#invoice-service-rows').append(
+                '<tr id="invoice-service-' + invoiceServiceIndex + '">' +
+                '  <td>' +
+                '    <input type="hidden" id="invoice-service-id" name="invoice-service">' +
+                '    <select id="service-' + invoiceServiceIndex + '" class="custom-select" name="service">' +
+                '    </select>' +
+                '  </td>' +
+                '  <td>' +
+                '    <input type="number" step="0.01" min="0" id="amount-' + invoiceServiceIndex + '" class="form-control" name="amount">' +
+                '  </td>' +
+                '  <td>' +
+                '    <select id="unit-' + invoiceServiceIndex + '" class="custom-select ignore" disabled>' +
+                '    </select>' +
+                '  </td>' +
+                '  <td>' +
+                '    <input type="number" step="0.01" min="0" id="unit-price-' + invoiceServiceIndex + '" class="form-control" name="unit-price">' +
+                '  </td>' +
+                '  <td>' +
+                '    <input type="number" step="0.01" min="0" id="total-price-' + invoiceServiceIndex + '" class="form-control ignore" readonly>' +
+                '  </td>' +
+                '  <td>' +
+                '    <button type="button" class="btn btn-default btn-sm removeInvoiceServiceBtn" title="Удалить услугу">' +
+                '      <i class="fa-solid fa-trash-can"></i>' +
+                '    </button>' +
+                '  </td>' +
+                '</tr>'
+            );
+            $.each(allServices, function (i, e) {
+                $('#invoice-service-rows').find('select[id*="service-"]').last().append('<option value="' + e.id + '">' + e.name + '</option>');
+            });
+            $.each(allUnits, function (i, e) {
+                $('#invoice-service-rows').find('select[id*="unit-"]').last().append('<option value="' + e.id + '">' + e.name + '</option>');
+            });
+            extraValidationInit();
+        });
+
+        //  Set services button action
+        $('.set-tariff-services').on('click', function () {
+            let tariffId = $('#tariff').val();
+            if (tariffId > 0) {
+                invoiceServiceIndex = 0;
+                $('#invoice-service-rows').empty();
+                $.each(allTariffs.find(tariff => tariff.id === parseInt(tariffId)).tariffServices, function (index, element) {
+                    invoiceServiceIndex++;
+                    $('#invoice-service-rows').append(
+                        '<tr id="invoice-service-' + invoiceServiceIndex + '">' +
+                        '  <td>' +
+                        '    <input type="hidden" id="invoice-service-id" name="invoice-service">' +
+                        '    <select id="service-' + invoiceServiceIndex + '" class="custom-select" name="service">' +
+                        '    </select>' +
+                        '  </td>' +
+                        '  <td>' +
+                        '    <input type="number" step="0.01" min="0" id="amount-' + invoiceServiceIndex + '" class="form-control" name="amount">' +
+                        '  </td>' +
+                        '  <td>' +
+                        '    <select id="unit-' + invoiceServiceIndex + '" class="custom-select ignore" disabled>' +
+                        '    </select>' +
+                        '  </td>' +
+                        '  <td>' +
+                        '    <input type="number" step="0.01" min="0" id="unit-price-' + invoiceServiceIndex + '" class="form-control" name="unit-price">' +
+                        '  </td>' +
+                        '  <td>' +
+                        '    <input type="number" step="0.01" min="0" id="total-price-' + invoiceServiceIndex + '" class="form-control ignore" readonly>' +
+                        '  </td>' +
+                        '  <td>' +
+                        '    <button type="button" class="btn btn-default btn-sm removeInvoiceServiceBtn" title="Удалить услугу">' +
+                        '      <i class="fa-solid fa-trash-can"></i>' +
+                        '    </button>' +
+                        '  </td>' +
+                        '</tr>'
+                    );
+                    $.each(allServices, function (i, e) {
+                        $('#invoice-service-rows').find('select[id*="service-"]').last().append('<option value="' + e.id + '">' + e.name + '</option>');
+                    });
+                    $.each(allUnits, function (i, e) {
+                        $('#invoice-service-rows').find('select[id*="unit-"]').last().append('<option value="' + e.id + '">' + e.name + '</option>');
+                    });
+                    extraValidationInit();
+                    $('#invoice-service-rows').find('select[id*="service-"]').last().val(element?.service?.id);
+                    $('#invoice-service-rows').find('select[id*="unit-"]').last().val(element?.service?.unit?.id);
+                    $('#invoice-service-rows').find('input[id*="unit-price-"]').last().val(element?.price);
+                });
+            }
+        });
+
+        //  Remove Invoice-Service button action
+        $(document).on('click', '.removeInvoiceServiceBtn', function () {
+            $(this).parents('tr[id*="invoice-service-"]').remove();
+            invoiceServiceIndex--;
+            let tableTotalPrice = $('input[id*="total-price-"]').first();
+            tableTotalPrice.length > 0 ? tableTotalPrice.trigger('change') : $('#table-price-total').text('0.00');
+        });
+
+        //  Trigger total price
+        $(document).on('change keyup mouseup', 'input[id*="amount-"], input[id*="unit-price-"]', function () {
+            let path = $(this).parents('tr[id*="invoice-service-"]');
+            let amount = path.find('input[id*="amount-"]').val();
+            let unitPrice = path.find('input[id*="unit-price-"]').val();
+            let totalPrice = path.find('input[id*="total-price-"]');
+            if (amount > 0 && unitPrice > 0) totalPrice.val((Math.round(((amount * unitPrice) * 1000) / 10) / 100).toFixed(2));
+            else totalPrice.val('');
+            totalPrice.trigger('change');
+        });
+
+        //  Trigger table total price
+        $(document).on('change', 'input[id*="total-price-"]', function () {
+            let totalPrices = $('#invoice-service-rows').find('input[id*="total-price-"]');
+            let tableTotalPrice = 0;
+            $.each(totalPrices, function (i, e) {
+                if (parseFloat($(e).val()) > 0) tableTotalPrice += parseFloat($(e).val());
+            });
+            $('#table-price-total').text((Math.round((tableTotalPrice * 1000) / 10) / 100).toFixed(2));
+        });
+
+        //  Get new unique number
+        function getNewUniqueNumber() {
+            let uniqueNumber;
+            $.ajax({
+                method: "GET",
+                url: "invoices/get-new-unique-number",
+                async: false,
+                success: function (data) {
+                    uniqueNumber = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return uniqueNumber;
+        }
+
+        //  Get All Buildings
+        function getAllBuildings() {
+            $.ajax({
+                method: "GET",
+                url: "invoices/get-all-buildings",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allBuildings = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get Flats of Building
+        function getAllFlats(buildingId, sectionId, floorId) {
+            $.ajax({
+                method: "GET",
+                url: "messages/get-all-flats-by-building-and-section-and-floor",
+                dataType: "json",
+                async: false,
+                data: {buildingId: buildingId, sectionId: sectionId, floorId: floorId},
+                success: function (data) {
+                    allFlats = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Status
+        function getAllStatus() {
+            $.ajax({
+                method: "GET",
+                url: "invoices/get-all-status",
+                async: false,
+                success: function (data) {
+                    allStatus = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Services
+        function getAllServices() {
+            $.ajax({
+                method: "GET",
+                url: "counters/get-all-services",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allServices = [{id: "", name: "Выберите..."}].concat(data);
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Units
+        function getAllUnits() {
+            $.ajax({
+                method: "GET",
+                url: "invoices/get-all-units",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allUnits = [{id: "", name: "Выберите услугу..."}].concat(data);
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get All Tariffs
+        function getAllTariffs() {
+            $.ajax({
+                method: "GET",
+                url: "system-settings/tariffs/get-all",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    allTariffs = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+        }
+
+        //  Get all Transaction Balances data
+        function getAllTransactionBalancesData() {
+            let transactionBalancesData = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-transaction-balances-data",
+                async: false,
+                success: function (data) {
+                    transactionBalancesData = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return transactionBalancesData;
+        }
+
+        //  Get All Accounts Balance
+        function getAllAccountsBalance() {
+            let accountsBalance = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-accounts-balance",
+                async: false,
+                success: function (data) {
+                    accountsBalance = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return accountsBalance;
+        }
+
+        //  Get All Accounts Debt
+        function getAllAccountsDebt() {
+            let accountsDebt = [];
+            $.ajax({
+                method: "GET",
+                url: "transactions/get-all-accounts-debt",
+                async: false,
+                success: function (data) {
+                    accountsDebt = data;
+                },
+                error: function (jqXHR, exception) {
+                    errorWarning();
+                    ajaxError(jqXHR, exception);
+                }
+            });
+            return accountsDebt;
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'invoices/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            $("#primary-table").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        function batchDelete() {
+            if (toDeleteList.length > 0) {
+                askWarning(function (confirmed) {
+                    if (confirmed) {
+                        $.each(toDeleteList, function (i, v) {
+                            $.ajax({
+                                method: 'DELETE',
+                                url: 'invoices/' + v + '/delete',
+                                async: false,
+                                error: function (jqXHR, exception) {
+                                    errorWarning();
+                                    ajaxError(jqXHR, exception);
+                                }
+                            });
+                        });
+                        successWarning('Успешно удалено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                });
+            }
+        }
+
+        $(document).on('change', '#filterRequestedDate, #filterRequestedMonth, #filterUser, #filterFlat', function () {
+            $("#primary-table").jsGrid("search");
+        });
+
+        function extraValidationInit() {
+            $('[name="service"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Выберите услугу"
+                    }
+                });
+            });
+            $('[name="amount"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    step: 0.01,
+                    min: 0,
+                    messages: {
+                        required: "Введите кол-во расхода",
+                        step: "Введите дробную часть до сотых (0,ХХ)",
+                        min: "Введите число больше 0"
+                    }
+                });
+            });
+            $('[name="unit-price"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    step: 0.01,
+                    min: 0,
+                    messages: {
+                        required: "Введите цену за ед.",
+                        step: "Введите дробную часть до сотых (0,ХХ)",
+                        min: "Введите число больше 0"
+                    }
+                });
+            });
+        }
+
+        //  Validation
+        $('#form').validate({
+            ignore: ".ignore, :disabled",
+            rules: {
+                uniqueNumber: {
+                    required: true,
+                    remote: {
+                        url: "invoices/is-unique-number-not-exists",
+                        method: "POST",
+                        async: false,
+                        data: {
+                            id: function () {
+                                return $('#id').val();
+                            },
+                            uniqueNumber: function () {
+                                return $("#uniqueNumber").val();
+                            }
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    }
+                },
+                requestedDate: {
+                    required: true
+                },
+                flat: {
+                    required: true
+                },
+                tariff: {
+                    required: true
+                },
+                periodStart: {
+                    required: true
+                },
+                periodEnd: {
+                    required: true
+                }
+            },
+            messages: {
+                uniqueNumber: {
+                    required: "Введите номер показания счётчика",
+                    remote: "Этот номер показания счётчика уже занят. Пожалуйста, укажите другой"
+                },
+                requestedDate: {
+                    required: "Укажите дату"
+                },
+                flat: {
+                    required: "Необходимо выбрать квартиру"
+                },
+                tariff: {
+                    required: "Необходимо выбрать тариф"
+                },
+                periodStart: {
+                    required: "Необходимо выбрать начальный период"
+                },
+                periodEnd: {
+                    required: "Необходимо выбрать период окончания"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        //  Add button action
+        function saveAction() {
+            let invoice = {};
+            invoice.id = $('#id').val();
+            invoice.uniqueNumber = $('#uniqueNumber').val();
+            let date = $('#requestedDate').val();
+            invoice.requestedDate = new Date(date.split('.')[2], (date.split('.')[1] - 1), date.split('.')[0]);
+            invoice.building = $('#building').val() ? {id: $('#building').val()} : null;
+            invoice.section = $('#section').val() ? {id: $('#section').val()} : null;
+            invoice.flat = $('#flat').val() ? {id: $('#flat').val()} : null;
+            invoice.used = $('#is-used').is(':checked');
+            invoice.status = $('#status').val() ? {value: $('#status').val()} : null;
+            invoice.tariff = $('#tariff').val() ? {id: $('#tariff').val()} : null;
+            let periodStart = $('#periodStart').val();
+            invoice.periodStart = new Date(periodStart.split('.')[2], (periodStart.split('.')[1] - 1), periodStart.split('.')[0]);
+            let periodEnd = $('#periodEnd').val();
+            invoice.periodEnd = new Date(periodEnd.split('.')[2], (periodEnd.split('.')[1] - 1), periodEnd.split('.')[0]);
+
+            let invoiceServices = [];
+
+            $('tr[id*="invoice-service-"]').each(function (i, e) {
+                let invoiceService = {};
+                invoiceService.id = $(e).find('input[id*="invoice-service-id-"]').val();
+                invoiceService.service = $(e).find('select[id*="service-"]').val() ? {id: $(e).find('select[id*="service-"]').val()} : null;
+                invoiceService.amount = $(e).find('input[id*="amount-"]').val();
+                invoiceService.unit = $(e).find('select[id*="unit-"]').val() ? {id: $(e).find('select[id*="unit-"]').val()} : null;
+                invoiceService.unitPrice = $(e).find('input[id*="unit-price-"]').val();
+                invoiceService.totalPrice = $(e).find('input[id*="total-price-"]').val();
+                invoiceServices.push(invoiceService);
+            });
+            invoice.invoiceServices = invoiceServices;
+
+            if (invoice.id) {
+                $.ajax({
+                    method: 'PUT',
+                    url: 'invoices/' + invoice.id + '/update',
+                    contentType: 'application/json',
+                    data: JSON.stringify(invoice),
+                    success: function () {
+                        successWarning('Успешно обновлено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'invoices/save',
+                    contentType: 'application/json',
+                    data: JSON.stringify(invoice),
+                    success: function () {
+                        successWarning('Успешно сохранено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            }
+        }
+
+        function primaryTableInit() {
+            jsGrid.locale("ru");
+            $("#primary-table").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: true,
+                rowClick: function (args) {
+                    let $target = $(args.event.target);
+                    if (!$target.closest(".deleteCheckbox ").length) {
+                        rowClickAction(args.item);
+                    }
+                },
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            method: "GET",
+                            url: "invoices/get-all-invoices",
+                            data: filter,
+                            dataType: "json",
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "id",
+                        type: "checkbox",
+                        width: "3%",
+                        sorting: false,
+                        filtering: false,
+                        css: "deleteCheckbox",
+                        headerTemplate: function () {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .on("change", function () {
+                                    $('.jsgrid-grid-body')
+                                        .find('.jsgrid-cell.deleteCheckbox')
+                                        .find('input')
+                                        .attr('checked', $(this).is(":checked"))
+                                        .trigger('change');
+                                });
+                        },
+                        itemTemplate: function (value, item) {
+                            return $("<input>")
+                                .attr("type", "checkbox")
+                                .on("change", function () {
+                                    if ($(this).is(":checked")) toDeleteList.push(item.id);
+                                    else toDeleteList = jQuery.grep(toDeleteList, function (value) {
+                                        return value !== item.id;
+                                    });
+                                });
+                        }
+                    },
+                    {
+                        name: "uniqueNumber",
+                        title: "№ квитанции",
+                        type: "text",
+                        width: "10%",
+                        sorting: false,
+                        align: "center"
+                    },
+                    {
+                        name: "status", title: "Статус", type: "select", width: "9%",
+                        items: [{value: '', title: ''}].concat(allStatus),
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            let $statusText = $('<span>').append(item.title);
+                            if (item.value === "PAID") $statusText.attr({class: "badge badge-success"});
+                            if (item.value === "PARTLY_PAID") $statusText.attr({class: "badge badge-warning"});
+                            if (item.value === "UNPAID") $statusText.attr({class: "badge badge-danger"});
+                            return $('<h6>').append($statusText);
+                        },
+                    },
+                    {
+                        name: "requestedDate", title: "Дата", type: "date", width: "7%", align: "center",
+                        itemTemplate: function (value) {
+                            return moment(value).locale('ru').format('DD.MM.YYYY');
+                        },
+                        filterTemplate: function () {
+                            return "<input type='date' id='filterDate'/>";
+                        }
+                    },
+                    {
+                        name: "requestedMonth", title: "Месяц", type: "text", width: "7%", align: "center",
+                        itemTemplate: function (value) {
+                            return moment(value).locale('ru').format('MMMM YYYY');
+                        },
+                        filterTemplate: function () {
+                            return $('<input>').attr({type: "month", id: "filterRequestedMonth"});
+                        },
+                        filterValue: function () {
+                            return $('#filterRequestedMonth').val();
+                        }
+                    },
+                    {
+                        name: "flat", title: "№ квартиры", type: "select", width: "12%",
+                        items: [],
+                        valueField: "id",
+                        textField: "number",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            return item?.title;
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterFlat"});
+                        },
+                        filterValue: function () {
+                            return $('#filterFlat').val();
+                        }
+                    },
+                    {
+                        name: "user", title: "Владелец", type: "select", width: "25%",
+                        items: [],
+                        valueField: "id",
+                        textField: "fullName",
+                        valueType: "number",
+                        itemTemplate: function (item) {
+                            return item?.fullName;
+                        },
+                        filterTemplate: function () {
+                            return $('<select>').attr({id: "filterUser"});
+                        },
+                        filterValue: function () {
+                            return $('#filterUser').val();
+                        }
+                    },
+                    {
+                        name: "used", title: "Статус", type: "select", width: "7%", sorting: false,
+                        items: [
+                            {title: "", value: ""},
+                            {title: "Проведена", value: true},
+                            {title: "Не проведена", value: false},
+                        ],
+                        valueField: "value",
+                        textField: "title",
+                        valueType: "string",
+                        itemTemplate: function (item) {
+                            return item ? "Проведена" : "Не проведена";
+                        },
+                    },
+                    {
+                        name: "amount",
+                        title: "Сумма (грн)",
+                        type: "text",
+                        width: "10%",
+                        align: "center",
+                        filtering: false,
+                        sorting: false,
+                        itemTemplate: function (field, row) {
+                            let total = parseFloat('0.00');
+                            $.each(row.invoiceServices, function (i, e) {
+                                if (parseFloat(e.totalPrice) > 0) total += parseFloat(e.totalPrice);
+                            });
+                            return formatter.format(total);
+                        },
+                    },
+                    {
+                        type: "control", width: "15%", align: "center",
+                        headerTemplate: function () {
+                            let $dropDownBtn = $("<button>")
+                                .attr({type: "button", class: "btn btn-sm btn-flat btn-success dropdown-toggle"})
+                                .attr("data-toggle", "dropdown")
+                                .append("Выберите действие");
+
+                            let $dropdownMenu = $("<div>").attr({class: "dropdown-menu"})
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        addNewInvoiceAction();
+                                    })
+                                    .append("Создать общую квитанцию"))
+                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                    .click(function (e) {
+                                        e.stopPropagation();
+                                        batchDelete();
+                                    })
+                                    .append("Удалить"))
+
+                            return [$dropDownBtn, $dropdownMenu];
+                        },
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .attr({title: "Очистить фильтры"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#primary-table").jsGrid("clearFilter");
+                                    initFlatFilter();
+                                    initUserFilter();
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $copyBtn = $("<button>")
+                                .attr({class: "btn btn-info btn-flat btn-sm"}, {title: "Копировать"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item, true);
+                                })
+                                .append($("<i>").attr({class: "fa-regular fa-copy"}));
+                            let $updateBtn = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .attr({title: "Редактировать"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item, false);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteBtn = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .attr({title: "Удалить"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteAction(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$copyBtn, $updateBtn, $deleteBtn];
+                        }
+                    }
+                ]
+            });
+        }
+
+        function countersTableInit() {
+            jsGrid.locale("ru");
+            $("#counters-table").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: false,
+                filtering: false,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                controller: {
+                    loadData: function (filter) {
+                        filter.flat = selectedFlat;
+                        return $.ajax({
+                            method: "GET",
+                            url: "counters/get-all-counters",
+                            data: filter,
+                            dataType: "json",
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        name: "uniqueNumber", title: "№", type: "text", width: "10%", align: "center"
+                    },
+                    {
+                        name: "status", title: "Статус", type: "text", width: "10%", align: "center",
+                        itemTemplate: function (item) {
+                            let $statusText = $('<span>').append(item.title);
+                            if (item.value === "NEW") $statusText.attr({class: "badge badge-warning"});
+                            if (item.value === "ACTIVE") $statusText.attr({class: "badge badge-success"});
+                            if (item.value === "PAY_DONE") $statusText.attr({class: "badge badge-success"});
+                            if (item.value === "DISABLED") $statusText.attr({class: "badge badge-primary"});
+                            return $('<h6>').append($statusText);
+                        },
+                    },
+                    {
+                        name: "requestedDate", title: "Дата", type: "text", width: "5%", align: "center",
+                        itemTemplate: function (item) {
+                            return new Date(item).toLocaleDateString("ru");
+                        }
+                    },
+                    {
+                        name: "requestedDate", title: "Месяц", type: "text", width: "5%", align: "center",
+                        itemTemplate: function (item) {
+                            let date = new Date(item).toLocaleDateString("ru", {month: 'long', year: 'numeric'});
+                            date = date.charAt(0).toUpperCase() + date.slice(1);
+                            return date.substring(0, date.length - 3);
+                        }
+                    },
+                    {
+                        name: "building.title", title: "Дом", type: "text", width: "12%", align: "center"
+                    },
+                    {
+                        name: "section.name", title: "Секция", type: "text", width: "10%", align: "center"
+                    },
+                    {
+                        name: "flat.title", title: "Квартира", type: "text", width: "12%", align: "center"
+                    },
+                    {
+                        name: "service.name", title: "Счетчик", type: "text", width: "10%", align: "center"
+                    },
+                    {
+                        name: "amount", title: "Текущие показания", type: "text", width: "10%", align: "center"
+                    },
+                    {
+                        name: "unit.name", title: "Ед. изм.", type: "text", width: "12%", align: "center"
+                    }
+                ]
+            });
+        }
+
+    </script>
+</th:block>
+
+</html>

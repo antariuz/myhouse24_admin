@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/index.html}" lang="ru">
+
+<th:block layout:fragment="breadcrumbs">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 style="margin: 0" id="pageTitle">Дома</h5>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-sm" id="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">
+                    <i class="fa-solid fa-house"></i> Главная</a></li>
+                <li class="breadcrumb-item active">Дома</li>
+            </ol>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+
+    <div class="row animate__animated animate__fadeIn" id="initial">
+        <div class="col-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="building" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <form id="building-form">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="hidden" class="form-control" id="id">
+                                <div class="form-group">
+                                    <label for="title">Название</label>
+                                    <input type="text" class="form-control" id="title" name="title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Адрес</label>
+                                    <input type="text" class="form-control" id="address" name="address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="image-1">Изображение #1. Размер: (522x350)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="image-1"
+                                                   accept="image/jpeg, image/png">
+                                            <label class="custom-file-label" for="image-1">Файл не выбран</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="image-2">Изображение #2. Размер: (248x160)</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="image-2"
+                                                           accept="image/jpeg, image/png">
+                                                    <label class="custom-file-label" for="image-2">Файл не
+                                                        выбран</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="image-3">Изображение #3. Размер: (248x160)</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="image-3"
+                                                           accept="image/jpeg, image/png">
+                                                    <label class="custom-file-label" for="image-3">Файл не
+                                                        выбран</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="image-4">Изображение #4. Размер: (248x160)</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="image-4"
+                                                           accept="image/jpeg, image/png">
+                                                    <label class="custom-file-label" for="image-4">Файл не
+                                                        выбран</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="image-5">Изображение #5. Размер: (248x160)</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="image-5"
+                                                           accept="image/jpeg, image/png">
+                                                    <label class="custom-file-label" for="image-5">Файл не
+                                                        выбран</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                             id="image-preview-1">
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                     id="image-preview-2">
+                                            </div>
+                                            <div class="col-6">
+                                                <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                     id="image-preview-3">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                     id="image-preview-4">
+                                            </div>
+                                            <div class="col-6">
+                                                <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                     id="image-preview-5">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--tabs-->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-primary card-outline card-outline-tabs">
+                                    <div class="card-header p-0 border-bottom-0">
+                                        <ul class="nav nav-tabs" id="tabs" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="sections-tab" data-toggle="pill"
+                                                   href="#sections"
+                                                   role="tab"
+                                                   aria-controls="sections" aria-selected="true">Секции</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="floors-tab" data-toggle="pill" href="#floors"
+                                                   role="tab" aria-controls="floors" aria-selected="false">Этажи</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="staff-tab" data-toggle="pill" href="#staff"
+                                                   role="tab" aria-controls="staff"
+                                                   aria-selected="false">Пользователи</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content" id="tabs-content">
+                                            <div class="tab-pane fade active show" id="sections" role="tabpanel"
+                                                 aria-labelledby="sections-tab">
+                                                <div class="row" id="sections-rows"></div>
+                                                <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <button type="button" class="btn btn-info"
+                                                                id="addSectionButton">
+                                                            Добавить
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="floors" role="tabpanel"
+                                                 aria-labelledby="floors-tab">
+                                                <div class="row" id="floors-rows"></div>
+                                                <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <button type="button" class="btn btn-info"
+                                                                id="addFloorButton">
+                                                            Добавить
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="staff" role="tabpanel"
+                                                 aria-labelledby="staff-tab">
+                                                <div class="row" id="staff-rows"></div>
+                                                <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <button type="button" class="btn btn-info"
+                                                                id="addStaffButton">
+                                                            Добавить
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end-of-tabs-->
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <a class="btn btn-secondary" href="/buildings">Отменить</a>
+                                <button type="submit" class="btn btn-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row animate__animated animate__fadeIn" id="showBuilding" hidden>
+        <div class="col-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <button type="button" onclick="editAction(editItem);" class="btn btn-info" id="editButton">
+                            Редактировать дом
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <table class="table table-hover text-nowrap">
+                                <tbody>
+                                <tr>
+                                    <td><b>Название</b></td>
+                                    <td id="showTitle"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Адрес</b></td>
+                                    <td id="showAddress"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Секций</b></td>
+                                    <td id="showSections"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Этажей</b></td>
+                                    <td id="showFloors"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Пользователи</b></td>
+                                    <td id="showStaff"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-6">
+                                    <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                         id="image-preview-1-show">
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                 id="image-preview-2-show">
+                                        </div>
+                                        <div class="col-6">
+                                            <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                 id="image-preview-3-show">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                 id="image-preview-4-show">
+                                        </div>
+                                        <div class="col-6">
+                                            <img src="/img/services-empty.jpg" alt="" class="img-fluid"
+                                                 id="image-preview-5-show">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn btn-secondary" href="/buildings">Вернуться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</th:block>
+
+<th:block layout:fragment="extra-js">
+    <script type="application/javascript">
+
+        let sectionCount = 0;
+        let floorCount = 0;
+        let staffCount = 0;
+        let allStaff = null;
+        let allBuildings = null;
+        let editItem = null;
+
+        $(document).ready(function () {
+            getAllStaff();
+            jsGridInit();
+            bsCustomFileInput.init();
+        });
+
+        // Add section
+        $(document).on('click', '#addSectionButton', function () {
+            sectionCount++;
+            $('#sections-rows').append(
+                '<div class="col-3 section-block">' +
+                '    <div class="form-group">' +
+                '        <label for="section-name-' + sectionCount + '">Название</label>' +
+                '        <div class="input-group">' +
+                '            <input type="text" class="form-control" id="section-name-' + sectionCount + '"' +
+                '                   value="Секция ' + sectionCount + '" name="section-name-' + sectionCount + '">' +
+                '            <div class="input-group-append">' +
+                '                <button type="button" class="btn btn-danger remove-section-button">' +
+                '                    <i class="fa-solid fa-trash-can"></i>' +
+                '                </button>' +
+                '            </div>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
+            ruleInit();
+        });
+
+        //  Remove section
+        $(document).on('click', '.remove-section-button', function () {
+            let sectionBlock = $(this).parents('.section-block');
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    sectionCount--;
+                    $(sectionBlock).remove();
+                    successWarning('Успешно удалено');
+                }
+            })
+        });
+
+        // Add floor
+        $(document).on('click', '#addFloorButton', function () {
+            floorCount++;
+            $('#floors-rows').append(
+                '<div class="col-3 floor-block">' +
+                '    <div class="form-group">' +
+                '        <label for="floor-name-' + floorCount + '">Название</label>' +
+                '        <div class="input-group">' +
+                '            <input type="text" class="form-control" id="floor-name-' + floorCount + '"' +
+                '                   value="Этаж ' + floorCount + '" name="floor-name-' + floorCount + '">' +
+                '            <div class="input-group-append">' +
+                '                <button type="button" class="btn btn-danger remove-floor-button">' +
+                '                    <i class="fa-solid fa-trash-can"></i>' +
+                '                </button>' +
+                '            </div>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
+            ruleInit();
+        });
+
+        //  Remove floor
+        $(document).on('click', '.remove-floor-button', function () {
+            let floorBlock = $(this).parents('.floor-block');
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    floorCount--;
+                    $(floorBlock).remove();
+                    successWarning('Успешно удалено');
+                }
+            })
+        });
+
+        // Add staff
+        $(document).on('click', '#addStaffButton', function () {
+            staffCount++;
+            $('#staff-rows').append(
+                '<div class="col-4 staff-block">' +
+                '    <div class="row">' +
+                '        <div class="col-8">' +
+                '            <div class="form-group">' +
+                '                <label for="staff-name-">ФИО</label>' +
+                '                <div class="input-group">' +
+                '                    <select class="custom-select" id="staff-name-' + staffCount + '" name="staff-name-' + staffCount + '">' +
+                '                        <option value="">Выберите...</option>' +
+                '                    </select>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '        <div class="col-4">' +
+                '            <div class="form-group">' +
+                '                <label for="staff-role-">Роль</label>' +
+                '                <div class="input-group">' +
+                '                    <input type="text" class="form-control" id="staff-role-' + staffCount + '" disabled>' +
+                '                    <div class="input-group-append">' +
+                '                        <button type="button" class="btn btn-danger remove-staff-button">' +
+                '                            <i class="fa-solid fa-trash-can"></i>' +
+                '                        </button>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
+            $.each(allStaff, function (i, element) {
+                $('select.custom-select').last().append('<option value="' + element.id + '">' + element.fullName + '</option>');
+            });
+            ruleInit();
+        });
+
+        $(document).on('change', 'select.custom-select', function () {
+            let staffId = $(this).val();
+            if (staffId === '') $(this).parents('div.staff-block').find('input.form-control').val('');
+            else $(this).parents('div.staff-block').find('input.form-control').val(allStaff.find(staff => staff.id === parseInt(staffId)).role.title);
+        });
+
+        //  Remove staff
+        $(document).on('click', '.remove-staff-button', function () {
+            let staffBlock = $(this).parents('.staff-block');
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $(staffBlock).remove();
+                    successWarning('Успешно удалено');
+                }
+            })
+        });
+
+        function getAllStaff() {
+            $.ajax({
+                method: 'GET',
+                url: "buildings/get-all-staff",
+                dataType: 'json',
+                async: false,
+                success: function (result) {
+                    allStaff = result;
+                }
+            });
+        }
+
+        //  Auto preview of image
+        $(document).on('change', '.custom-file-input', function () {
+            $('#image-preview-' + $(this).attr('id').replace(/image-/, ''))[0].src = URL.createObjectURL(event.target.files[0]);
+        });
+
+        //  Add button action
+        function saveAction() {
+            let formData = new FormData();
+
+            let building = {};
+            building.id = $('#id').val();
+            building.title = $('#title').val();
+            building.address = $('#address').val();
+
+            let sections = [];
+            $('.section-block').each(function () {
+                let section = {};
+                section.name = $(this).find('input[id^="section-name-"]').val();
+                sections.push(section);
+            });
+            building.sections = sections;
+
+            let floors = [];
+            $('.floor-block').each(function () {
+                let floor = {};
+                floor.name = $(this).find('input[id^="floor-name-"]').val();
+                floors.push(floor);
+            });
+            building.floors = floors;
+
+            let staffList = [];
+            $('.staff-block').each(function () {
+                let staff = {};
+                staff.id = $(this).find('select[id^="staff-name-"]').val();
+                staffList.push(staff);
+            });
+            building.staffList = staffList;
+
+            const buildingJSONBlob = new Blob([JSON.stringify(building)], {
+                type: 'application/json'
+            });
+            formData.append('building', buildingJSONBlob);
+
+            $('input[id^="image-"]').each(function (index, item) {
+                formData.append('images', item.files[0] ? item.files[0] : new File([], ""));
+            });
+
+            if (building.id) {
+                $.ajax({
+                    method: 'PUT',
+                    url: 'buildings/' + building.id + '/update',
+                    async: false,
+                    data: formData,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function () {
+                        successWarning('Успешно обновлено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'buildings/save',
+                    async: false,
+                    data: formData,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function () {
+                        successWarning('Успешно сохранено');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function (jqXHR, exception) {
+                        errorWarning();
+                        ajaxError(jqXHR, exception);
+                    }
+                });
+            }
+        }
+
+        //  Delete button action
+        function deleteAction(id) {
+            askWarning(function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: 'buildings/' + id + '/delete',
+                        success: function () {
+                            successWarning('Успешно удалено');
+                            allBuildings = null;
+                            $("#jsGrid").jsGrid("render");
+                        },
+                        error: function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
+                        }
+                    });
+                }
+            });
+        }
+
+        //  Row click action
+        function rowClickAction(item) {
+            $('#pageTitle').text(item.title);
+            let breadcrumb = $('#breadcrumb');
+            breadcrumb.append('<li class="breadcrumb-item active">' + item.title + '</li>');
+            breadcrumb.append('<li class="breadcrumb-item active">Редактирование</li>');
+            $('#initial').attr('hidden', true);
+            $('#building').attr('hidden', true);
+            $('#showBuilding').attr('hidden', false);
+            $('#showTitle').text(item.title);
+            $('#showAddress').text(item.address);
+            $('#showSections').text(item.sections.length);
+            $('#showFloors').text(item.floors.length);
+            $(item.staffList).each(function (i, v) {
+                $('#showStaff').append('<b>' + v.role.title + ':</b> ' + v.fullName + '<br>');
+            });
+            let imagePath = '/uploaded/buildings/'
+            if (item.image1 != null) $('#image-preview-1-show').attr("src", imagePath + item.id + '/' + item.image1);
+            if (item.image2 != null) $('#image-preview-2-show').attr("src", imagePath + item.id + '/' + item.image2);
+            if (item.image3 != null) $('#image-preview-3-show').attr("src", imagePath + item.id + '/' + item.image3);
+            if (item.image4 != null) $('#image-preview-4-show').attr("src", imagePath + item.id + '/' + item.image4);
+            if (item.image5 != null) $('#image-preview-5-show').attr("src", imagePath + item.id + '/' + item.image5);
+            editItem = item;
+        }
+
+        //  Edit button action
+        function editAction(item) {
+            $('#pageTitle').text(item.title);
+            let breadcrumb = $('#breadcrumb');
+            breadcrumb.append('<li class="breadcrumb-item active">' + item.title + '</li>');
+            breadcrumb.append('<li class="breadcrumb-item active">Редактирование</li>');
+            $('#initial').attr('hidden', true);
+            $('#building').attr('hidden', false);
+            $('#showBuilding').attr('hidden', true);
+            $('#id').val(item.id);
+            $('#title').val(item.title);
+            $('#address').val(item.address);
+            $(item.sections).each(function (i, v) {
+                sectionCount++;
+                $('#sections-rows').append(
+                    '<div class="col-3 section-block">' +
+                    '    <div class="form-group">' +
+                    '        <label for="section-name-' + sectionCount + '">Название</label>' +
+                    '        <div class="input-group">' +
+                    '            <input type="text" class="form-control" id="section-name-' + sectionCount + '"' +
+                    '                   value="' + v.name + '" name="section-name-' + sectionCount + '">' +
+                    '            <div class="input-group-append">' +
+                    '                <button type="button" class="btn btn-danger remove-section-button">' +
+                    '                    <i class="fa-solid fa-trash-can"></i>' +
+                    '                </button>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '    </div>' +
+                    '</div>'
+                );
+                ruleInit();
+            });
+            $(item.floors).each(function (i, v) {
+                floorCount++;
+                $('#floors-rows').append(
+                    '<div class="col-3 floor-block">' +
+                    '    <div class="form-group">' +
+                    '        <label for="floor-name-' + floorCount + '">Название</label>' +
+                    '        <div class="input-group">' +
+                    '            <input type="text" class="form-control" id="floor-name-' + floorCount + '"' +
+                    '                   value="' + v.name + '" name="floor-name-' + floorCount + '">' +
+                    '            <div class="input-group-append">' +
+                    '                <button type="button" class="btn btn-danger remove-floor-button">' +
+                    '                    <i class="fa-solid fa-trash-can"></i>' +
+                    '                </button>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '    </div>' +
+                    '</div>'
+                );
+                ruleInit();
+            });
+            $(item.staffList).each(function (i, v) {
+                staffCount++;
+                $('#staff-rows').append(
+                    '<div class="col-4 staff-block">' +
+                    '    <div class="row">' +
+                    '        <div class="col-8">' +
+                    '            <input type="hidden" class="form-control" id="staff-id-' + staffCount + '" value="' + i.id + '">' +
+                    '            <div class="form-group">' +
+                    '                <label for="staff-name-">ФИО</label>' +
+                    '                <div class="input-group">' +
+                    '                    <select class="custom-select" id="staff-name-' + staffCount + '" name="staff-name-' + staffCount + '">' +
+                    '                        <option value="">Выберите...</option>' +
+                    '                    </select>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="col-4">' +
+                    '            <div class="form-group">' +
+                    '                <label for="staff-role-">Роль</label>' +
+                    '                <div class="input-group">' +
+                    '                    <input type="text" class="form-control" id="staff-role-' + staffCount + '" disabled>' +
+                    '                    <div class="input-group-append">' +
+                    '                        <button type="button" class="btn btn-danger remove-staff-button">' +
+                    '                            <i class="fa-solid fa-trash-can"></i>' +
+                    '                        </button>' +
+                    '                    </div>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '    </div>' +
+                    '</div>'
+                );
+                $.each(allStaff, function (i, element) {
+                    $('select.custom-select').last().append('<option value="' + element.id + '">' + element.fullName + '</option>');
+                });
+                $('select.custom-select').last().val(v.id);
+                $('input.form-control').last().val(allStaff.find(staff => staff.id === parseInt(v.id)).role.title);
+                ruleInit();
+            });
+            let imagePath = '/uploaded/buildings/'
+            if (item.image1 != null) $('#image-preview-1').attr("src", imagePath + item.id + '/' + item.image1);
+            if (item.image2 != null) $('#image-preview-2').attr("src", imagePath + item.id + '/' + item.image2);
+            if (item.image3 != null) $('#image-preview-3').attr("src", imagePath + item.id + '/' + item.image3);
+            if (item.image4 != null) $('#image-preview-4').attr("src", imagePath + item.id + '/' + item.image4);
+            if (item.image5 != null) $('#image-preview-5').attr("src", imagePath + item.id + '/' + item.image5);
+        }
+
+        //  Validation
+        $("#building-form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                },
+                address: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 40
+                }
+            },
+            messages: {
+                title: {
+                    required: "Введите название дома",
+                    minlength: "Название дома должно быть минимум из 3 символов",
+                    maxlength: "Название дома должно быть максимум из 40 символов"
+                },
+                address: {
+                    required: "Введите адрес",
+                    minlength: "Адрес должен быть минимум из 3 символов",
+                    maxlength: "Адрес должен быть максимум из 40 символов"
+                }
+            },
+            submitHandler: function (form, event) {
+                event.preventDefault();
+                saveAction();
+            }
+        });
+
+        function ruleInit() {
+            $('[name^="section-name-"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Введите название секции",
+                    }
+                });
+            });
+            $('[name^="floor-name-"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Введите название этажа",
+                    }
+                });
+            });
+            $('[name^="staff-name-"]').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Выберите пользователя",
+                    }
+                });
+            });
+        }
+
+        function jsGridInit() {
+            jsGrid.locale("ru");
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                autoload: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                pageLoading: true,
+                pageSize: 10,
+                filtering: true,
+                rowClick: function (args) {
+                    rowClickAction(args.item);
+                },
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            method: "GET",
+                            url: "buildings/get-all-buildings",
+                            data: filter,
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                allBuildings = data;
+                            },
+                            error: function (jqXHR, exception) {
+                                errorWarning();
+                                ajaxError(jqXHR, exception);
+                            }
+                        });
+                    }
+                },
+                fields: [
+                    {
+                        title: "#", type: "number", width: "5%", align: "center", filtering: false, sorting: false,
+                        itemTemplate: function (value, item) {
+                            return this._grid.data.indexOf(item) + 1;
+                        }
+                    },
+                    {
+                        name: "title", title: "Название", type: "text", width: "40%"
+                    },
+                    {
+                        name: "address", title: "Адрес", type: "text", width: "45%"
+                    },
+                    {
+                        type: "control", width: "10%", align: "center",
+                        headerTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-success btn-flat btn-sm"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $('#pageTitle').text("Новый дом");
+                                    $('#breadcrumb').append('<li class="breadcrumb-item active">Новый дом</li>');
+                                    $('#initial').attr('hidden', true);
+                                    $('#building').attr('hidden', false);
+                                    $('#showBuilding').attr('hidden', true);
+                                })
+                                .append("Добавить дом");
+                        },
+                        filterTemplate: function () {
+                            return $("<button>")
+                                .attr({class: "btn btn-secondary btn-flat btn-sm"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    $("#jsGrid").jsGrid("clearFilter");
+                                })
+                                .append("Очистить");
+                        },
+                        itemTemplate: function (value, item) {
+                            let $updateButton = $("<button>")
+                                .attr({class: "btn btn-warning btn-flat btn-sm"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    editAction(item);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-pencil"}));
+
+                            let $deleteButton = $("<button>")
+                                .attr({class: "btn btn-danger btn-flat btn-sm"})
+                                .click(function (e) {
+                                    e.stopPropagation();
+                                    deleteAction(item.id);
+                                })
+                                .append($("<i>").attr({class: "fa-solid fa-trash-can"}));
+
+                            return [$updateButton, $deleteButton];
+                        }
+                    }
+                ]
+            });
+        }
+
+
+    </script>
+</th:block>
+
+</html>

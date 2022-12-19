@@ -1,0 +1,47 @@
+.custom-file-input ~ .custom-file-label::after {
+    content: "Выберите";
+}
+
+.img-fluid {
+    max-height: 300px;
+    max-width: 100%;
+}
+
+.jsgrid-grid-header {
+    overflow-y: hidden;
+}
+
+.jsgrid-grid-body {
+    overflow-y: hidden;
+}
+
+.jsgrid-table {
+    font-size: small;
+}
+
+.jsgrid-header-row > .jsgrid-header-cell {
+    background: #c7c8c9;
+}
+
+.badge {
+    min-width: 10px;
+    display: inline-block;
+}
+
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header {
+    height: auto;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #20c997;
+}
+
+/*.btn.disabled, .btn:disabled{*/
+/*    border: 1px solid #999999;*/
+/*    background-color: #cccccc;*/
+/*    color: #666666;*/
+/*    cursor: not-allowed;*/
+/*    pointer-events: none;*/
+/*}*/
