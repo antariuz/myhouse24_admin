@@ -2,9 +2,9 @@ package avada.media.myhouse24_admin.controller.pages;
 
 import avada.media.myhouse24_admin.model.Building;
 import avada.media.myhouse24_admin.model.dto.BuildingDTO;
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.dto.StaffDTO;
 import avada.media.myhouse24_admin.model.request.BuildingRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.service.BuildingService;
 import avada.media.myhouse24_admin.service.StaffService;
 import lombok.RequiredArgsConstructor;

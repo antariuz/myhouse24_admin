@@ -7,6 +7,7 @@ import avada.media.myhouse24_admin.model.User;
 import avada.media.myhouse24_admin.model.dto.*;
 import avada.media.myhouse24_admin.model.request.AccountRequest;
 import avada.media.myhouse24_admin.model.request.SelectResponse;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.AccountRepo;
 import avada.media.myhouse24_admin.repo.BuildingRepo;
 import avada.media.myhouse24_admin.repo.FlatRepo;
@@ -41,7 +42,7 @@ public class AccountsPageController {
     }
 
     @GetMapping("get-all-accounts")
-    public @ResponseBody ResponseByPage<AccountDTO> getAllFlats(AccountRequest accountRequest) {
+    public @ResponseBody ResponseByPage<AccountDTO> getAllAccounts(AccountRequest accountRequest) {
         return accountService.getAllAccounts(accountRequest);
     }
 
@@ -82,8 +83,7 @@ public class AccountsPageController {
     @GetMapping("get-flats-of-building")
     @Transactional
     public @ResponseBody List<FlatDTO> getAllFlatsDTO(Long buildingId,
-                                                      @RequestParam(required = false) Long sectionId,
-                                                      @RequestParam(required = false) Long floorId) {
+                                                      @RequestParam(required = false) Long sectionId) {
         if (sectionId == null) {
             List<Flat> flats = flatRepo.findAllByBuildingId(buildingId);
             if (!flats.isEmpty()) {
@@ -150,10 +150,11 @@ public class AccountsPageController {
         return accountService.isUniqueNumberNotExists(id, number);
     }
 
-    @GetMapping("search-account")
-    public @ResponseBody SelectResponse searchForUser(@RequestParam String query,
-                                                      @RequestParam Integer page) {
-        return accountService.searchForAccount(query, page);
+    @GetMapping("search-accounts")
+    public @ResponseBody SelectResponse searchForAccount(@RequestParam String query,
+                                                         @RequestParam Integer page,
+                                                         @RequestParam(required = false) Long id) {
+        return accountService.searchForAccounts(query, page, id);
     }
 
     @PostMapping("save")

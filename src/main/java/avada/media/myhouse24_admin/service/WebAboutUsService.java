@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface WebAboutUsService {
 
+    WebAboutUs createInitialWebAboutUs();
     void updateWebAboutUs(WebAboutUs webAboutUs, MultipartFile photoOfDirector, List<MultipartFile> webDocumentsFiles, List<MultipartFile> gallery);
+    void deleteWebDocument(Long id);
+    void deleteGalleryImage(Long id);
+    void deleteExtraGalleryImage(Long id);
 
 }

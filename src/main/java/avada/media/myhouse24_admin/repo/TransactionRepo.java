@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -18,5 +19,7 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long>, JpaSp
 
     @Query(value = "SELECT amount FROM Transaction WHERE used AND type = ?", nativeQuery = true)
     List<Double> getAmountsByType(String type);
+
+    List<Transaction> getAllTransactionsByTypeAndRequestedDateAfter(Transaction.Type type, Date date);
 
 }

@@ -71,6 +71,7 @@ public class UserSpec {
                         break;
                 }
             }
+            query.distinct(true);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };

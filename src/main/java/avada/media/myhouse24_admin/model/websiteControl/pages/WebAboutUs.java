@@ -6,18 +6,20 @@ import avada.media.myhouse24_admin.model.websiteControl.extra.Image;
 import avada.media.myhouse24_admin.model.websiteControl.extra.WebDocument;
 import avada.media.myhouse24_admin.model.websiteControl.extra.WebExtraInformation;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Table
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class WebAboutUs extends MappedEntity {
 
     private String title;
-    @Column(length = 10485760)
+    @Column(length = 104857)
     private String description;
     private String photoOfDirector;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -30,9 +32,5 @@ public class WebAboutUs extends MappedEntity {
     private List<WebDocument> documents = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL)
     private Seo seo;
-
-    public String getPhotoOfDirector() {
-        return photoOfDirector != null ? "/uploaded/webAboutUs/" + photoOfDirector : null;
-    }
 
 }

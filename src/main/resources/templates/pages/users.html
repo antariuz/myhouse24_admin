@@ -272,6 +272,12 @@
             jsGridInit();
             initFlatFilter();
             bsCustomFileInput.init();
+
+            const userId = new URL(window.location.href).searchParams.get('id');
+            if (userId !== null) {
+                getUser(userId);
+                rowClickAction(user);
+            }
         });
 
         function initFlatFilter() {
@@ -473,11 +479,10 @@
                 data: {"id": id},
                 success: function (data) {
                     user = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
                 }
+            }).fail(function () {
+                errorWarning('Ошибка', 'Пользователь не существует');
+                ajaxError(jqXHR, exception);
             });
         }
 

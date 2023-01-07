@@ -3,6 +3,7 @@ package avada.media.myhouse24_admin.service.impl;
 import avada.media.myhouse24_admin.model.*;
 import avada.media.myhouse24_admin.model.dto.*;
 import avada.media.myhouse24_admin.model.request.FlatRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.*;
 import avada.media.myhouse24_admin.repo.systemSettings.TariffRepo;
 import avada.media.myhouse24_admin.service.FlatService;
@@ -12,12 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,22 +78,6 @@ public class FlatServiceImpl implements FlatService {
     }
 
     @Override
-    public List<FlatDTO> getAllFlats() {
-        List<Flat> flats =
-                flatRepo.findAll(Sort.by(Sort.Direction.ASC, "id"));
-        if (!flats.isEmpty()) {
-            List<FlatDTO> flatDTOS = new ArrayList<>();
-            for (Flat flat : flats) {
-                FlatDTO flatDTO = new FlatDTO();
-                flatDTO.setId(flat.getId());
-                flatDTO.setNumber("№" + flat.getNumber());
-                flatDTOS.add(flatDTO);
-            }
-            return flatDTOS;
-        } else return new ArrayList<>();
-    }
-
-    @Override
     @Transactional
     public void saveFlat(FlatDTO flatRequested) {
         Flat flat = new Flat();
@@ -103,14 +86,14 @@ public class FlatServiceImpl implements FlatService {
         flat.setTotalSquare(flatRequested.getTotalSquare());
         Building building = buildingRepo.findById(flatRequested.getBuilding().getId()).orElseThrow(() -> new EntityNotFoundException("Building not found with ID: " + flatRequested.getBuilding().getId()));
         flat.setBuilding(building);
-        Section section = null;
+        Section section;
         if (flatRequested.getSection().getId() != null) {
             section = sectionRepo.findById(flatRequested.getSection().getId()).orElseThrow(() -> new EntityNotFoundException("Section not found with ID: " + flatRequested.getSection().getId()));
             flat.setSection(section);
         }
         if (flatRequested.getFloor().getId() != null)
             flat.setFloor(floorRepo.findById(flatRequested.getFloor().getId()).orElseThrow(() -> new EntityNotFoundException("Floor not found with ID: " + flatRequested.getFloor().getId())));
-        User user = null;
+        User user;
         if (flatRequested.getUser().getId() != null) {
             user = userRepo.findById(flatRequested.getUser().getId()).orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + flatRequested.getUser().getId()));
             flat.setUser(user);

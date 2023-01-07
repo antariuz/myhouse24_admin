@@ -245,6 +245,11 @@
         $(document).ready(function () {
             getCurrentStaffID();
             jsGridInit();
+
+            const isProfile = new URL(window.location.href).searchParams.has('profile');
+            if (isProfile) {
+                getStaff(currentStaffID);
+            }
         });
 
         $(document).ready(function () {
@@ -546,7 +551,6 @@
                     ajaxError(jqXHR, exception);
                 }
             });
-            return id;
         }
 
         // Get Staff

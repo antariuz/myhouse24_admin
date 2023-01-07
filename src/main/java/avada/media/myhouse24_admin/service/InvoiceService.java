@@ -1,11 +1,12 @@
 package avada.media.myhouse24_admin.service;
 
 import avada.media.myhouse24_admin.model.dto.InvoiceDTO;
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.dto.StatusDTO;
 import avada.media.myhouse24_admin.model.request.InvoiceRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 
 import java.util.List;
+import java.util.Map;
 
 public interface InvoiceService {
 
@@ -22,5 +23,7 @@ public interface InvoiceService {
     void updateInvoice(Long id, InvoiceDTO invoiceDTO);
 
     void deleteInvoice(Long id);
+
+    Map<String, List<Double>> getInvoicesSumByTypeByMonths();
 
 }

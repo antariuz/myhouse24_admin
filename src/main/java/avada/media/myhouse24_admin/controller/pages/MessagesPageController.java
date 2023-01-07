@@ -1,6 +1,11 @@
 package avada.media.myhouse24_admin.controller.pages;
 
-import avada.media.myhouse24_admin.model.dto.*;
+import avada.media.myhouse24_admin.model.dto.BuildingDTO;
+import avada.media.myhouse24_admin.model.dto.FlatDTO;
+import avada.media.myhouse24_admin.model.dto.MessageDTO;
+import avada.media.myhouse24_admin.model.dto.StaffDTO;
+import avada.media.myhouse24_admin.model.request.MessageRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.service.BuildingService;
 import avada.media.myhouse24_admin.service.FlatService;
 import avada.media.myhouse24_admin.service.MessageService;
@@ -28,9 +33,8 @@ public class MessagesPageController {
     }
 
     @GetMapping("get-all-messages")
-    public @ResponseBody ResponseByPage<MessageDTO> getAllMessages(@RequestParam(required = false) Integer pageIndex,
-                                                                   @RequestParam(required = false) Integer pageSize) {
-        return messageService.getAllMessages(pageIndex, pageSize);
+    public @ResponseBody ResponseByPage<MessageDTO> getAllMessages(MessageRequest messageRequest) {
+        return messageService.getAllMessages(messageRequest);
     }
 
     @GetMapping("get-all-buildings")

@@ -2,11 +2,11 @@ package avada.media.myhouse24_admin.controller.pages;
 
 import avada.media.myhouse24_admin.model.Status;
 import avada.media.myhouse24_admin.model.User;
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.dto.StatusDTO;
 import avada.media.myhouse24_admin.model.dto.UserDTO;
 import avada.media.myhouse24_admin.model.request.SelectResponse;
 import avada.media.myhouse24_admin.model.request.UserRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +94,16 @@ public class UsersPageController {
     @GetMapping("get-new-users")
     public @ResponseBody List<UserDTO> getNewUsersCount() {
         return userService.getNewUsers();
+    }
+
+    @GetMapping("get-user")
+    public @ResponseBody UserDTO getUser(Long id) {
+        return userService.getUser(id);
+    }
+
+    @GetMapping("get-user-by-account-id")
+    public @ResponseBody UserDTO getUserByAccountId(Long accountId) {
+        return userService.getUserByAccountId(accountId);
     }
 
 }

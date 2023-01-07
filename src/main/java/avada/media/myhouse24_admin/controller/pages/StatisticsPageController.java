@@ -3,6 +3,8 @@ package avada.media.myhouse24_admin.controller.pages;
 import avada.media.myhouse24_admin.model.MasterRequest;
 import avada.media.myhouse24_admin.model.dto.StatisticsDTO;
 import avada.media.myhouse24_admin.repo.*;
+import avada.media.myhouse24_admin.service.InvoiceService;
+import avada.media.myhouse24_admin.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ public class StatisticsPageController {
     private final MasterRequestRepo masterRequestRepo;
     private final FlatRepo flatRepo;
     private final AccountRepo accountRepo;
+    private final InvoiceService invoiceService;
+    private final TransactionService transactionService;
 
     @GetMapping({"/", ""})
     public ModelAndView showStatisticsPage() {
@@ -38,6 +42,9 @@ public class StatisticsPageController {
         statisticsDTO.setAccountsTotalDebt(0.00d);
         statisticsDTO.setAccountsTotalBalance(0.00d);
         statisticsDTO.setAccountsTotalTransaction(0.00d);
+        statisticsDTO.setRepaymentData(invoiceService.getInvoicesSumByTypeByMonths());
+        statisticsDTO.setIncomingAndExpensesData(transactionService.getTransactionsBalancesByMonths());
+
         return statisticsDTO;
     }
 

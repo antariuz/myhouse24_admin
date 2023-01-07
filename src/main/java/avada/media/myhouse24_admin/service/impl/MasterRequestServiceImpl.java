@@ -3,6 +3,7 @@ package avada.media.myhouse24_admin.service.impl;
 import avada.media.myhouse24_admin.model.MasterRequest;
 import avada.media.myhouse24_admin.model.dto.*;
 import avada.media.myhouse24_admin.model.request.MasterRequestRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.*;
 import avada.media.myhouse24_admin.service.MasterRequestService;
 import avada.media.myhouse24_admin.spec.MasterRequestSpec;
@@ -112,11 +113,6 @@ public class MasterRequestServiceImpl implements MasterRequestService {
         }
         masterRequest.setStatus(MasterRequest.Status.valueOf(masterRequestDTO.getStatus().getValue()));
         masterRequestRepo.save(masterRequest);
-    }
-
-    @Override
-    public void deleteMasterRequest(Long id) {
-        masterRequestRepo.deleteById(id);
     }
 
 }

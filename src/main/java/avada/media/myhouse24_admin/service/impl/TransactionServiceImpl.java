@@ -4,6 +4,7 @@ import avada.media.myhouse24_admin.model.Account;
 import avada.media.myhouse24_admin.model.Transaction;
 import avada.media.myhouse24_admin.model.dto.*;
 import avada.media.myhouse24_admin.model.request.TransactionRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.AccountRepo;
 import avada.media.myhouse24_admin.repo.StaffRepo;
 import avada.media.myhouse24_admin.repo.TransactionRepo;
@@ -22,9 +23,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static avada.media.myhouse24_admin.model.Transaction.Type;
 
@@ -40,7 +41,6 @@ public class TransactionServiceImpl implements TransactionService {
     private final AccountService accountService;
     private final AccountRepo accountRepo;
     private final StaffRepo staffRepo;
-
     private final SimpMessagingTemplate template;
 
     @Override
@@ -142,7 +142,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void sendDataByWebSocket() {
-        HashMap<String, Double> transactionsBalanceData = getAllTransactionBalancesData();
+        Map<String, Double> transactionsBalanceData = getAllTransactionBalancesData();
         template.convertAndSend("/data/transaction-amounts-sum-IN", transactionsBalanceData.get("transactionAmountsSumByInType"));
         template.convertAndSend("/data/transaction-amounts-sum-OUT", transactionsBalanceData.get("transactionAmountsSumByOutType"));
         template.convertAndSend("/data/transactions-balance", transactionsBalanceData.get("transactionAmountsSumByInType") - transactionsBalanceData.get("transactionAmountsSumByOutType"));
@@ -192,11 +192,49 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public HashMap<String, Double> getAllTransactionBalancesData() {
-        HashMap<String, Double> transactionsBalances = new HashMap<>();
+    public Map<String, Double> getAllTransactionBalancesData() {
+        Map<String, Double> transactionsBalances = new HashMap<>();
         transactionsBalances.put("transactionAmountsSumByInType", transactionRepo.getAmountsByType(Type.IN.name()).stream().mapToDouble(Double::doubleValue).sum());
         transactionsBalances.put("transactionAmountsSumByOutType", transactionRepo.getAmountsByType(Type.OUT.name()).stream().mapToDouble(Double::doubleValue).sum());
         return transactionsBalances;
+    }
+
+    @Override
+    public Map<String, List<Double>> getTransactionsBalancesByMonths() {
+        Map<String, List<Double>> transactionsBalances = new HashMap<>();
+        Date lastDayOfPastYear = java.sql.Date.valueOf(LocalDate.ofYearDay(LocalDate.now().getYear(), 1).minusDays(1));
+        List<Transaction> incomingTransactionsOfCurrentYear = transactionRepo.getAllTransactionsByTypeAndRequestedDateAfter(Type.IN, lastDayOfPastYear);
+        List<Transaction> expenseTransactionsOfCurrentYear = transactionRepo.getAllTransactionsByTypeAndRequestedDateAfter(Type.OUT, lastDayOfPastYear);
+        List<List<Transaction>> sortedIncomingTransactionsByMonths = sortTransactionsByMonths(incomingTransactionsOfCurrentYear);
+        List<List<Transaction>> sortedExpenseTransactionsByMonths = sortTransactionsByMonths(expenseTransactionsOfCurrentYear);
+        transactionsBalances.put("Приход", TransactionsBalancesSumByMonths(sortedIncomingTransactionsByMonths));
+        transactionsBalances.put("Расход", TransactionsBalancesSumByMonths(sortedExpenseTransactionsByMonths));
+        return transactionsBalances;
+    }
+
+    protected List<List<Transaction>> sortTransactionsByMonths(List<Transaction> transactions) {
+        List<List<Transaction>> monthTransactions = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            int month = i;
+            List<Transaction> sortedTransactions = transactions.stream()
+                    .filter(transaction -> {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(transaction.getRequestedDate());
+                        return calendar.get(Calendar.MONTH) == month;
+                    })
+                    .collect(Collectors.toList());
+            monthTransactions.add(sortedTransactions);
+        }
+        return monthTransactions;
+    }
+
+    private List<Double> TransactionsBalancesSumByMonths(List<List<Transaction>> sortTransactionsByMonths) {
+        return sortTransactionsByMonths
+                .stream()
+                .map(transactions -> transactions
+                        .stream()
+                        .mapToDouble(Transaction::getAmount).sum())
+                .collect(Collectors.toList());
     }
 
 }

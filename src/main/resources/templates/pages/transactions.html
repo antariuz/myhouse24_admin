@@ -187,12 +187,18 @@
             <div class="card card-outline card-secondary">
                 <div class="card-header">
                     <div class="card-tools">
-                        <button type="button" class="btn btn-sm btn-secondary">Копировать</button>
-                        <button type="button" class="btn btn-sm btn-secondary">Удалить</button>
+                        <button type="button" onclick="copyAction(currentItem);"
+                                class="btn btn-sm btn-secondary">Копировать
+                        </button>
+                        <button type="button" onclick="deleteAction(currentItem.id, true);"
+                                class="btn btn-sm btn-secondary">Удалить
+                        </button>
                         <button type="button" onclick="editAction(currentItem);" class="btn btn-sm btn-info">
                             Редактировать заявку
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary">Выгрузить в Excel</button>
+                        <button type="button" onclick="exportTransactionData(currentItem.id);"
+                                class="btn btn-sm btn-secondary">Выгрузить в Excel
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -280,16 +286,15 @@
                 stompClient.subscribe('/data/transaction-amounts-sum-OUT', function (amount) {
                     $(balances[1]).text(formatter.format(JSON.parse(amount.body)));
                 });
-                stompClient.subscribe('/data/new-transaction', function (id) {
+                stompClient.subscribe('/data/new-transaction', function () {
                     $("#jsGrid").jsGrid("render");
                 });
                 stompClient.subscribe('/data/updated-transaction', function (id) {
-                    console.log(currentData.find(transaction => transaction.id === id));
                     if (currentData.find(transaction => transaction.id === JSON.parse(id.body)) !== undefined) {
                         $("#jsGrid").jsGrid("render");
                     }
                 });
-                stompClient.subscribe('/data/deleted-transaction', function (id) {
+                stompClient.subscribe('/data/deleted-transaction', function () {
                     $("#jsGrid").jsGrid("render");
                 });
             });
@@ -298,69 +303,52 @@
         $(document).ready(function () {
             connect();
             jsGridInit();
-            initUserSelect();
-            initAccountSelect();
-            let balancesData = getAllTransactionBalancesData();
-            $(balances[0]).text(formatter.format(balancesData.transactionAmountsSumByInType));
-            $(balances[1]).text(formatter.format(balancesData.transactionAmountsSumByOutType));
-            $(h3Amounts[0]).html("<h3>" + formatter.format(balancesData.transactionAmountsSumByInType - balancesData.transactionAmountsSumByOutType) + "<sup style='font-size: 20px'>грн.</sup></h3>");
-            $(h3Amounts[1]).html("<h3>" + formatter.format(getAllAccountsBalance()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
-            $(h3Amounts[2]).html("<h3>" + formatter.format(getAllAccountsDebt()) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            initSelect2('#filterUser', 'users/search-user');
+            initSelect2('#filterAccount', 'accounts/search-accounts');
+            getAllTransactionBalancesData();
+            getAllAccountsBalance();
+            getAllAccountsDebt();
         });
 
-        //  Get new number of transaction
+        //  Get new unique number of transaction
         function getNewUniqueNumber() {
-            let transactionNumber;
             $.ajax({
                 method: "GET",
-                url: "transactions/get-new-unique-number",
-                async: false,
-                success: function (data) {
-                    transactionNumber = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                url: "transactions/get-new-unique-number"
+            }).done(function (response) {
+                $('#uniqueNumber').val(response);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
-            return transactionNumber;
         }
 
         //  Get Transaction-purposes by type
-        function getTransactionPurposesByType() {
-            let transactionPurposes = [];
+        function getTransactionPurposesByType(type) {
             $.ajax({
                 method: "GET",
                 url: "system-settings/transaction-purposes/get-all-by-type",
-                async: false,
-                data: {type: currentType},
-                success: function (data) {
-                    transactionPurposes = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                data: {type: type}
+            }).done(function (response) {
+                $.each(response, function (i, element) {
+                    $('#transactionPurpose').append('<option value="' + element.id + '">' + element.name + '</option>');
+                });
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
-            return transactionPurposes;
         }
 
         //  Get all staff except INACTIVE
         function getAllStaffExceptInactive() {
-            let staff = [];
             $.ajax({
                 method: "GET",
-                url: "system-settings/staff/get-all-staff",
-                async: false,
-                success: function (data) {
-                    staff = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                url: "system-settings/staff/get-all-staff"
+            }).done(function (response) {
+                $.each(response, function (i, element) {
+                    $('#staff').append('<option value="' + element.id + '">' + element.fullName + '</option>');
+                });
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
-            return staff;
         }
 
         //  Get all types
@@ -369,14 +357,11 @@
             $.ajax({
                 method: "GET",
                 url: "transactions/get-all-types",
-                async: false,
-                success: function (data) {
-                    types = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                async: false
+            }).done(function (response) {
+                types = [{id: "", name: ""}].concat(response);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
             return types;
         }
@@ -387,200 +372,72 @@
             $.ajax({
                 method: "GET",
                 url: "transactions/get-all-transaction-purposes",
-                async: false,
-                success: function (data) {
-                    transactionPurposes = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                async: false
+            }).done(function (response) {
+                transactionPurposes = [{id: "", name: ""}].concat(response);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
             return transactionPurposes;
         }
 
         //  Get all Transaction Balances data
         function getAllTransactionBalancesData() {
-            let transactionBalancesData = [];
             $.ajax({
                 method: "GET",
-                url: "transactions/get-all-transaction-balances-data",
-                async: false,
-                success: function (data) {
-                    transactionBalancesData = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                url: "transactions/get-all-transaction-balances-data"
+            }).done(function (response) {
+                $(balances[0]).text(formatter.format(response.transactionAmountsSumByInType));
+                $(balances[1]).text(formatter.format(response.transactionAmountsSumByOutType));
+                $(h3Amounts[0])
+                    .html("<h3>"
+                        + formatter.format(response.transactionAmountsSumByInType - response.transactionAmountsSumByOutType)
+                        + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
-            return transactionBalancesData;
         }
 
         //  Get All Accounts Balance
         function getAllAccountsBalance() {
-            let accountsBalance = [];
             $.ajax({
                 method: "GET",
-                url: "transactions/get-all-accounts-balance",
-                async: false,
-                success: function (data) {
-                    accountsBalance = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                url: "transactions/get-all-accounts-balance"
+            }).done(function (response) {
+                $(h3Amounts[1]).html("<h3>" + formatter.format(response) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
-            return accountsBalance;
         }
 
         //  Get All Accounts Debt
         function getAllAccountsDebt() {
-            let accountsDebt = [];
             $.ajax({
                 method: "GET",
-                url: "transactions/get-all-accounts-debt",
-                async: false,
-                success: function (data) {
-                    accountsDebt = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
-            });
-            return accountsDebt;
-        }
-
-        function initUserSelect() {
-            $('#user').select2({
-                allowClear: true,
-                ajax: {
-                    url: "users/search-user",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            query: params.term || '',
-                            page: params.page || 1
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.results,
-                            pagination: {
-                                more: (params.page * 10) < data.itemsCount
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Выберите...'
-            });
-            $('#filterUser').select2({
-                allowClear: true,
-                ajax: {
-                    url: "users/search-user",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            query: params.term || '',
-                            page: params.page || 1
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.results,
-                            pagination: {
-                                more: (params.page * 10) < data.itemsCount
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: ''
-            });
-        }
-
-        function initAccountSelect() {
-            $('#account').select2({
-                allowClear: true,
-                ajax: {
-                    url: "accounts/search-account",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            query: params.term || "",
-                            page: params.page || 1
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.results,
-                            pagination: {
-                                more: (params.page * 10) < data.itemsCount
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Выберите...'
-            });
-            $('#filterAccount').select2({
-                allowClear: true,
-                ajax: {
-                    url: "accounts/search-account",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            query: params.term || "",
-                            page: params.page || 1
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.term = "1";
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.results,
-                            pagination: {
-                                more: (params.page * 10) < data.itemsCount
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: ''
+                url: "transactions/get-all-accounts-debt"
+            }).done(function (response) {
+                $(h3Amounts[2]).html("<h3>" + formatter.format(response) + "<sup style='font-size: 20px'>грн.</sup></h3>");
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
         }
 
         //  Add new account action
         function addNewTransaction(type) {
-            currentType = type;
             let pageTitle;
-            if (type === "IN") pageTitle = "Новая приходная ведомость";
-            else {
+            if (type === "IN") {
+                pageTitle = "Новая приходная ведомость";
+                initSelect2('#user', 'users/search-user', 'Выберите...');
+                initSelect2('#account', 'accounts/search-accounts', 'Выберите...');
+            } else {
                 pageTitle = "Новая расходная ведомость";
                 $('#user').parents('div.form-group').attr("hidden", true);
                 $('#account').parents('div.form-group').attr("hidden", true);
             }
-            $('#uniqueNumber').val(getNewUniqueNumber());
-            $.each(getTransactionPurposesByType(), function (i, element) {
-                $('#transactionPurpose').append('<option value="' + element.id + '">' + element.name + '</option>');
-            });
-            $.each(getAllStaffExceptInactive(), function (i, element) {
-                $('#staff').append('<option value="' + element.id + '">' + element.fullName + '</option>');
-            });
+            getNewUniqueNumber();
+            getTransactionPurposesByType(type);
+            getAllStaffExceptInactive();
             $('#requestedDate').datetimepicker({
                 locale: 'ru',
                 format: 'L',
@@ -599,6 +456,8 @@
         //  Edit button action
         function editAction(item) {
             currentType = item.type.value;
+            initSelect2('#user', 'users/search-user', 'Выберите...');
+            initSelect2('#account', 'accounts/search-accounts', 'Выберите...');
             $('#id').val(item.id);
             $('#uniqueNumber').val(item.uniqueNumber);
             $('#requestedDate')
@@ -613,16 +472,12 @@
             if (item.user) {
                 $('#user').append('<option value="' + item.user.id + '">' + item.user.fullName + '</option>');
             }
-            $.each(getAllStaffExceptInactive(), function (i, element) {
-                $('#staff').append('<option value="' + element.id + '">' + element.fullName + '</option>');
-            });
+            getAllStaffExceptInactive();
             $('#staff').val(item.staff?.id);
             if (item.account) {
                 $('#account').append('<option value="' + item.account.id + '">' + item.account.uniqueNumber + '</option>');
             }
-            $.each(getTransactionPurposesByType(), function (i, element) {
-                $('#transactionPurpose').append('<option value="' + element.id + '">' + element.name + '</option>');
-            });
+            getTransactionPurposesByType(item.type.value);
             $('#transactionPurpose').val(item.transactionPurpose?.id);
             $('#is-used').attr("checked", item.used);
             $('#amount').val(item.amount);
@@ -643,6 +498,42 @@
             $('#show').attr('hidden', true);
         }
 
+        //  Copy button action
+        function copyAction(item) {
+            editAction(item);
+            $('#id').val(null);
+            getNewUniqueNumber();
+        }
+
+        $(document).on('change', '#user', function () {
+            const userId = $(this).val();
+            $('#account').empty();
+            getAccountsByUser(userId);
+        });
+
+        $(document).on('change', '#account', function () {
+            const accountId = $(this).val();
+            accountId ? getUserByAccountId(accountId) : $('#user').empty().append('<option value="">Выберите...</option>');
+        });
+
+        function getAccountsByUser(userId) {
+            initSelect2('#account', 'accounts/search-accounts', 'Выберите...', userId);
+        }
+
+        function getUserByAccountId(accountId) {
+            $.ajax({
+                method: "GET",
+                url: "users/get-user-by-account-id",
+                data: {accountId: accountId}
+            }).done(function (response) {
+                $('#user').empty()
+                    .append('<option value="' + (response.id ? response.id : '') + '">' + (response.fullName ? response.fullName : 'Выберите...') + '</option>');
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
+            });
+        }
+
+
         //  Row click action
         function rowClickAction(item) {
             $('#show-unique-number').val(item.uniqueNumber);
@@ -653,13 +544,15 @@
             $('#show-invoice').append();
             $('#show-service').append();
             $('#show-staff').append(item.staff?.fullName);
-            if (item.type.value === "IN") $('#show-amount').append('<span style="color: green">' + item.amount + '</span>');
-            else $('#show-amount').append('<span style="color: red">- ' + item.amount + '</span>');
+            item.type.value === "IN" ?
+                $('#show-amount').append('<span style="color: green">' + item.amount + '</span>') :
+                $('#show-amount').append('<span style="color: red">- ' + item.amount + '</span>');
             $('#show-comment').append(item.comment);
 
             let pageTitle;
-            if (item.type.value === "IN") pageTitle = "Приходная ведомость";
-            else pageTitle = "Расходная ведомость";
+            item.type.value === "IN" ?
+                pageTitle = "Приходная ведомость" :
+                pageTitle = "Расходная ведомость";
             let breadcrumbTitle = pageTitle + " №" + item.uniqueNumber;
             $('#pageTitle').text(pageTitle);
             $('#last-breadcrumb').after('<li class="breadcrumb-item active">' + breadcrumbTitle + '</li>');
@@ -671,20 +564,19 @@
         }
 
         //  Delete button action
-        function deleteAction(id) {
+        function deleteAction(id, refresh) {
             askWarning(function (confirmed) {
                 if (confirmed) {
                     $.ajax({
                         method: 'DELETE',
-                        url: 'transactions/' + id + '/delete',
-                        success: function () {
-                            successWarning('Успешно удалено');
+                        url: 'transactions/' + id + '/delete'
+                    }).done(function () {
+                        if (!refresh) {
                             $("#jsGrid").jsGrid("render");
-                        },
-                        error: function (jqXHR, exception) {
-                            errorWarning();
-                            ajaxError(jqXHR, exception);
                         }
+                        successWarning('Успешно удалено', refresh);
+                    }).fail(function (jqXHR, exception) {
+                        errorWarning(jqXHR, exception);
                     });
                 }
             });
@@ -711,8 +603,7 @@
                             }
                         },
                         error: function (jqXHR, exception) {
-                            errorWarning();
-                            ajaxError(jqXHR, exception);
+                            errorWarning(jqXHR, exception);
                         }
                     }
                 },
@@ -759,41 +650,27 @@
             transaction.comment = $('#comment').val();
             transaction.type = {value: currentType};
 
+            let method, url, successMessage;
             if (transaction.id) {
-                $.ajax({
-                    method: 'PUT',
-                    url: 'transactions/' + transaction.id + '/update',
-                    contentType: 'application/json',
-                    data: JSON.stringify(transaction),
-                    success: function () {
-                        successWarning('Успешно обновлено');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    },
-                    error: function (jqXHR, exception) {
-                        errorWarning();
-                        ajaxError(jqXHR, exception);
-                    }
-                });
+                method = 'PUT';
+                url = 'transactions/' + transaction.id + '/update';
+                successMessage = 'Успешно обновлено';
             } else {
-                $.ajax({
-                    method: 'POST',
-                    url: 'transactions/save',
-                    contentType: 'application/json',
-                    data: JSON.stringify(transaction),
-                    success: function () {
-                        successWarning('Успешно сохранено');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    },
-                    error: function (jqXHR, exception) {
-                        errorWarning();
-                        ajaxError(jqXHR, exception);
-                    }
-                });
+                method = 'POST';
+                url = 'transactions/save';
+                successMessage = 'Успешно сохранено';
             }
+            $.ajax({
+                method: method,
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify(transaction)
+            }).done(function () {
+                successWarning(successMessage, true);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
+            });
+
         }
 
         $(document).on('change', '#filterRequestedDate, #filterUser, #filterAccount', function () {
@@ -801,7 +678,6 @@
         });
 
         function jsGridInit() {
-            jsGrid.locale("ru");
             $("#jsGrid").jsGrid({
                 width: "100%",
                 autoload: true,
@@ -822,15 +698,11 @@
                             method: "GET",
                             url: "transactions/get-all-transactions",
                             data: filter,
-                            async: false,
-                            dataType: "json",
-                            success: function (data) {
-                                currentData = data.data;
-                            },
-                            error: function (jqXHR, exception) {
-                                errorWarning();
-                                ajaxError(jqXHR, exception);
-                            }
+                            dataType: "json"
+                        }).done(function (response) {
+                            currentData = response.data;
+                        }).fail(function (jqXHR, exception) {
+                            errorWarning(jqXHR, exception);
                         });
                     }
                 },
@@ -866,7 +738,7 @@
                     },
                     {
                         name: "transactionPurpose", title: "Тип платежа", type: "select", width: "15%", sorting: false,
-                        items: [{id: "", name: ""}].concat(getAllTransactionPurposes()),
+                        items: getAllTransactionPurposes(),
                         valueField: "id",
                         textField: "name",
                         valueType: "number",
@@ -910,7 +782,7 @@
                     },
                     {
                         name: "type", title: "Приход/расход", type: "select", width: "10%", sorting: false,
-                        items: [{id: "", name: ""}].concat(getAllTypes()),
+                        items: getAllTypes(),
                         valueField: "value",
                         textField: "title",
                         valueType: "string",
@@ -943,18 +815,23 @@
                                 .append($("<button>").attr({type: "button", class: "dropdown-item"})
                                     .click(function (e) {
                                         e.stopPropagation();
-                                        addNewTransaction('IN');
+                                        currentType = 'IN';
+                                        addNewTransaction(currentType);
                                     })
                                     .append("Создать приход"))
                                 .append($("<button>").attr({type: "button", class: "dropdown-item"})
                                     .click(function (e) {
                                         e.stopPropagation();
-                                        addNewTransaction('OUT');
+                                        currentType = 'OUT';
+                                        addNewTransaction(currentType);
                                     })
                                     .append("Создать расход"))
-                                .append($("<button>").attr({type: "button", class: "dropdown-item"})
+                                .append($("<a>").attr({type: "button", class: "dropdown-item"})
+                                    // .append($("<a>").attr({type: "button", class: "dropdown-item", href: "/transactions/export"})
                                     .click(function (e) {
                                         e.stopPropagation();
+                                        exportData();
+                                        $(this).parent('div.dropdown-menu').dropdown('toggle');
                                     })
                                     .append("Выгрузить в Excel"))
 
@@ -967,8 +844,8 @@
                                 .click(function (e) {
                                     e.stopPropagation();
                                     $("#jsGrid").jsGrid("clearFilter");
-                                    initUserSelect();
-                                    initAccountSelect();
+                                    initSelect2('#filterUser', 'users/search-user');
+                                    initSelect2('#filterAccount', 'accounts/search-accounts');
                                 })
                                 .append("Очистить");
                         },
@@ -996,6 +873,75 @@
                     }
                 ]
             });
+        }
+
+        function exportData() {
+            $.ajax({
+                method: 'GET',
+                url: 'transactions/export-transactions-to-excel',
+                xhrFields: {
+                    responseType: 'blob' // to avoid binary data being mangled on charset conversion
+                },
+                data: currentFilter
+            }).done(function (blob, status, xhr) {
+                getFileFromResponse(blob, status, xhr);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
+            });
+        }
+
+        function exportTransactionData(id) {
+            $.ajax({
+                method: 'GET',
+                url: 'transactions/export-transaction-to-excel',
+                xhrFields: {
+                    responseType: 'blob' // to avoid binary data being mangled on charset conversion
+                },
+                data: {id: id}
+            }).done(function (blob, status, xhr) {
+                getFileFromResponse(blob, status, xhr);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
+            });
+        }
+
+        function getFileFromResponse(blob, status, xhr) {
+            // check for a filename
+            let filename = "";
+            let disposition = xhr.getResponseHeader('Content-Disposition');
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                let filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                let matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+            }
+
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                window.navigator.msSaveBlob(blob, filename);
+            } else {
+                let URL = window.URL || window.webkitURL;
+                let downloadUrl = URL.createObjectURL(blob);
+
+                if (filename) {
+                    // use HTML5 a[download] attribute to specify filename
+                    let a = document.createElement("a");
+                    // safari doesn't support this yet
+                    if (typeof a.download === 'undefined') {
+                        window.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    window.location.href = downloadUrl;
+                }
+
+                setTimeout(function () {
+                    URL.revokeObjectURL(downloadUrl);
+                }, 100); // cleanup
+            }
         }
 
     </script>
