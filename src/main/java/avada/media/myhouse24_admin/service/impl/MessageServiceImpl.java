@@ -5,17 +5,18 @@ import avada.media.myhouse24_admin.model.Message;
 import avada.media.myhouse24_admin.model.MessageNotification;
 import avada.media.myhouse24_admin.model.User;
 import avada.media.myhouse24_admin.model.dto.MessageDTO;
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.dto.StaffDTO;
+import avada.media.myhouse24_admin.model.request.MessageRequest;
 import avada.media.myhouse24_admin.model.request.UserRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.*;
 import avada.media.myhouse24_admin.service.MessageService;
+import avada.media.myhouse24_admin.spec.MessageSpec;
 import avada.media.myhouse24_admin.spec.UserSpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -37,11 +38,12 @@ public class MessageServiceImpl implements MessageService {
     private final FloorRepo floorRepo;
     private final FlatRepo flatRepo;
     private final MessageNotificationRepo messageNotificationRepo;
+    private final MessageSpec messageSpec;
 
     @Override
-    public ResponseByPage<MessageDTO> getAllMessages(Integer pageIndex, Integer pageSize) {
+    public ResponseByPage<MessageDTO> getAllMessages(MessageRequest messageRequest) {
         Page<Message> messages =
-                messageRepo.findAll(PageRequest.of(pageIndex - 1, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+                messageRepo.findAll(messageSpec.getMessages(messageRequest), PageRequest.of(messageRequest.getPageIndex() - 1, messageRequest.getPageSize()));
         ResponseByPage<MessageDTO> response = new ResponseByPage<>();
         response.setItemsCount(messages.getTotalElements());
         for (Message message : messages) {

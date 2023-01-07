@@ -30,14 +30,12 @@
                 <div class="card-header">
                     <button type="button" class="btn btn-sm" style="margin-left:-4px" onclick="batchDelete();"><i
                             class="fa-solid fa-trash-can"></i></button>
-                    <div class="card-tools">
-                        <div class="input-group input-group-sm" style="width: 150px;">
-                            <input type="text" name="table_search" class="form-control float-right" placeholder="Поиск">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-default">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
+                    <div class="input-group input-group-sm float-right" style="width: 300px;">
+                        <input type="text" class="form-control" placeholder="Поиск" id="search">
+                        <div class="input-group-append">
+                            <a class="btn btn-default" onclick="$('#jsGrid').jsGrid('search');">
+                                <i class="fas fa-search"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -273,14 +271,11 @@
                 url: "messages/get-all-flats-by-building-and-section-and-floor",
                 dataType: "json",
                 async: false,
-                data: {buildingId: buildingId, sectionId: sectionId, floorId: floorId},
-                success: function (data) {
-                    allFlats = data;
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                data: {buildingId: buildingId, sectionId: sectionId, floorId: floorId}
+            }).done(function (data) {
+                allFlats = data;
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
         }
 
@@ -305,20 +300,15 @@
             if (toDeleteList.length > 0) {
                 askWarning(function (confirmed) {
                     if (confirmed) {
-                        $.each(toDeleteList, function (i, v) {
+                        $.each(toDeleteList, function (i, e) {
                             $.ajax({
                                 method: 'DELETE',
-                                url: 'messages/' + v + '/delete',
-                                error: function (jqXHR, exception) {
-                                    errorWarning();
-                                    ajaxError(jqXHR, exception);
-                                }
+                                url: 'messages/' + e + '/delete'
+                            }).fail(function (jqXHR, exception) {
+                                errorWarning(jqXHR, exception);
                             });
                         });
-                        successWarning('Успешно удалено');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
+                        successWarning('Успешно удалено', true);
                     }
                 });
             }
@@ -330,17 +320,11 @@
                 if (confirmed) {
                     $.ajax({
                         method: 'DELETE',
-                        url: 'messages/' + id + '/delete',
-                        success: function () {
-                            successWarning('Успешно удалено');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1500);
-                        },
-                        error: function (jqXHR, exception) {
-                            errorWarning();
-                            ajaxError(jqXHR, exception);
-                        }
+                        url: 'messages/' + id + '/delete'
+                    }).done(function () {
+                        successWarning('Успешно удалено', true);
+                    }).fail(function (jqXHR, exception) {
+                        errorWarning(jqXHR, exception);
                     });
                 }
             });
@@ -376,27 +360,19 @@
             message.floor = $('#floor').val() ? {id: $('#floor').val()} : null;
             message.flat = $('#flat').val() ? {id: $('#flat').val()} : null;
             message.user = $('#user').val() ? {id: $('#user').val()} : null;
-
             $.ajax({
                 method: 'POST',
                 url: 'messages/save',
                 contentType: 'application/json',
-                data: JSON.stringify(message),
-                success: function () {
-                    successWarning('Успешно сохранено');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                },
-                error: function (jqXHR, exception) {
-                    errorWarning();
-                    ajaxError(jqXHR, exception);
-                }
+                data: JSON.stringify(message)
+            }).done(function () {
+                successWarning('Успешно сохранено', true);
+            }).fail(function (jqXHR, exception) {
+                errorWarning(jqXHR, exception);
             });
         }
 
         function jsGridInit() {
-            jsGrid.locale("ru");
             $("#jsGrid").jsGrid({
                 width: "100%",
                 autoload: true,
@@ -415,18 +391,15 @@
                 },
                 controller: {
                     loadData: function (filter) {
+                        filter.subject = $('#search').val();
                         return $.ajax({
                             method: "GET",
                             url: "messages/get-all-messages",
                             data: filter,
-                            dataType: "json",
-                            success: function (response) {
-                                console.info(response);
-                            },
-                            error: function (jqXHR, exception) {
-                                errorWarning();
-                                ajaxError(jqXHR, exception);
-                            }
+                            dataType: "json"
+                        }).fail(function (jqXHR, exception) {
+                            errorWarning();
+                            ajaxError(jqXHR, exception);
                         });
                     }
                 },
@@ -487,6 +460,11 @@
                 ]
             });
         }
+
+        //  Search message by pressing Enter
+        $(document).on('keyup', '#search', function (e) {
+            if (e.which === 13) $("#jsGrid").jsGrid("search");
+        });
 
     </script>
 </th:block>

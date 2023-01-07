@@ -18,11 +18,11 @@
                 <span class="badge badge-warning" hidden></span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">загрузка данных...</span>
+                <span class="dropdown-item-text dropdown-header">загрузка данных...</span>
                 <div class="dropdown-divider"></div>
                 <div id="new-users-row" style="max-height: 111px" class="overflow-auto"></div>
                 <div class="dropdown-divider"></div>
-                <a href="/users" class="dropdown-item dropdown-footer">Перейти в раздел пользователей</a>
+                <a href="/users" class="dropdown-footer">Перейти в раздел пользователей</a>
             </div>
         </li>
         <li class="nav-item dropdown user-menu">
@@ -63,7 +63,7 @@
                 </li>
                 <li class="user-footer">
                     <form th:action="@{/logout}" method="post">
-                        <a href="/system-settings/staff" class="btn btn-outline-secondary"><i
+                        <a href="/system-settings/staff?profile" class="btn btn-outline-secondary"><i
                                 class="fa-solid fa-user-pen"></i> Профиль</a>
                         <button class="btn btn-outline-secondary float-right" type="submit">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Выход

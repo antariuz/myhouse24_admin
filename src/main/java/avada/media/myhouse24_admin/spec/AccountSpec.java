@@ -33,9 +33,6 @@ public class AccountSpec {
             if (request.getSection() != null && !request.getSection().equals("")) {
                 predicates.add(criteriaBuilder.equal(root.get("section").get("name"), request.getSection()));
             }
-            if (request.getUser() != null && request.getUser() > 0) {
-                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUser()));
-            }
             query.orderBy(criteriaBuilder.desc(root.get(DEFAULT_SORT_FIELD)));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 

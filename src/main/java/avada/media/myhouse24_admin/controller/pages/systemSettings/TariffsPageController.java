@@ -66,8 +66,8 @@ public class TariffsPageController {
         return tariffDTOList;
     }
 
-    @PostMapping("add")
-    public ResponseEntity<Void> addTariff(@RequestBody TariffDTO tariffDTO) {
+    @PostMapping("save")
+    public ResponseEntity<Void> saveTariff(@RequestBody TariffDTO tariffDTO) {
         Tariff tariff = new Tariff();
         tariff.setId(tariffDTO.getId());
         tariff.setName(tariffDTO.getName());

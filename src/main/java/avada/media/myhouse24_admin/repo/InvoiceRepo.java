@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, Long>, JpaSpecificationExecutor<Invoice> {
 
@@ -13,5 +16,7 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Long>, JpaSpecificat
     Long getLastId();
 
     boolean existsByUniqueNumber(String uniqueNumber);
+
+    List<Invoice> getInvoicesByAccountNotNullAndRequestedDateAfter(Date date);
 
 }

@@ -1,12 +1,12 @@
 package avada.media.myhouse24_admin.service;
 
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.dto.TransactionDTO;
 import avada.media.myhouse24_admin.model.dto.TypeDTO;
 import avada.media.myhouse24_admin.model.request.TransactionRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TransactionService {
 
@@ -24,8 +24,10 @@ public interface TransactionService {
 
     void deleteTransaction(Long id);
 
-    HashMap<String, Double> getAllTransactionBalancesData();
+    Map<String, Double> getAllTransactionBalancesData();
 
     void sendDataByWebSocket();
+
+    Map<String, List<Double>> getTransactionsBalancesByMonths();
 
 }

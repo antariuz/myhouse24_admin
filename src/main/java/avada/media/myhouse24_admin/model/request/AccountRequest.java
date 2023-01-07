@@ -10,7 +10,6 @@ public class AccountRequest {
     private Long flat;
     private Long building;
     private String section;
-    private Long user;
     private String balance;
 
     private Integer pageIndex;

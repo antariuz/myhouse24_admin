@@ -1,9 +1,9 @@
 package avada.media.myhouse24_admin.service;
 
 import avada.media.myhouse24_admin.model.dto.AccountDTO;
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.request.AccountRequest;
 import avada.media.myhouse24_admin.model.request.SelectResponse;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface AccountService {
 
     List<AccountDTO> getAllNotUsedAccounts();
 
-    SelectResponse searchForAccount(String query, Integer page);
+    SelectResponse searchForAccounts(String query, Integer page, Long userId);
 
     void saveAccount(AccountDTO accountDTO);
 

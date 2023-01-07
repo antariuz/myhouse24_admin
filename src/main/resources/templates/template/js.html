@@ -53,7 +53,7 @@
         }).done(function (response) {
             let count = response.length;
             let $path = $('.nav-item.dropdown');
-            let $extraPath = $path.find('span.dropdown-item.dropdown-header');
+            let $extraPath = $path.find('span.dropdown-item-text.dropdown-header');
             if (count > 0) {
                 $path.find('span.badge.badge-warning')
                     .text(count)
@@ -61,7 +61,10 @@
                 if (count === 1) $extraPath.text(count + " новый пользователь");
                 else $extraPath.text(count + " новых пользователя");
                 $.each(response, function (i, e) {
-                    $('#new-users-row').append($('<a>').attr({class: "dropdown-item text-center"}).append(e.fullName));
+                    $('#new-users-row').append($('<a>').attr({
+                        class: "dropdown-item text-center",
+                        href: '/users?id=' + e.id
+                    }).append(e.fullName));
                 });
             } else $extraPath.text("Новые пользователи отсутствуют");
         }).fail(function (jqXHR, exception) {
@@ -72,17 +75,22 @@
     });
 
     //  Success SweatAlarm
-    function successWarning(title) {
+    function successWarning(title, refreshPage, timer) {
         Swal.fire({
             icon: 'success',
             title: title ? title : 'Успешно',
             showConfirmButton: false,
-            timer: 1500,
+            timer: timer ? timer : 1500,
+        }).then((result) => {
+            if (refreshPage && result.dismiss === Swal.DismissReason.timer) {
+                window.location.reload();
+            }
         });
     }
 
     //  Error SweatAlarm
-    function errorWarning(title, text) {
+    function errorWarning(jqXHR, exception, title, text) {
+        ajaxError(jqXHR, exception);
         Swal.fire({
             icon: 'error',
             title: title ? title : 'Упс...',
@@ -108,11 +116,43 @@
     //  Default select2 theme
     $.fn.select2.defaults.set("theme", "bootstrap");
 
+    //  Initialization of Select2
+    function initSelect2(selector, url, placeholder, id) {
+        $(selector).select2({
+            allowClear: true,
+            ajax: {
+                url: url,
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term || '',
+                        page: params.page || 1,
+                        id: id
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.results,
+                        pagination: {
+                            more: (params.page * 10) < data.itemsCount
+                        }
+                    };
+                },
+                cache: true
+            },
+            placeholder: placeholder ? placeholder : ''
+        });
+    }
+
     //  Default setup of ajax
     $.ajaxSetup({
         beforeSend: function (jqXHR, settings) {
             jqXHR.url = settings.url;
             jqXHR.method = settings.method;
+            jqXHR.data = settings.data;
         }
     });
 
@@ -123,6 +163,8 @@
             msg = 'Not connect.\n Verify Network.';
         } else if (jqXHR.status === 404) {
             msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status === 400) {
+            msg = 'Bad Request';
         } else if (jqXHR.status === 500) {
             msg = 'Internal Server Error [500].';
         } else if (exception === 'parsererror') {
@@ -134,7 +176,7 @@
         } else {
             msg = 'Uncaught Error.\n' + jqXHR.responseText;
         }
-        console.log('Error:\nMessage: ' + msg + '\nMethod: ' + jqXHR.method + '\nURL: ' + jqXHR.url);
+        console.log('Error:\nMessage: ' + msg + '\nMethod: ' + jqXHR.method + '\nURL: ' + jqXHR.url + '\nData: ' + jqXHR.data);
     }
 
     //  Format float number

@@ -47,7 +47,7 @@ public class WebMainPageController {
 
     @GetMapping("get")
     public @ResponseBody WebMain getWebMain() {
-        return webMainRepo.findFullWebMainById(1L);
+        return webMainRepo.findById(1L).orElseGet(webMainService::createInitialWebMain);
     }
 
 }

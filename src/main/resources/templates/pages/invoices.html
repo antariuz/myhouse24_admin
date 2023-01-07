@@ -1288,8 +1288,8 @@
                     },
                     {
                         name: "requestedMonth", title: "Месяц", type: "text", width: "7%", align: "center",
-                        itemTemplate: function (value) {
-                            return moment(value).locale('ru').format('MMMM YYYY');
+                        itemTemplate: function (i,e) {
+                            return moment(e.requestedDate).locale('ru').format('MMMM YYYY');
                         },
                         filterTemplate: function () {
                             return $('<input>').attr({type: "month", id: "filterRequestedMonth"});

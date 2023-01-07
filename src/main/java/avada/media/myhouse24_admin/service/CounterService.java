@@ -1,9 +1,9 @@
 package avada.media.myhouse24_admin.service;
 
 import avada.media.myhouse24_admin.model.dto.CounterDTO;
-import avada.media.myhouse24_admin.model.dto.ResponseByPage;
 import avada.media.myhouse24_admin.model.dto.StatusDTO;
 import avada.media.myhouse24_admin.model.request.CounterRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 
 import java.util.List;
 

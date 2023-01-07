@@ -266,10 +266,10 @@
                 service.price = $(element).find('input.service-price').val();
                 services.push(service);
             });
-            tariff.services = services;
+            tariff.tariffServices = services;
             $.ajax({
                 method: 'POST',
-                url: 'tariffs/add',
+                url: 'tariffs/save',
                 data: JSON.stringify(tariff),
                 contentType: 'application/json',
                 success: function () {

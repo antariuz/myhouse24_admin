@@ -3,9 +3,13 @@ package avada.media.myhouse24_admin.service.impl;
 import avada.media.myhouse24_admin.model.Flat;
 import avada.media.myhouse24_admin.model.User;
 import avada.media.myhouse24_admin.model.common.FileUtil;
-import avada.media.myhouse24_admin.model.dto.*;
+import avada.media.myhouse24_admin.model.dto.BuildingDTO;
+import avada.media.myhouse24_admin.model.dto.FlatDTO;
+import avada.media.myhouse24_admin.model.dto.StatusDTO;
+import avada.media.myhouse24_admin.model.dto.UserDTO;
 import avada.media.myhouse24_admin.model.request.SelectResponse;
 import avada.media.myhouse24_admin.model.request.UserRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.FlatRepo;
 import avada.media.myhouse24_admin.repo.ProfileRepo;
 import avada.media.myhouse24_admin.repo.UserRepo;
@@ -209,6 +213,68 @@ public class UserServiceImpl implements UserService {
             userDTO.setFullName(user.getProfile().getLastname(), user.getProfile().getFirstname(), user.getProfile().getMiddleName());
             return userDTO;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public UserDTO getUser(Long id) {
+        User user = userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
+        Hibernate.initialize(user.getProfile());
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUniqueId(user.getUniqueId());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setFullName(user.getProfile().getLastname() + " " + user.getProfile().getFirstname() + " " + user.getProfile().getMiddleName());
+        userDTO.setFirstname(user.getProfile().getFirstname());
+        userDTO.setMiddleName(user.getProfile().getMiddleName());
+        userDTO.setLastname(user.getProfile().getLastname());
+        if (user.getProfile().getBirthdate() != null)
+            userDTO.setBirthdate(user.getProfile().getBirthdate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+        userDTO.setNotes(user.getProfile().getNotes());
+        userDTO.setPhoneNumber(user.getProfile().getPhoneNumber());
+        userDTO.setViberLogin(user.getProfile().getViberLogin());
+        userDTO.setTelegramLogin(user.getProfile().getTelegramLogin());
+        userDTO.setProfileImage(user.getProfile().getProfileImage());
+        userDTO.setHasDebt(userRepo.getUserBalancesByUserId(user.getId()).stream().filter(Objects::nonNull).anyMatch(balance -> balance < 0));
+        userDTO.setCreatedAt(new SimpleDateFormat("dd.MM.yyyy").format(user.getCreatedAt()));
+        userDTO.setStatus(new StatusDTO(user.getStatus().name(), user.getStatus().getTitle()));
+        List<Flat> flats = flatRepo.findAllByUserId(user.getId());
+        if (!flats.isEmpty()) {
+            List<FlatDTO> flatDTOS = new ArrayList<>();
+            Set<BuildingDTO> buildingDTOS = new HashSet<>();
+            for (Flat flat : flats) {
+                FlatDTO flatDTO = new FlatDTO();
+                flatDTO.setId(flat.getId());
+                flatDTO.setTitle(flat.getNumber(), flat.getBuilding().getTitle());
+                flatDTOS.add(flatDTO);
+                BuildingDTO buildingDTO = new BuildingDTO();
+                buildingDTO.setId(flat.getBuilding().getId());
+                buildingDTO.setTitle(flat.getBuilding().getTitle());
+                buildingDTOS.add(buildingDTO);
+            }
+            userDTO.setFlats(flatDTOS);
+            userDTO.setBuildings(buildingDTOS);
+        }
+        if (userDTO.getHasDebt() != user.isHasDebt()) {
+            user.setHasDebt(userDTO.getHasDebt());
+            userRepo.save(user);
+        }
+        return userDTO;
+    }
+
+    @Override
+    @Transactional
+    public UserDTO getUserByAccountId(Long accountId) {
+        User user = userRepo.findUserByAccountId(accountId).orElse(new User());
+        if (user.getId() != null) {
+            Hibernate.initialize(user.getProfile());
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setFullName(user.getProfile().getLastname() + " " + user.getProfile().getFirstname() + " " + user.getProfile().getMiddleName());
+            return userDTO;
+        } else {
+            return new UserDTO();
+        }
     }
 
     @Override

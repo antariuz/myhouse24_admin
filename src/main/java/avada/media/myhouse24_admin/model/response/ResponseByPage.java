@@ -1,4 +1,4 @@
-package avada.media.myhouse24_admin.model.dto;
+package avada.media.myhouse24_admin.model.response;
 
 import lombok.Data;
 

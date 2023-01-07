@@ -19,6 +19,8 @@ public class UserRequest {
     private String createdAt;
     private String status;
 
+    private Long account;
+
     private Integer pageIndex;
     private Integer pageSize;
     private String sortField;

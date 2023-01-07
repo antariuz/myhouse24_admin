@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
@@ -21,11 +22,18 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     @Query("SELECT count(id) from User WHERE NOT status = 'INACTIVE'")
     Long countUsersByStatusNotInactive();
 
-    @Query(value = "SELECT balance FROM _user LEFT JOIN Flat on flat.user_id = _user.id" +
-            " LEFT JOIN account on flat.id = account.flat_id WHERE _user.id = ?", nativeQuery = true)
+    @Query(value =
+            "SELECT balance FROM _user LEFT JOIN Flat on flat.user_id = _user.id " +
+                    "LEFT JOIN account on flat.id = account.flat_id WHERE _user.id = ?", nativeQuery = true)
     List<Double> getUserBalancesByUserId(Long id);
 
     @Query("SELECT user FROM User user WHERE user.status = 'NEW'")
     List<User> getNewUsers();
+
+    @Query(value =
+            "SELECT * FROM _user " +
+                    "LEFT JOIN Flat on flat.user_id = _user.id " +
+                    "LEFT JOIN account on flat.id = account.flat_id WHERE account.id = ?", nativeQuery = true)
+    Optional<User> findUserByAccountId(Long accountId);
 
 }

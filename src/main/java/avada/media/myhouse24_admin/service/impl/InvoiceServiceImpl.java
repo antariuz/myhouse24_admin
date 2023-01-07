@@ -6,6 +6,7 @@ import avada.media.myhouse24_admin.model.Invoice;
 import avada.media.myhouse24_admin.model.Invoice.Status;
 import avada.media.myhouse24_admin.model.dto.*;
 import avada.media.myhouse24_admin.model.request.InvoiceRequest;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.AccountRepo;
 import avada.media.myhouse24_admin.repo.FlatRepo;
 import avada.media.myhouse24_admin.repo.InvoiceRepo;
@@ -25,9 +26,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -231,6 +231,53 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         invoiceRepo.deleteById(id);
         transactionService.sendDataByWebSocket();
+    }
+
+    @Override
+    @Transactional
+    public Map<String, List<Double>> getInvoicesSumByTypeByMonths() {
+        Date lastDayOfPastYear = java.sql.Date.valueOf(LocalDate.ofYearDay(LocalDate.now().getYear(), 1).minusDays(1));
+        List<Invoice> invoicesOfCurrentYear = invoiceRepo.getInvoicesByAccountNotNullAndRequestedDateAfter(lastDayOfPastYear);
+        List<List<Invoice>> sortedInvoicesByMonths = sortInvoicesByMonths(invoicesOfCurrentYear);
+
+        Map<String, List<Double>> invoicesSumByTypeByMonths = new HashMap<>();
+        invoicesSumByTypeByMonths.put("positive", new ArrayList<>());
+        invoicesSumByTypeByMonths.put("debt", new ArrayList<>());
+        sortedInvoicesByMonths.forEach(monthInvoices -> {
+            double monthPositiveSum = 0d;
+            double monthDebtSum = 0d;
+            for (Invoice invoice : monthInvoices) {
+                if (invoice.getStatus() == Status.PAID) {
+                    monthPositiveSum += invoice.getInvoiceService().stream().mapToDouble(avada.media.myhouse24_admin.model.InvoiceService::getTotalPrice).sum();
+                } else {
+                    monthDebtSum -= invoice.getInvoiceService().stream().mapToDouble(avada.media.myhouse24_admin.model.InvoiceService::getTotalPrice).sum();
+                }
+            }
+            List<Double> positive = invoicesSumByTypeByMonths.get("positive");
+            positive.add(monthPositiveSum);
+            invoicesSumByTypeByMonths.put("positive", positive);
+            List<Double> debt = invoicesSumByTypeByMonths.get("debt");
+            debt.add(monthDebtSum);
+            invoicesSumByTypeByMonths.put("debt", debt);
+        });
+
+        return invoicesSumByTypeByMonths;
+    }
+
+    private List<List<Invoice>> sortInvoicesByMonths(List<Invoice> invoices) {
+        List<List<Invoice>> monthInvoices = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            int month = i;
+            List<Invoice> sortedInvoices = invoices.stream()
+                    .filter(object -> {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(object.getRequestedDate());
+                        return calendar.get(Calendar.MONTH) == month;
+                    })
+                    .collect(Collectors.toList());
+            monthInvoices.add(sortedInvoices);
+        }
+        return monthInvoices;
     }
 
 }

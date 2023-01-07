@@ -2,6 +2,8 @@
 
 _management system for accounting and receipts for utility bills in co-owners association of an apartment building_
 
+This project has been developed for learning and practicing purposes. All rights belong to the <a href="https://avada-media.ua/"><strong>AVADA-MEDIA™</strong></a>
+
 ### Stack of technologies:
 
 * Architecture: MVC
@@ -9,9 +11,6 @@ _management system for accounting and receipts for utility bills in co-owners as
 * Backend: Java / Spring Boot / Tomcat / WebSocket
 * Template engine: Thymeleaf
 * Data base: PostgreSQL
-
-The project is designed for learning and practice. All rights belong to <a href="https://avada-media.ua/"><strong>
-AVADA-MEDIA™</strong></a>
 
 ### Credentials for testing
 

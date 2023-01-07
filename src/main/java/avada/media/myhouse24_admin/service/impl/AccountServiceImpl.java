@@ -4,6 +4,7 @@ import avada.media.myhouse24_admin.model.Account;
 import avada.media.myhouse24_admin.model.dto.*;
 import avada.media.myhouse24_admin.model.request.AccountRequest;
 import avada.media.myhouse24_admin.model.request.SelectResponse;
+import avada.media.myhouse24_admin.model.response.ResponseByPage;
 import avada.media.myhouse24_admin.repo.AccountRepo;
 import avada.media.myhouse24_admin.repo.FlatRepo;
 import avada.media.myhouse24_admin.service.AccountService;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -29,8 +29,6 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepo accountRepo;
     private final AccountSpec accountSpec;
     private final FlatRepo flatRepo;
-
-    private final SimpMessagingTemplate template;
 
     @Override
     @Transactional
@@ -106,12 +104,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public SelectResponse searchForAccount(String query, Integer page) {
+    public SelectResponse searchForAccounts(String query, Integer page, Long userId) {
         AccountRequest accountRequest = new AccountRequest();
         accountRequest.setUniqueNumber(query);
         accountRequest.setPageIndex(page);
         accountRequest.setPageSize(10);
-        Page<Account> accounts = accountRepo.findAll(accountSpec.getAccounts(accountRequest), PageRequest.of(accountRequest.getPageIndex() - 1, accountRequest.getPageSize()));
+        Page<Account> accounts;
+        if (userId == null) {
+            accounts = accountRepo.findAll(accountSpec.getAccounts(accountRequest), PageRequest.of(accountRequest.getPageIndex() - 1, accountRequest.getPageSize()));
+        } else {
+            accounts = accountRepo.getAccountsByUserId(userId, query, PageRequest.of(accountRequest.getPageIndex() - 1, accountRequest.getPageSize()));
+        }
         SelectResponse selectResponse = new SelectResponse();
         if (!accounts.getContent().isEmpty()) {
             List<SelectResponse.Result> resultsList = selectResponse.getResults();
